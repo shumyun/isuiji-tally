@@ -1,0 +1,55 @@
+/**
+ *    account v0.1.0
+ *    Plug-in for Discuz!
+ *    Last Updated: 2011-11-16
+ *    Author: shumyun
+ *    Copyright (C) 2011 - forever 57day.com Inc
+ */
+
+/** plugin::account **/
+/* 提交账单 */
+	.acexfm { margin: 10px 0; padding: 10px 14px; border: 1px dashed {SPECIALBORDER}; background: {SPECIALBG}; }
+		.acexfm table { width: 100%; }
+			.acexfm table th, .acexfm table td { padding: 4px 2px; }
+			.acexfm table th { width: 145px; }
+			/* 账单填写区域 */
+			.acarea { width: 465px; }
+				.ul-1 { height: 30px; }
+				.ul-2 { height: 60px; }
+				.acarea label { cursor: default; float: left; text-align: right; vertical-align: middle; width: 80px; line-height: 22px; }
+				.acarea input, .acarea select { float: left; width: 141px; }
+				.acarea textarea { width: 100%; height: 100%; border: 1px solid; border-color: {INPUTBORDERDARKCOLOR} {INPUTBORDER} {INPUTBORDER} {INPUTBORDERDARKCOLOR}; overflow-y: auto; }
+					.ie6 .acarea textarea { height:60px; }
+				.acarea img { float: left; }
+				.acarea .aimg { cursor: pointer; margin-left: 1px; margin-top: 2px; }
+			.aimg { cursor: pointer; float: left; margin-left: 10px; margin-top: 2px; }
+			.txtlabel {cursor: default; float: left; margin-top: 10px; margin-left: 5px; vertical-align: middle; line-height: 22px;}
+				
+		/* 账单图片 */	
+		.acexfm .avatar a { position: relative; }
+			.ie6 .acexfm a { float: left; }
+			.acexfm .avatar a:hover { text-decoration: none; }
+			.acexfm .avatar a span { display: none; position: absolute; bottom: 3px; padding: 5px 0; width: 100%; text-align: center; background: transparent; background: rgba(255, 255, 255, 0.5); cursor: pointer; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr = #50FFFFFF, endColorstr = #50FFFFFF); }
+				.acexfm .avatar a:hover span { display: block; }
+				.acexfm .avatar img { padding: 3px; border: 1px solid {COMMONBORDER}; }
+		.mdcp .um { margin-bottom: 0; padding: 10px 5px; }
+		
+		/* 账单提示(参照common.css .tip) */
+		.acc_tip { position: absolute; padding: 0; width: auto; border: 1px solid #B1B1B1; background: #FEFEE9; }
+			.acc_tip_1, .acc_tip_2 { margin: 3px 6px; background: url({IMGDIR}/info_small.gif) 0 50% no-repeat; padding-left: 22px; font-weight:700; color:#F00 }
+			.acc_tip_3, .acc_tip_4 { margin: -3px 6px; background: url({IMGDIR}/info_small.gif) 0 50% no-repeat; padding-left: 22px; font-weight:700; color:#F00 }
+			.acc_tip_horn { position: absolute; width: 11px; height: 6px; overflow: hidden; }
+			.acc_tip_1 .acc_tip_horn { left: 5px; top: -6px; background: url({IMGDIR}/tip_top.png); }
+			.acc_tip_2 .acc_tip_horn { right: 5px; top: -6px; background: url({IMGDIR}/tip_top.png); }
+			.acc_tip_3 .acc_tip_horn { right: 5px; bottom: -6px; background: url({IMGDIR}/tip_bottom.png); }
+			.acc_tip_4 .acc_tip_horn { left: 5px; bottom: -6px; background: url({IMGDIR}/tip_bottom.png); }
+		
+/** end **/
+/*
+ * .mi .moodfm_input { width: 350px; height: 58px; background: {COMMONBORDER} url({IMGDIR}/mood_input.png) no-repeat 0 0; }
+			.mi .hover .moodfm_input { background-color: {SPECIALBORDER}; }
+			.mi #moodfm textarea { margin: 3px 0 0 6px; padding: 0; width: 341px; height: 51px; outline: none; border: none; }
+		.moodfm_btn { padding-left: 5px; background: url({IMGDIR}/mood_input_btn.png) no-repeat 5px 0; }
+			.moodfm_btn button { width: 58px; height: 58px; cursor: pointer; opacity: 0; filter: alpha(opacity=0); }
+		.moodfm_f { padding: 5px 0 0 3px; }
+ */

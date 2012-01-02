@@ -1,0 +1,129 @@
+<!--{template common/header}-->
+
+<div id="pt" class="bm cl">
+	<div class="z">
+		<a href="./" class="nvhm" title="{lang homepage}">$_G[setting][bbname]</a>
+		<em>&rsaquo;</em>
+		<a href="$baseurl">理财中心</a> <em>&rsaquo;</em> 账单新增
+	</div>
+</div>
+
+<style id="diy_style" type="text/css"></style>
+
+<!--[diy=diyaccounttop]--><div id="diyaccounttop" class="area"></div><!--[/diy]-->
+
+<div class="ct2_a wp cl">
+	<div class="mn">
+		<!--[diy=diycontenttop]--><div id="diycontenttop" class="area"></div><!--[/diy]-->
+		<div class="bm bw0">
+			<h1 class="mt">account_add</h1>
+			<ul curstatus="li.pay" class="tb cl">
+				<li id="li.pay" class="a"><a>支出</a></li>
+				<li id="li.earn" style="cursor:pointer"><a>收入</a></li>
+				<li id="li.transfer" style="cursor:pointer"><a>转账</a></li>
+				<li id="li.lend" style="cursor:pointer"><a>借贷/代付</a></li>
+			</ul>
+			<p id="lend.p" class="tbmu bw0" style="display: none">
+				<a class="a">代&nbsp;付</a><span class="pipe">|</span>
+                <a style="cursor:pointer">借&nbsp;入</a><span class="pipe">|</span>
+                <a style="cursor:pointer">借&nbsp;出</a><span class="pipe">|</span>
+                <a style="cursor:pointer">借&nbsp;债</a><span class="pipe">|</span>
+                <a style="cursor:pointer">还&nbsp;债</a>
+			</p>
+			<form action="$baseurl&mod=richadd&op=$operation" method="post"
+			 enctype="multipart/form-data" autocomplete="off" onsubmit="">
+			 	<input type="hidden" value="{FORMHASH}" name="formhash" />
+				<div class="acexfm" style="margin-top: 1px;">
+					<table cellspacing="0" cellpadding="0" id="richaddlist">
+						<th>
+							<div class="avatar" >
+								<a id="ac_pic" title="待开发功能" href="javascript:;">
+									<span id="ac_pic_tar">待开发功能</span>
+									<!--{avatar($_G[uid],middle)}-->
+								</a>
+							</div>
+						</th>
+						<td class = "acarea">
+							<ul class="ul-1">
+								<label style="width: auto;">账单日期：</label>
+								<input type="text" readonly="readonly" onclick="showcalendar(event, this)" value="{$acc_date}" class="px" id="richdate"  tabindex="4" />
+								<label>账单名称：</label>
+								<input id="richcategory" type="hidden" value="">
+								<input id="richname" class="px" style="width:120px" tabindex="1"/>
+								<a id="richnamebtn" class="dpbtn" >^</a>
+								<input id="richnamevalue" type="hidden" value = "{$titledata}" />
+								<img src="{IMGDIR}/edit.gif" class="aimg" style="" />
+							</ul>
+							<ul class="ul-1">
+								<label style="width: auto;">账单金额：</label>
+								<input id="richnum" class="px" style="width:120px" tabindex="2"/>
+								<label style="width: 83px;">账单归属：</label>
+								<span class="ftid" style="margin-right: 0;">
+									<select id="richtype" class="ps" width="128" tabindex="3" >
+									<!--{loop $account->account_config['cattype'] $key $value}-->
+										<option value="{$key}" {if $key == "0"} selected="selected"{/if}>{$value}</option>
+									<!--{/loop}-->
+									</select>
+								</span>
+								<img src="{IMGDIR}/edit.gif" class="aimg" />
+							</ul>
+							<ul class="ul-2">
+								<textarea name="message" id="message" class="xg1" onfocus="handlePrompt(1);" onblur="handlePrompt(0);" onkeyup="strLenCalc(this, 'maxlimit')" onkeydown="ctrlEnter(event, 'add');" tabindex="5">此处可输入详细信息，限制最大字数为200。</textarea>
+							</ul>
+						</td>
+						<td>
+							<ul	class="ul-2" style="cursor: default;">提示：拼音首字母可以查找</ul>
+							<ul	class="ul-2">
+								<img src="{IMGDIR}/mood_input_btn.png" class="aimg" id="richaddbtn" />
+								<label class="txtlabel" >当前金额<br/>单位：元(￥)</label>
+							</ul>
+						</td>
+					</table>
+				</div>
+			</form>
+		</div>
+		<!--[diy=diycontentbottom]--><div id="diycontentbottom" class="area"></div><!--[/diy]-->
+	</div>
+	<div class="appl">
+		<div class="tbn">
+			<h2 class="mt bbda">理财中心</h2>
+			<ul>
+				<li class="a"><a href="$baseurl">账单新增</a></li>
+				<li><a href="$baseurl&mod=richlist&act=showlist">账本清单</a></li>
+				<li><a href="$baseurl&mod=richbudget&act=showlist">账目预算</a></li>
+				<li><a href="$baseurl&mod=richcount&act=showlist">报表统计</a>
+				<li><a href="$baseurl&mod=richset&act=set">账本设置</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<!--[diy=diyaccountbottom]--><div id="diyaccountbottom" class="area"></div><!--[/diy]-->
+
+<script type="text/javascript" src="{$_G[setting][jspath]}calendar.js?{VERHASH}"></script>
+<script type="text/javascript" src="{$basedir}js/jquery-1.6.2.min.js"></script>
+<link type="text/css" href="{$basedir}js/calculator.css" rel="stylesheet" />
+<script type="text/javascript" src="{$basedir}js/calculator.js"></script>
+<link type="text/css" href="{$basedir}js/catcomplete.css" rel="stylesheet" />
+<script type="text/javascript" src="{$basedir}js/catcomplete.js"></script>
+<!-- <script type="text/javascript" src="{$basedir}js/jquery.form.js"></script> -->
+<script type="text/javascript" src="{$basedir}js/richadd.js"></script>
+<script type="text/javascript">
+var msgstr = '此处可输入详细信息，限制最大字数为200。';
+function handlePrompt(type) {
+	var msgObj = $('message');
+	if(type) {
+		if(msgObj.value == msgstr) {
+			msgObj.value = '';
+			msgObj.className = 'xg2';
+		}
+	} else {
+		if(msgObj.value == ''){
+			msgObj.value = msgstr;
+			msgObj.className = 'xg1';
+		}
+	}
+}
+simulateSelect('richtype');
+</script>
+<!--{template common/footer}-->
