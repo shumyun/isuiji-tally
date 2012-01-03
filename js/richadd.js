@@ -146,7 +146,7 @@ jQuery(document).ready(function($) {
 		dataobj.richdate = $("#richdate").val();
 		dataobj.richnum  = $("#richnum").val();
 		dataobj.richcategory = $("#richcategory").val();
-		dataobj.richname = $("#richname").val();
+		dataobj.richname = $("#richname").val()/* + $("#richname").attr("pinyin")*/;
 		dataobj.richtype = $("#richtype").get(0).selectedIndex;
 		dataobj.message = $("#message").val();
 		

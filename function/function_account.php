@@ -126,16 +126,16 @@ function title_arrtostr($array, &$sqlstr) {
 function title_arrtojs($array) {
 	$str = '[';
 	foreach ($array as $category) { //print_r($category);
-		if ($category[1] == 'show') { 
+		if ($category[2] == 'show') { 
 			foreach ($category as $key => $label) {
 				if($label == '.') {
-					$str .= '{label:"'.$key.'",category:""},';
+					$str .= '{label:"'.$key.' '.$category[1].'",category:""},';
 				} else if (is_array($label)) {
 					foreach ($label as $data) {
-						if ($data[1] == 'show') {
+						if ($data[2] == 'show') {
 							foreach ($data as $name => $detail) {
 								if($detail == '.')
-									$str .= '{label:"'.$name.'",category:"'.$key.'"},';
+									$str .= '{label:"'.$name.' '.$data[1].'",category:"'.$key.'"},';
 							}
 						}
 					}

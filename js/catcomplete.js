@@ -1054,13 +1054,15 @@ $.widget( "ui.autocomplete", {
 
 					if ( false !== self._trigger( "select", event, { item: item } ) ) {
 						/*change by shumyun*/
-						var numID, tempval = $.trim( item.value );
+						var numID,/* tempattr="",*/ tempval = $.trim( item.value );
 						if((numID = tempval.lastIndexOf(' ')) != -1) {
+							//tempattr = tempval.substring(numID, tempval.length);
 							tempval = tempval.substring(0, numID);
 						}
 						if( self.options.category.length ) {
 							self.options.category.val(item.category);
 						}
+						//self.element.attr('pinyin', tempattr);
 						self.element.val( tempval );
 						
 						/* self.element.val( item.value ); */
