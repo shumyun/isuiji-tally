@@ -16,7 +16,6 @@ define('NOROBOT', TRUE);
 
 switch ( $_POST['curstatus'] ) {
 	case 'pay':
-		print_r($account->account_config['income']);
 		if( !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
 			echo "请填写大于零的金额";
 			break;

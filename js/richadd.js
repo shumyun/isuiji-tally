@@ -131,6 +131,33 @@ jQuery(document).ready(function($) {
 		} else if ( $("#richname").val() == '' ) {
 			errTip("#richname", "名称不能为空", 1, 2500);
 			return ;
+		} else {
+			/*
+			var pyarr = pinyin($("#richname").val(), true);
+			var pystr = '';
+			for (x in pyarr){
+				pystr = pystr + pyarr[x].substring(0, 1).toLowerCase();
+			}
+			*/
+			var berr = true;
+			var tempstr = "";
+			for (x in phpdata) {
+				if( phpdata[x].label.match($("#richname").val())) {
+					if( phpdata[x].category == $("#richcategory").val()) {
+						tempstr = phpdata[x].category;
+						berr = false;
+						break;
+					} else {
+						tempstr = phpdata[x].category;
+						berr = false;
+					}
+				}
+			}
+			if(berr) {
+				errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
+				return ;
+			}
+			$("#richcategory").val(tempstr);
 		}
 		
 		var dataobj = new Object();
@@ -155,8 +182,6 @@ jQuery(document).ready(function($) {
 			url: "plugin.php?id=account:index&mod=ajax",
 			data: $.param(dataobj)
 		});
-		
-		;
 	});
 	
 });
