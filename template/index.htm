@@ -68,7 +68,8 @@
 								<img src="{IMGDIR}/edit.gif" class="aimg" />
 							</ul>
 							<ul class="ul-2">
-								<textarea name="message" id="message" class="xg1" onfocus="handlePrompt(1);" onblur="handlePrompt(0);" onkeyup="strLenCalc(this, 'maxlimit')" onkeydown="ctrlEnter(event, 'add');" tabindex="5">此处可输入详细信息，限制最大字数为200。</textarea>
+								<textarea name="message" id="message" class="xg1" onkeyup="strLenCalc(this, 'maxlimit')" tabindex="5">此处可输入详细信息，限制最大字数为200。</textarea>
+								<input id="maxlimit" name="maxlimit" type="hidden" />
 							</ul>
 						</td>
 						<td>
@@ -111,21 +112,6 @@
 <script type="text/javascript" src="{$basedir}js/pinyin.js"></script> -->
 <script type="text/javascript" src="{$basedir}js/richadd.js"></script>
 <script type="text/javascript">
-var msgstr = '此处可输入详细信息，限制最大字数为200。';
-function handlePrompt(type) {
-	var msgObj = $('message');
-	if(type) {
-		if(msgObj.value == msgstr) {
-			msgObj.value = '';
-			msgObj.className = 'xg2';
-		}
-	} else {
-		if(msgObj.value == ''){
-			msgObj.value = msgstr;
-			msgObj.className = 'xg1';
-		}
-	}
-}
 simulateSelect('richtype');
 </script>
 <!--{template common/footer}-->

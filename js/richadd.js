@@ -122,6 +122,24 @@ jQuery(document).ready(function($) {
 	$("#richnum").calculator();
 	
 	/*
+	 * 详细信息框
+	 */
+	var msgstr = '此处可输入详细信息，限制最大字数为200。';
+	$("#message")
+	.blur(function(){
+		if($("#message").val() == ''){
+			$("#message").val(msgstr);
+			$("#message").removeClass('xg2').addClass('xg1');
+		}
+	})
+	.focus(function(){
+		if($("#message").val() == msgstr) {
+			$("#message").val('');
+			$("#message").removeClass('xg1').addClass('xg2');
+		}
+	});
+	
+	/*
 	 * 提交数据
 	 */
 	$("#richaddbtn").click( function() {
