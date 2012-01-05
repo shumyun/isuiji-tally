@@ -29,7 +29,7 @@ if(empty($_G['uid'])) {
 require_once 'class/class_account.php';
 $account = new class_account;
 $account->run();
-$acc_date = dgmdate(TIMESTAMP, 'd');
+$acc_date = dgmdate($_G['timestamp'], 'd');
 
 $acc_mod = in_array($_GET['mod'], array('ajax', 'richadd', 'richlist', 'richbudget', 'richcount', 'richset')) ? trim($_GET['mod']) : $defaultop;
 

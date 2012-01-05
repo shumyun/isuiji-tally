@@ -11,6 +11,12 @@ if(!defined('IN_DISCUZ')) {
 	exit('Access Denied');
 }
 
+/*
+ * pre_account_data : 存储数据表
+ *		{
+ *			datatype : 1/支出类型；
+ *		}
+ */
 $version = '0.1.0';
 $sql = <<<EOF
 DROP TABLE IF EXISTS pre_account_data;

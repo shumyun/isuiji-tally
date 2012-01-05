@@ -193,7 +193,7 @@ jQuery(document).ready(function($) {
 		dataobj.richcategory = $("#richcategory").val();
 		dataobj.richname = $("#richname").val()/* + $("#richname").attr("pinyin")*/;
 		dataobj.richtype = $("#richtype").get(0).selectedIndex;
-		dataobj.message = $("#message").val();
+		dataobj.message = ($("#message").val() == msgstr ? '':$("#message").val());
 		
 		$.ajax({
 			type: "POST",

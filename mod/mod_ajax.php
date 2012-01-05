@@ -24,6 +24,18 @@ switch ( $_POST['curstatus'] ) {
 			echo "请选择已存在的账单名称";
 			break;
 		}
+		
+		$insarr = array(
+			'uid' => $_G['uid'],
+			'amount' => $_POST['richnum'],
+			'title' => $_POST['richname'].'【'.$_POST['richcategory'].'】',
+			'category' => $account->account_config['cattype'][$_POST['richtype']],
+			'info' => $_POST['message'],
+			'datatime' => strtotime($_POST['richdate']),
+			'recordtime' => $_G['timestamp'],
+			'datatype' => 1
+			);
+		DB::insert('account_data', $insarr);
 		break;
 	default:
 		break;
