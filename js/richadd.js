@@ -87,7 +87,13 @@ jQuery(document).ready(function($) {
 /*
  * ajax tip Dialog
  */
-var ac_ajax = jQuery('<div/>');
+var ac_ajax = jQuery('<div style="position: absolute;" />')
+				.appendTo("body")
+				.position({
+				  my: "center center",
+				  at: "center center",
+				  of: jQuery("body")
+				}).hide();
 function hide_addajaxDialog() {
 	ac_ajax.hide();
 }
@@ -211,28 +217,9 @@ jQuery(document).ready(function($) {
 					<td class="m_c"><h3 class="flb"><em><img src="' + IMGDIR + '/loading.gif"> 正在保存...</em></td>\
 					<td class="m_r"></td></tr>\
 				<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table>')
-			.appendTo("body")
-			.position({
-			  my: "center center",
-			  at: "center center",
-			  of: "#richaddlist"
-			});
+			.show();
 		});
-		/*
-		$("div").ajaxStop(function(){
-			ac_ajax.html('<table cellpadding="0" cellspacing="0" class="fwin"><tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
-				<tr><td class="m_l">&nbsp;&nbsp;</td>\
-					<td class="m_c"><h3 class="flb"><em><img src="' + IMGDIR + '/check_right.gif"> 保存成功.</em></td>\
-					<td class="m_r"></td></tr>\
-				<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table>');
-		});
-		
-		$.ajax({
-			type: "POST",
-			url: "plugin.php?id=account:index&mod=ajax",
-			data: $.param(dataobj),
-		});
-		*/
+
 		$.post("plugin.php?id=account:index&mod=ajax", $.param(dataobj),
 				function(data) {
 			  		if(data.state.toLowerCase() == 'ok') {
@@ -242,8 +229,22 @@ jQuery(document).ready(function($) {
 			  					<td class="m_r"></td></tr>\
 			  				<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table>');
 			  			setTimeout("hide_addajaxDialog()", 1000);
+			  			
+			  			var ac_date = new Date();
+			  			$("#richdate").val(ac_date.getFullYear()+'-'+(ac_date.getMonth()+1)+'-'+ac_date.getDate());
+			  			$("#richnum").val('');
+			  			$("#richcategory").val('');
+			  			$("#richname").val('');
+			  			$("#message").val('').blur();
 			  		} else {
-			  			;
+			  			ac_ajax.hide();
+			  			if(data.curerr == "richdate") {
+			  				errTip("#richdate", "请选择正确的日期", 1, 2500);
+			  			} else if(data.curerr == "richnum") {
+			  				errTip("#richnum", "请填写大于零的金额", 1, 2500);
+			  			} else if(data.curerr == "richname") {
+			  				errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
+			  			}
 			  		}
 				},"json");
 	});
