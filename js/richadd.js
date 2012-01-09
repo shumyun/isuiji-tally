@@ -214,7 +214,7 @@ jQuery(document).ready(function($) {
 		$("div").ajaxStop(function(){
 			ac_ajax.html('<table cellpadding="0" cellspacing="0" class="fwin"><tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
 				<tr><td class="m_l">&nbsp;&nbsp;</td>\
-					<td class="m_c"><h3 class="flb"><em><img src="' + IMGDIR + '/check_right.gif"> 保存成功！</em></td>\
+					<td class="m_c"><h3 class="flb"><em><img src="' + IMGDIR + '/check_right.gif"> 保存成功.</em></td>\
 					<td class="m_r"></td></tr>\
 				<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table>');
 		});
