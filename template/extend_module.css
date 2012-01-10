@@ -43,7 +43,16 @@
 			.acc_tip_2 .acc_tip_horn { right: 5px; top: -6px; background: url({IMGDIR}/tip_top.png); }
 			.acc_tip_3 .acc_tip_horn { right: 5px; bottom: -6px; background: url({IMGDIR}/tip_bottom.png); }
 			.acc_tip_4 .acc_tip_horn { left: 5px; bottom: -6px; background: url({IMGDIR}/tip_bottom.png); }
-		
+
+/* 页面报表区域 */
+	.ct_ac { background: transparent; }
+	.ct_ac .mn { float: left; width: 565px; }
+	.ct_ac .sd { float: right; width: 220px; }
+	
+	/* 财务收支简报表 */
+	.ac_smreport  font { vertical-align: middle; }
+	.ac_smreport img { vertical-align: middle; }
+
 /** end **/
 /*
  * .mi .moodfm_input { width: 350px; height: 58px; background: {COMMONBORDER} url({IMGDIR}/mood_input.png) no-repeat 0 0; }
