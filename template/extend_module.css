@@ -50,8 +50,13 @@
 	.ct_ac .sd { float: right; width: 220px; }
 	
 	/* 财务收支简报表 */
-	.ac_smreport  font { vertical-align: middle; }
-	.ac_smreport img { vertical-align: middle; }
+	.ac_smreport img { float: left; margin-top: 7px; }
+		/* 表格(参照module.css 用户组页面 home_spacecp) */
+		.ac_tb { width: 100%; overflow: hidden; zoom: 1; margin: 10px 0; *padding-bottom: 10px; }
+			.ac_tb th, .ac_tb td { overflow: hidden; padding: 0 5px; height: 26px; border-width: 0 1px 0 0; border-color: {WRAPBG}; white-space: nowrap; }
+			.ac_tb th { height: 40px; font-weight: 700; border-right: 2px solid #FFF; border-left: 2px solid #FFF; }
+			.ac_tb .h th { height: 24px; border-top: 1px solid {COMMONBORDER}; border-bottom: 1px solid #E5E5E5; background: url({IMGDIR}/tb.png) repeat-x 0 -4px; color: {MIDTEXT}; zoom: 1; }
+
 
 /** end **/
 /*

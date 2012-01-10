@@ -9,17 +9,6 @@ jQuery.noConflict();
 
 
 /*
- * 二级菜单
- */
-function acc_changeli(cur, change) {
-	curjquery = '#'+cur.replace(".", "\\.");
-	jQuery(curjquery).parent().attr("curstatus", cur);
-	jQuery(curjquery).attr("style", "cursor:auto").toggleClass("a");
-	change = '#'+change.replace(".", "\\.");
-	jQuery(change).attr("style", "cursor:pointer").toggleClass("a");
-}
-
-/*
  * jQuery UI tip
  * Depends:
  *	jquery.ui.position.js
@@ -48,6 +37,18 @@ function destroyTip() {
 	}
 	tipdiv = null;
 	timeID = null;
+}
+
+
+/*
+ * 二级菜单
+ */
+function acc_changeli(cur, change) {
+	curjquery = '#'+cur.replace(".", "\\.");
+	jQuery(curjquery).parent().attr("curstatus", cur);
+	jQuery(curjquery).attr("style", "cursor:auto").toggleClass("a");
+	change = '#'+change.replace(".", "\\.");
+	jQuery(change).attr("style", "cursor:pointer").toggleClass("a");
 }
 
 jQuery(document).ready(function($) {
@@ -87,13 +88,7 @@ jQuery(document).ready(function($) {
 /*
  * ajax tip Dialog
  */
-var ac_ajax = jQuery('<div style="position: absolute;" />')
-				.appendTo("body")
-				.position({
-				  my: "center center",
-				  at: "center center",
-				  of: jQuery("body")
-				}).hide();
+var ac_ajax = new Object();
 function hide_addajaxDialog() {
 	ac_ajax.hide();
 }
@@ -157,6 +152,13 @@ jQuery(document).ready(function($) {
 	/*
 	 * 提交数据
 	 */
+	ac_ajax = jQuery('<div style="position: absolute;" />')
+				.appendTo("body")
+				.position({
+				  my: "center center",
+				  at: "center center",
+				  of: jQuery("body")
+				}).hide();
 	$("#richaddbtn").click( function() {
 		if( $("#richnum").val() == '' ) {
 			errTip("#richnum", "金额不能为空", 1, 2500);
