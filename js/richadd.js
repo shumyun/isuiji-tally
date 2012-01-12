@@ -246,6 +246,8 @@ jQuery(document).ready(function($) {
 			  				errTip("#richnum", "请填写大于零的金额", 1, 2500);
 			  			} else if(data.curerr == "richname") {
 			  				errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
+			  			} else if(data.curerr == "no_login"){
+			  				showWindow('login', 'plugin.php?id=account:index');
 			  			}
 			  		}
 				},"json");

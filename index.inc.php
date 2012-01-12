@@ -23,7 +23,12 @@ if(empty($_G['uid'])) {
 	} else {
 		dsetcookie('_refer', rawurlencode('plugin.php?id=account:index'));
 	}
-	showmessage('to_login', '', array(), array('showmsg' => true, 'login' => 1));
+	if($_GET['mod'] == 'ajax') {
+		echo '{"state":"err", "curerr":"no_login"}';
+		return ;
+	} else {
+		showmessage('to_login', '', array(), array('showmsg' => true, 'login' => 1));
+	}
 }
 
 require_once 'class/class_account.php';
