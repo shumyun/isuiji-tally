@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2011-09-24
+ *    Last Updated: 2012-01-17
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -40,7 +40,9 @@ $acc_mod = in_array($_GET['mod'], array('ajax', 'richadd', 'richlist', 'richbudg
 
 switch ($acc_mod) {
 	case 'ajax':
-		require_once DISCUZ_ROOT.$basedir.'mod/mod_ajax.php';
+		if(in_array($_GET['func'], array('adddata', 'chart'))) {
+			require_once DISCUZ_ROOT.$basedir.'mod/ajax_'.trim($_GET['func']).'.php';
+		}
 		break;
 		
 	case 'richlist':

@@ -33,6 +33,13 @@ CREATE TABLE pre_account_data (
   PRIMARY KEY (cid)
 ) ENGINE=MyISAM;
 
+DROP TABLE IF EXISTS pre_account_daytotal;
+CREATE TABLE pre_account_daytotal (
+  cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
+  uid mediumint(8) unsigned NOT NULL default '0',
+  earnmoney decimal(14,2) unsigned NOT NULL default '0.00',
+  PRIMARY KEY (cid)
+) ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS pre_account_profile;
 CREATE TABLE pre_account_profile (

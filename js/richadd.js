@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-01-09
+ *    Last Updated: 2012-01-17
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -95,8 +95,6 @@ function hide_addajaxDialog() {
 
 
 
-var chart;
-
 jQuery(document).ready(function($) {
 	/*
 	 * 自动匹配功能
@@ -160,7 +158,8 @@ jQuery(document).ready(function($) {
 				.position({
 				  my: "center center",
 				  at: "center center",
-				  of: jQuery("body")
+				  of: jQuery("#richaddlist"),
+				  offset: "-50 -50"
 				}).hide();
 	$("#richaddbtn").click( function() {
 		if( $("#richnum").val() == '' ) {
@@ -225,7 +224,7 @@ jQuery(document).ready(function($) {
 			.show();
 		});
 
-		$.post("plugin.php?id=account:index&mod=ajax", $.param(dataobj),
+		$.post("plugin.php?id=account:index&mod=ajax&func=adddata", $.param(dataobj),
 				function(data) {
 			  		if(data.state.toLowerCase() == 'ok') {
 			  			ac_ajax.html('<table cellpadding="0" cellspacing="0" class="fwin"><tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
@@ -255,33 +254,40 @@ jQuery(document).ready(function($) {
 			  		}
 				},"json");
 	});
-	
-
-	chart = new Highcharts.Chart({
-		chart: {
-			renderTo: 'container',
-			defaultSeriesType: 'line',
-			spacingBottom: 0
-		},
-		title:{text: ''},yAxis:{title:{text:''}},yAxis:{title:{text:''}},credits:{enabled:false},
-		xAxis: {
-			categories: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
-		},
-		plotOptions: {
-			line: {
-				dataLabels: {
-					enabled: true
-				},
-				enableMouseTracking: false
-			}
-		},
-		series: [{
-			name: '收入',
-			data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-		}, {
-			name: '支出',
-			data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-		}]
-	});
 
 });
+
+
+
+var chart;
+
+jQuery(document).ready(function($) {
+	
+	$.post("plugin.php?id=account:index&mod=ajax&func=chart", "chart=SimpleCurY",
+			function(data) {
+				chart = new Highcharts.Chart({
+				chart: {
+					renderTo: 'container',
+					defaultSeriesType: 'line',
+					spacingBottom: 0
+				},
+				title:{text:''},yAxis:{title:{text:''}},yAxis:{title:{text:''}},credits:{enabled:false},
+				xAxis: {
+					categories: data.date
+				},
+				plotOptions: {
+					line: {
+						dataLabels: {
+							enabled: true
+						},
+					enableMouseTracking: false
+					}
+				},
+				series: 	//ac_bug:这里使用全中文字幕会出现文字不居中，现解决方法文字中加上单字节符号			
+					[{ name: ': 收入  ', data: data.earn },
+					 { name: ': 支出',  data: data.pay  }]
+				});
+			},"json");
+	
+});
+
