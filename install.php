@@ -2,9 +2,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2011-10-03
+ *    Last Updated: 2011-01-19
  *    Author: shumyun
- *    Copyright (C) 2011 - forever 57day.com Inc
+ *    Copyright (C) 2011 - forever jiashe.net Inc
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -33,13 +33,17 @@ CREATE TABLE pre_account_data (
   PRIMARY KEY (cid)
 ) ENGINE=MyISAM;
 
+
 DROP TABLE IF EXISTS pre_account_daytotal;
 CREATE TABLE pre_account_daytotal (
   cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
   uid mediumint(8) unsigned NOT NULL default '0',
+  datadate int(10) unsigned NOT NULL default '0',
   earnmoney decimal(14,2) unsigned NOT NULL default '0.00',
+  paymoney decimal(14,2) unsigned NOT NULL default '0.00',
   PRIMARY KEY (cid)
 ) ENGINE=MyISAM;
+
 
 DROP TABLE IF EXISTS pre_account_profile;
 CREATE TABLE pre_account_profile (

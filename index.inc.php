@@ -40,7 +40,9 @@ $acc_mod = in_array($_GET['mod'], array('ajax', 'richadd', 'richlist', 'richbudg
 
 switch ($acc_mod) {
 	case 'ajax':
+		echo 'require_once';
 		if(in_array($_GET['func'], array('adddata', 'chart'))) {
+			echo 'require_once';
 			require_once DISCUZ_ROOT.$basedir.'mod/ajax_'.trim($_GET['func']).'.php';
 		}
 		break;
