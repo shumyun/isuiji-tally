@@ -45,6 +45,16 @@ CREATE TABLE pre_account_daytotal (
 ) ENGINE=MyISAM;
 
 
+DROP TABLE IF EXISTS pre_account_budget;
+CREATE TABLE pre_account_budget (
+  cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
+  uid mediumint(8) unsigned NOT NULL default '0',
+  datadate int(10) unsigned NOT NULL default '0',
+  budget decimal(14,2) unsigned NOT NULL default '0.00',
+  PRIMARY KEY (cid)
+) ENGINE=MyISAM;
+
+
 DROP TABLE IF EXISTS pre_account_profile;
 CREATE TABLE pre_account_profile (
   uid mediumint(8) unsigned NOT NULL default '0',
@@ -52,6 +62,8 @@ CREATE TABLE pre_account_profile (
   titlepay text NOT NULL default '',
   categorytype text NOT NULL default '',
   firstdate int(10) unsigned NOT NULL default '0',
+  totalearn decimal(14,2) unsigned NOT NULL default '0.00',
+  totalpay decimal(14,2) unsigned NOT NULL default '0.00',
   PRIMARY KEY (uid)
 ) ENGINE=MyISAM;
 

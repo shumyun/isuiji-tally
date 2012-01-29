@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-01-17
+ *    Last Updated: 2012-01-24
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -23,30 +23,17 @@ if(empty($_G['uid'])) {
 	} else {
 		dsetcookie('_refer', rawurlencode('plugin.php?id=account:index'));
 	}
-	if($_GET['mod'] == 'ajax') {
-		echo '{"state":"err", "curerr":"no_login"}';
-		return ;
-	} else {
-		showmessage('to_login', '', array(), array('showmsg' => true, 'login' => 1));
-	}
+	showmessage('to_login', '', array(), array('showmsg' => true, 'login' => 1));
 }
 
 require_once 'class/class_account.php';
-$account = new class_account;
-$account->run();
+global $account;
+
 $acc_date = dgmdate($_G['timestamp'], 'd');
 
-$acc_mod = in_array($_GET['mod'], array('ajax', 'richadd', 'richlist', 'richbudget', 'richcount', 'richset')) ? trim($_GET['mod']) : $defaultop;
+$acc_mod = in_array($_GET['mod'], array('richadd', 'richlist', 'richbudget', 'richcount', 'richset')) ? trim($_GET['mod']) : $defaultop;
 
 switch ($acc_mod) {
-	case 'ajax':
-		echo 'require_once';
-		if(in_array($_GET['func'], array('adddata', 'chart'))) {
-			echo 'require_once';
-			require_once DISCUZ_ROOT.$basedir.'mod/ajax_'.trim($_GET['func']).'.php';
-		}
-		break;
-		
 	case 'richlist':
 		break;
 		

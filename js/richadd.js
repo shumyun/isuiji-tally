@@ -224,7 +224,7 @@ jQuery(document).ready(function($) {
 			.show();
 		});
 
-		$.post("plugin.php?id=account:index&mod=ajax&func=adddata", $.param(dataobj),
+		$.post("plugin.php?id=account:ajax&func=adddata", $.param(dataobj),
 				function(data) {
 			  		if(data.state.toLowerCase() == 'ok') {
 			  			ac_ajax.html('<table cellpadding="0" cellspacing="0" class="fwin"><tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
@@ -263,30 +263,34 @@ var chart;
 
 jQuery(document).ready(function($) {
 	
-	$.post("plugin.php?id=account:index&mod=ajax&func=chart", "chart=SimpleCurY",
+	$.post("plugin.php?id=account:ajax&func=chart", "chart=SimpleCurY",
 			function(data) {
-				chart = new Highcharts.Chart({
-				chart: {
-					renderTo: 'container',
-					defaultSeriesType: 'line',
-					spacingBottom: 0
-				},
-				title:{text:''},yAxis:{title:{text:''}},yAxis:{title:{text:''}},credits:{enabled:false},
-				xAxis: {
-					categories: data.date
-				},
-				plotOptions: {
-					line: {
-						dataLabels: {
-							enabled: true
-						},
-					enableMouseTracking: false
-					}
-				},
-				series: 	//ac_bug:这里使用全中文字幕会出现文字不居中，现解决方法文字中加上单字节符号			
-					[{ name: ': 收入  ', data: data.earn },
-					 { name: ': 支出',  data: data.pay  }]
-				});
+  				if(data.state.toLowerCase() == 'ok') {
+					chart = new Highcharts.Chart({
+					chart: {
+						renderTo: 'container',
+						defaultSeriesType: 'line',
+						spacingBottom: 0
+					},
+					title:{text:''},yAxis:{title:{text:''}},yAxis:{title:{text:''}},credits:{enabled:false},
+					xAxis: {
+						categories: data.data.date
+					},
+					plotOptions: {
+						line: {
+							dataLabels: {
+								enabled: true
+							},
+						enableMouseTracking: false
+						}
+					},
+					series: 	//ac_bug:这里使用全中文字幕会出现文字不居中，现解决方法文字中加上单字节符号			
+						[{ name: ': 收入  ', data: data.data.earn },
+						 { name: ': 支出',  data: data.data.pay  }]
+					});
+  				} else {
+  					;
+  				}
 			},"json");
 	
 });

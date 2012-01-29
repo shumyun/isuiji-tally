@@ -7,6 +7,11 @@
  */
 
 /** plugin::account **/
+
+/* 图片 */
+.ac-icon { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 2px; }
+.ac-icon-pay { background-position: 0 -28px; }
+
 /* 提交账单 */
 	.acexfm { margin: 10px 0; padding: 10px 14px; border: 1px dashed {SPECIALBORDER}; background: {SPECIALBG}; }
 		.acexfm table { width: 100%; }
@@ -54,7 +59,7 @@
 		/* 表格(参照module.css 用户组页面 home_spacecp) */
 		.ac_tb { width: 100%; overflow: hidden; zoom: 1; margin: 10px 0; *padding-bottom: 10px; }
 			.ac_tb th, .ac_tb td { overflow: hidden; padding: 0 5px; height: 26px; border-width: 0 1px 0 0; border-color: {WRAPBG}; white-space: nowrap; }
-			.ac_tb th { height: 40px; font-weight: 700; border-right: 2px solid #FFF; border-left: 2px solid #FFF; }
+			.ac_tb th { height: 40px; font-weight: 700; border-right: 2px solid #FFF; border-left: 2px solid #FFF; text-align: center; }
 			.ac_tb .h th { height: 24px; border-top: 1px solid {COMMONBORDER}; border-bottom: 1px solid #E5E5E5; background: url({IMGDIR}/tb.png) repeat-x 0 -4px; color: {MIDTEXT}; zoom: 1; }
 
 

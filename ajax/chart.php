@@ -16,13 +16,21 @@ $data = array('');
 $curtime = time();
 
 
-echo 'switch';
 switch($_POST['chart']) {
 	
 	case 'SimpleCurY':
 		$data['earn'] = array('');
 		$data['pay'] = array('');
-		set_defaultdata($data, date('t', $curtime));
+		$daycount = date('t', $curtime);
+		$datastr = '"date":["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"';
+		switch ($daycount) {
+			case 28: $datastr .=']'; break;
+			case 29: $datastr .= ',"29"]'; break;
+			case 30: $datastr .= ',"29","30"]'; break;
+			case 31: $datastr .= ',"29","30","31"]'; break;
+			default:break;
+		}
+		set_defaultdata($data, $daycount);
 		
 		$query = DB::query("SELECT * FROM ".DB::table('account_daytotal').
 							" WHERE uid='$_G[uid]' AND datadate >= ".mktime(0,0,0,date('n', $curtime),1,date('Y', $curtime)).
@@ -32,19 +40,20 @@ switch($_POST['chart']) {
 			$data['earn'][date('j', $curtime)] = $daydata['earnmoney'];
 			$data['pay'][date('j', $curtime)] = $daydata['paymoney'];
 		}
-		echo '{"earn":['.implode(',', $data['earn']).'], "pay":['.implode(',', $data['pay']).']}';
+		
+		echo '{"state":"ok", "data":{'.$datastr.', "earn":['.implode(',', $data['earn']).'], "pay":['.implode(',', $data['pay']).']}}';
 		break;
 		
 	default:
-		echo 'default';
 		break;
 }
 
-function set_defaultdata($data, $daycount) {
+function set_defaultdata(&$data, $daycount) {
 	foreach ($data as $k => $v) {
-		$i = 1;
-		while($i <= $daycount) {
+		$i = 0;
+		while($i < $daycount) {
 			$data[$k][$i] = 0;
+			$i++;
 		}
 	}
 }

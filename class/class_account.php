@@ -3,14 +3,20 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2011-10-29
+ *    Last Updated: 2012-01-24
  *    Author: shumyun
- *    Copyright (C) 2011 - forever 57day.com Inc
+ *    Copyright (C) 2011 - forever jiashe.net Inc
  */
 
 if(!defined('IN_DISCUZ')) {
 	exit('Access Denied');
 }
+
+/////////////////////////////////////////////////////////////////////////////
+// 全局变量(供index.inc.php 和 ajax.inc.php 调用)
+$account = new class_account;
+$account->run();
+/////////////////////////////////////////////////////////////////////////////
 
 class class_account {
 	public $account_config = array(
