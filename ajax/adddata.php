@@ -50,18 +50,19 @@ switch ( $_POST['curstatus'] ) {
 			'recordtime' => $_G['timestamp']
 			);
 		DB::insert('account_paydata', $insarr);
-		DB::query("UPDATE ".DB::table('account_daytotal')." SET paymoney = paymoney + '$_POST['richnum']' WHERE uid = '$_G[uid]' AND datadate = '$timestamp'");
+		DB::query("UPDATE ".DB::table('account_daytotal')." SET paymoney = paymoney + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$timestamp'");
 		if (!DB::affected_rows()) {
 			unset($insarr);
 			$insarr = array(
-				'uid' => $_G['uid'],
-				'paymoney' => $_POST['richnum'],
-				'earnmoney' => 0,
-				'datadate' => $timestamp
-				);
+					'uid' => $_G['uid'],
+					'paymoney' => $_POST['richnum'],
+					'earnmoney' => 0,
+					'datadate' => $timestamp
+			);
 			DB::insert('account_daytotal', $insarr);
 		}
-		DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay + '$_POST['richnum']' WHERE uid = '$_G[uid]'");
+		DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay + '$_POST[richnum]' WHERE uid = '$_G[uid]'");
+		
 		break;
 	default:
 		break;

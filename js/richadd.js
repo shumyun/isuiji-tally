@@ -227,6 +227,7 @@ jQuery(document).ready(function($) {
 		$.post("plugin.php?id=account:ajax&func=adddata", $.param(dataobj),
 				function(data) {
 					if(data == null) {
+						hide_addajaxDialog();
 						alert("data = null");
 					}
 			  		if(data.state.toLowerCase() == 'ok') {
@@ -257,7 +258,11 @@ jQuery(document).ready(function($) {
 			  				alert("error");
 			  			}
 			  		}
-				},"json").error(function() { alert("未知错误"); });
+				},"json")
+		.error(function() {
+			hide_addajaxDialog();
+			alert("未知错误");
+		});
 	});
 
 });
