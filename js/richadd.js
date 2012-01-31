@@ -226,6 +226,9 @@ jQuery(document).ready(function($) {
 
 		$.post("plugin.php?id=account:ajax&func=adddata", $.param(dataobj),
 				function(data) {
+					if(data == null) {
+						alert("data = null");
+					}
 			  		if(data.state.toLowerCase() == 'ok') {
 			  			ac_ajax.html('<table cellpadding="0" cellspacing="0" class="fwin"><tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
 			  					<tr><td class="m_l">&nbsp;&nbsp;</td>\
@@ -250,9 +253,11 @@ jQuery(document).ready(function($) {
 			  				errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
 			  			} else if(data.curerr == "no_login"){
 			  				showWindow('login', 'plugin.php?id=account:index');
+			  			} else {
+			  				alert("error");
 			  			}
 			  		}
-				},"json");
+				},"json").error(function() { alert("未知错误"); });
 	});
 
 });

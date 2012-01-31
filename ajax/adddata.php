@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-01-09
+ *    Last Updated: 2012-01-31
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -47,10 +47,21 @@ switch ( $_POST['curstatus'] ) {
 			'category' => $account->account_config['cattype'][$_POST['richtype']],
 			'info' => $_POST['message'],
 			'datatime' => $timestamp,
-			'recordtime' => $_G['timestamp'],
-			'datatype' => 1
+			'recordtime' => $_G['timestamp']
 			);
-		DB::insert('account_data', $insarr);
+		DB::insert('account_paydata', $insarr);
+		DB::query("UPDATE ".DB::table('account_daytotal')." SET paymoney = paymoney + '$_POST['richnum']' WHERE uid = '$_G[uid]' AND datadate = '$timestamp'");
+		if (!DB::affected_rows()) {
+			unset($insarr);
+			$insarr = array(
+				'uid' => $_G['uid'],
+				'paymoney' => $_POST['richnum'],
+				'earnmoney' => 0,
+				'datadate' => $timestamp
+				);
+			DB::insert('account_daytotal', $insarr);
+		}
+		DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay + '$_POST['richnum']' WHERE uid = '$_G[uid]'");
 		break;
 	default:
 		break;

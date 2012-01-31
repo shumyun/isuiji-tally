@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-01-24
+ *    Last Updated: 2012-01-31
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -35,6 +35,8 @@ class class_account {
 	        	$ac_profile['titlepay'] = rtrim(fgets($handle, 4096));
 	        	$ac_profile['categorytype'] = rtrim(fgets($handle, 4096));
 	        	$ac_profile['firstdate'] = 0;
+	        	$ac_profile['totalearn'] = 0;
+	        	$ac_profile['totalpay'] = 0;
 	        	DB::insert('account_profile', $ac_profile);
 	    		fclose($handle);
 			}
