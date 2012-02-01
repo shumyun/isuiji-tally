@@ -97,6 +97,9 @@ jQuery.fn.extend({
 	addamount: function($dataobj){
 		switch (dataobj.curstatus) {
 		case 'pay':
+			var time = $(this).attr("curdate");
+			var curday = new Date();
+			curday.setTime(time);
 			break;
 		default:
 			break;
