@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-01-18
+ *    Last Updated: 2012-02-01
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -13,7 +13,7 @@ if(!defined('IN_DISCUZ')) {
 }
 
 $data = array(''); 
-$curtime = time();
+$curtime = $_G['timestamp'];
 
 
 switch($_POST['chart']) {
@@ -41,7 +41,7 @@ switch($_POST['chart']) {
 			$data['pay'][date('j', $curtime)] = $daydata['paymoney'];
 		}
 		
-		echo '{"state":"ok", "data":{'.$datastr.', "earn":['.implode(',', $data['earn']).'], "pay":['.implode(',', $data['pay']).']}}';
+		echo '{"state":"ok", "data":{"detail":"'.date("Y", $curtime).'年'.date("m", $curtime).'月 (单位:元)", '.$datastr.', "earn":['.implode(',', $data['earn']).'], "pay":['.implode(',', $data['pay']).']}}';
 		break;
 		
 	default:

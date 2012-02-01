@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-01-17
+ *    Last Updated: 2012-02-01
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -93,6 +93,16 @@ function hide_addajaxDialog() {
 	ac_ajax.hide();
 }
 
+jQuery.fn.extend({
+	addamount: function($dataobj){
+		switch (dataobj.curstatus) {
+		case 'pay':
+			break;
+		default:
+			break;
+		}
+	}
+});
 
 
 jQuery(document).ready(function($) {
@@ -203,7 +213,7 @@ jQuery(document).ready(function($) {
 				dataobj.curstatus = "pay";
 				break;
 			case "li.earn":
-				dataobj.curstatus = "curstatus=earn";
+				dataobj.curstatus = "earn";
 				break;
 			default: break;
 		}
@@ -227,8 +237,8 @@ jQuery(document).ready(function($) {
 		$.post("plugin.php?id=account:ajax&func=adddata", $.param(dataobj),
 				function(data) {
 					if(data == null) {
-						hide_addajaxDialog();
-						alert("data = null");
+			  			ac_ajax.hide();
+						alert("未知错误1");
 					}
 			  		if(data.state.toLowerCase() == 'ok') {
 			  			ac_ajax.html('<table cellpadding="0" cellspacing="0" class="fwin"><tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
@@ -244,6 +254,7 @@ jQuery(document).ready(function($) {
 			  			$("#richcategory").val('');
 			  			$("#richname").val('');
 			  			$("#message").val('').blur();
+			  			
 			  		} else {
 			  			ac_ajax.hide();
 			  			if(data.curerr == "richdate") {
@@ -255,20 +266,23 @@ jQuery(document).ready(function($) {
 			  			} else if(data.curerr == "no_login"){
 			  				showWindow('login', 'plugin.php?id=account:index');
 			  			} else {
-			  				alert("error");
+				  			ac_ajax.hide();
+							alert("页面错误1");
 			  			}
 			  		}
 				},"json")
 		.error(function() {
-			hide_addajaxDialog();
-			alert("未知错误");
+  			ac_ajax.hide();
+			alert("未知错误2");
 		});
 	});
 
 });
 
 
-
+/**
+ * 本月收支趋势图
+ */
 var chart;
 
 jQuery(document).ready(function($) {
@@ -286,6 +300,11 @@ jQuery(document).ready(function($) {
 					xAxis: {
 						categories: data.data.date
 					},
+					yAxis: {
+				        title: {
+				            text: data.data.detail
+				        }
+				    },
 					plotOptions: {
 						line: {
 							dataLabels: {
