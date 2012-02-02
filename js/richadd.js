@@ -93,19 +93,19 @@ function hide_addajaxDialog() {
 	ac_ajax.hide();
 }
 
-jQuery.fn.extend({
-	addamount: function($dataobj){
-		switch (dataobj.curstatus) {
-		case 'pay':
-			var time = $(this).attr("curdate");
-			var curday = new Date();
-			curday.setTime(time);
-			break;
-		default:
-			break;
-		}
+
+var addamount = function(dataobj){
+	switch (dataobj.curstatus) {
+	case 'pay':
+		var time = jQuery("#tb_account").attr("curdate");
+		var curday = new Date();
+		curday.setTime(time*1000);
+		alert(curday);
+		break;
+	default:
+		break;
 	}
-});
+}
 
 
 jQuery(document).ready(function($) {
@@ -257,6 +257,8 @@ jQuery(document).ready(function($) {
 			  			$("#richcategory").val('');
 			  			$("#richname").val('');
 			  			$("#message").val('').blur();
+			  			
+			  			addamount(dataobj);
 			  			
 			  		} else {
 			  			ac_ajax.hide();
