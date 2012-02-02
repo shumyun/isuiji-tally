@@ -97,32 +97,58 @@ function hide_addajaxDialog() {
 var addamount = function(dataobj){
 	switch (dataobj.curstatus) {
 	case 'pay':
-		var time = jQuery("#tb_account").attr("curdate");
-		
-		var tmpday = new Date();
-		tmpday.setTime(time*1000);
-		var tmpnum = tmpday.getDay() ? tmpday.getDay() : 7;
-		var startweek = time - (tmpnum-1)*24*3600;
-		var endweek = parseInt(time) + (7-tmpnum)*24*3600;
-		
-		tmpday.setDate(1);
-		var startmonth = tmpday.getTime()/1000;
-		if( tmpday.getMonth()==11 ) {
-			tmpday.setDate(31);
-			var endmonth = tmpday.getTime()/1000;
-		} else {
-			tmpday.setMonth(tmpday.getMonth()+1);
-			var endmonth = tmpday.getTime()/1000-24*3600;
-		}
-		
-		var words = dataobj.richdate.split('-');
-		tmpday.setFullYear(words[0]);
-		tmpday.setMonth(words[1]-1);
-		tmpday.setDate(words[2]);
-		alert(tmpday);
+		var str = 'p';
+		break;
+	case 'earn':
+		var str = 'e';
 		break;
 	default:
-		break;
+		return;
+	}
+	var time = jQuery("#tb_account").attr("curdate");
+	
+	var tmpday = new Date();
+	tmpday.setTime(time*1000);
+	var tmpnum = tmpday.getDay() ? tmpday.getDay() : 7;
+	var startweek = time - (tmpnum-1)*24*3600;
+	var endweek = parseInt(time) + (7-tmpnum)*24*3600;
+	
+	tmpday.setDate(1);
+	var startmonth = tmpday.getTime()/1000;
+	if( tmpday.getMonth()==11 ) {
+		tmpday.setDate(31);
+		var endmonth = tmpday.getTime()/1000;
+	} else {
+		tmpday.setMonth(tmpday.getMonth()+1);
+		var endmonth = tmpday.getTime()/1000-24*3600;
+	}
+	
+	var words = dataobj.richdate.split('-');
+	tmpday.setFullYear(words[0]);
+	tmpday.setMonth(words[1]-1);
+	tmpday.setDate(words[2]);
+	var adddate = tmpday.getTime()/1000;
+	if(adddate == time) {
+		words = jQuery("#a_d"+str+"m").html().substr(1);
+		var amount = parseFloat(words) + parseFloat(dataobj.richnum);
+		jQuery("#a_d"+str+"m").html("￥"+amount.toFixed(2));
+	}
+	if(startweek<= adddate && adddate <= endweek) {
+		words = jQuery("#a_w"+str+"m").html().substr(1);
+		var amount = parseFloat(words) + parseFloat(dataobj.richnum);
+		jQuery("#a_w"+str+"m").html("￥"+amount.toFixed(2));
+	}
+	if(startmonth<= adddate && adddate <= endmonth) {
+		words = jQuery("#a_m"+str+"m").html().substr(1);
+		var amount = parseFloat(words) + parseFloat(dataobj.richnum);
+		jQuery("#a_m"+str+"m").html("￥"+amount.toFixed(2));
+		
+		if(jQuery("#a_remdm").html() != '-' && str == 'p') {
+			var words = jQuery("#a_remdm").html();
+			var amount = parseFloat(words) - parseFloat(dataobj.richnum);
+			jQuery("#a_remdm").html(amount.toFixed(2));
+		}
+		
 	}
 }
 

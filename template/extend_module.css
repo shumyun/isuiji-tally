@@ -61,6 +61,8 @@
 			.ac_tb th, .ac_tb td { overflow: hidden; padding: 0 5px; height: 26px; border-width: 0 1px 0 0; border-color: {WRAPBG}; white-space: nowrap; }
 			.ac_tb th { height: 40px; font-weight: 700; border-right: 2px solid #FFF; border-left: 2px solid #FFF; text-align: center; }
 			.ac_tb .h th { height: 24px; border-top: 1px solid {COMMONBORDER}; border-bottom: 1px solid #E5E5E5; background: url({IMGDIR}/tb.png) repeat-x 0 -4px; color: {MIDTEXT}; zoom: 1; }
+		/* 金额数 */
+		a .num {}
 
 
 /** end **/

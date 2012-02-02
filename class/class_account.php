@@ -22,7 +22,8 @@ class class_account {
 	public $account_config = array(
 			'income' => '',
 			'pay'	 => '',
-			'cattype'=> '');
+			'cattype'=> '',
+			'totalamount' => 0);
 	public function run() {
 		$ac_profile = DB::fetch_first("SELECT * FROM ".DB::table('account_profile')." WHERE uid ='$_G[uid]'");
 		
@@ -46,6 +47,7 @@ class class_account {
 		if (!title_strtoarr($ac_profile['titleincome'], $this->account_config['income'])) return false;
 		if (!title_strtoarr($ac_profile['titlepay'], $this->account_config['pay'])) return false;
 		if (!categorytype_strtoarr($ac_profile['categorytype'], $this->account_config['cattype'])) return false;
+		$this->account_config['totalamount'] = $ac_profile['totalearn'] - $ac_profile['totalpay'];
 	}
 }
 

@@ -95,12 +95,12 @@
 						<dd>
 							<table id="tb_account" curdate="{$acc_datetime}" class="ac_tb" cellspacing="0" cellpadding="0">
 								<tr class="h"><th style="width: 60px;">&nbsp;</th><th>本&nbsp;日</th><th>本&nbsp;周</th><th>本&nbsp;月</th></tr>
-								<tr><th><div class="ac-icon">收&nbsp;入</div></th><th><a id="a_dem" class="">￥{$acc_amount['dem']}</a></th><th>￥{$acc_amount['wem']}</th><th>￥{$acc_amount['mem']}</th></tr>
-								<tr class="alt"><th><div class="ac-icon ac-icon-pay">支&nbsp;出</div></th><th>￥{$acc_amount['dpm']}</th><th>￥{$acc_amount['wpm']}</th><th>￥{$acc_amount['mpm']}</th></tr>
+								<tr><th><div class="ac-icon">收&nbsp;入</div></th><th><a id="a_dem" class="num">￥{$acc_amount['dem']}</a></th><th><a id="a_wem" class="num">￥{$acc_amount['wem']}</a></th><th><a id="a_mem" class="num">￥{$acc_amount['mem']}</a></th></tr>
+								<tr class="alt"><th><div class="ac-icon ac-icon-pay">支&nbsp;出</div></th><th><a id="a_dpm" class="num">￥{$acc_amount['dpm']}</a></th><th><a id="a_wpm" class="num">￥{$acc_amount['wpm']}</a></th><th><a id="a_mpm" class="num">￥{$acc_amount['mpm']}</a></th></tr>
 							</table>
 						</dd>
 						<dd>
-							本月预算支出 ￥0 元， 还剩 ￥0 元 可以消费。
+							本月预算支出&nbsp;<a id="a_mdm" class="num">{$acc_amount['mdm']}</a>&nbsp;元， 还剩&nbsp;<a id="a_remdm" class="num">{$acc_amount['remdm']}</a>&nbsp;元&nbsp;可以消费。
 						</dd>
 					</dl>
 				</div>
