@@ -95,12 +95,19 @@ function hide_addajaxDialog() {
 
 
 var addamount = function(dataobj){
+	
+	var words = jQuery("#a_totalamount").html();
+	
 	switch (dataobj.curstatus) {
 	case 'pay':
 		var str = 'p';
+		var amount = parseFloat(words) - parseFloat(dataobj.richnum);
+		jQuery("#a_totalamount").html(amount);
 		break;
 	case 'earn':
 		var str = 'e';
+		var amount = parseFloat(words) + parseFloat(dataobj.richnum);
+		jQuery("#a_totalamount").html(amount);
 		break;
 	default:
 		return;
@@ -123,7 +130,7 @@ var addamount = function(dataobj){
 		var endmonth = tmpday.getTime()/1000-24*3600;
 	}
 	
-	var words = dataobj.richdate.split('-');
+	words = dataobj.richdate.split('-');
 	tmpday.setFullYear(words[0]);
 	tmpday.setMonth(words[1]-1);
 	tmpday.setDate(words[2]);
@@ -148,7 +155,6 @@ var addamount = function(dataobj){
 			var amount = parseFloat(words) - parseFloat(dataobj.richnum);
 			jQuery("#a_remdm").html(amount.toFixed(2));
 		}
-		
 	}
 }
 

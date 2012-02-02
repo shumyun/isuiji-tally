@@ -91,7 +91,7 @@
 						<h3><img src="{IMGDIR}/viewpay.gif" />&nbsp; 财务收支简报表</h3>
 					</div>
 					<dl class="bm_c">
-						<dt class="ptn pbn bbda">净资产：&nbsp; &nbsp; &nbsp;元</dt>
+						<dt class="ptn pbn bbda">净资产：&nbsp;&nbsp;<a id="a_totalamount" class="num">{$acc_amount['totalamount']}</a>&nbsp;&nbsp;元</dt>
 						<dd>
 							<table id="tb_account" curdate="{$acc_datetime}" class="ac_tb" cellspacing="0" cellpadding="0">
 								<tr class="h"><th style="width: 60px;">&nbsp;</th><th>本&nbsp;日</th><th>本&nbsp;周</th><th>本&nbsp;月</th></tr>
@@ -100,7 +100,7 @@
 							</table>
 						</dd>
 						<dd>
-							本月预算支出&nbsp;<a id="a_mdm" class="num">{$acc_amount['mdm']}</a>&nbsp;元， 还剩&nbsp;<a id="a_remdm" class="num">{$acc_amount['remdm']}</a>&nbsp;元&nbsp;可以消费。
+							本月预算支出&nbsp;<a id="a_mdm" class="num">{$acc_amount['mdm']}</a>&nbsp;元， 还剩&nbsp;<a id="a_remdm" class="num">{$acc_amount['remdm']}</a>&nbsp;元&nbsp;可以消费。("&nbsp;-&nbsp;"表示未填写该月预算)
 						</dd>
 					</dl>
 				</div>

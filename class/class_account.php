@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-01-31
+ *    Last Updated: 2012-02-02
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -15,7 +15,7 @@ if(!defined('IN_DISCUZ')) {
 /////////////////////////////////////////////////////////////////////////////
 // 全局变量(供index.inc.php 和 ajax.inc.php 调用)
 $account = new class_account;
-$account->run();
+$account->run($_G['uid']);
 /////////////////////////////////////////////////////////////////////////////
 
 class class_account {
@@ -24,20 +24,21 @@ class class_account {
 			'pay'	 => '',
 			'cattype'=> '',
 			'totalamount' => 0);
-	public function run() {
-		$ac_profile = DB::fetch_first("SELECT * FROM ".DB::table('account_profile')." WHERE uid ='$_G[uid]'");
+	public function run($ac_uid) {
+		$ac_profile = DB::fetch_first("SELECT * FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
 		
 		if (empty($ac_profile)) {
 			$handle = @fopen(DISCUZ_ROOT."/source/plugin/account/prestore.data", "r");
 			if ($handle) {
 				$ac_profile = array();
-				$ac_profile['uid'] = $_G['uid'];
+				$ac_profile['uid'] = $ac_uid;
 	        	$ac_profile['titleincome'] = rtrim(fgets($handle, 4096));
 	        	$ac_profile['titlepay'] = rtrim(fgets($handle, 4096));
 	        	$ac_profile['categorytype'] = rtrim(fgets($handle, 4096));
 	        	$ac_profile['firstdate'] = 0;
 	        	$ac_profile['totalearn'] = 0;
 	        	$ac_profile['totalpay'] = 0;
+	        	echo DB::implode_field_value($ac_profile);
 	        	DB::insert('account_profile', $ac_profile);
 	    		fclose($handle);
 			}
