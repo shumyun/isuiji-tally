@@ -37,8 +37,8 @@ switch($_POST['chart']) {
 							" AND datadate <= ".mktime(0,0,0,date('n', $curtime),date('t', $curtime),date('Y', $curtime)));
 		
 		while($daydata = DB::fetch($query)) {
-			$data['earn'][date('j', $curtime)] = $daydata['earnmoney'];
-			$data['pay'][date('j', $curtime)] = $daydata['paymoney'];
+			$data['earn'][date('j', $daydata['datadate'])-1] = $daydata['earnmoney'];
+			$data['pay'][date('j', $daydata['datadate'])-1] = $daydata['paymoney'];
 		}
 		
 		echo '{"state":"ok", "data":{"detail":"'.date("Y", $curtime).'年'.date("m", $curtime).'月 (单位:元)", '.$datastr.', "earn":['.implode(',', $data['earn']).'], "pay":['.implode(',', $data['pay']).']}}';

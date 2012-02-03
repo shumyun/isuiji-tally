@@ -94,7 +94,7 @@ function hide_addajaxDialog() {
 }
 
 
-var addamount = function(dataobj){
+var addamount = function(dataobj, chart){
 	
 	var words = jQuery("#a_totalamount").html();
 	
@@ -103,11 +103,13 @@ var addamount = function(dataobj){
 		var str = 'p';
 		var amount = parseFloat(words) - parseFloat(dataobj.richnum);
 		jQuery("#a_totalamount").html(amount);
+		var chartdata = chart.series[0];
 		break;
 	case 'earn':
 		var str = 'e';
 		var amount = parseFloat(words) + parseFloat(dataobj.richnum);
 		jQuery("#a_totalamount").html(amount);
+		var chartdata = chart.series[1];
 		break;
 	default:
 		return;
@@ -131,6 +133,7 @@ var addamount = function(dataobj){
 	}
 	
 	words = dataobj.richdate.split('-');
+	var m_day = words[2]-1;
 	tmpday.setFullYear(words[0]);
 	tmpday.setMonth(words[1]-1);
 	tmpday.setDate(words[2]);
@@ -155,6 +158,7 @@ var addamount = function(dataobj){
 			var amount = parseFloat(words) - parseFloat(dataobj.richnum);
 			jQuery("#a_remdm").html(amount.toFixed(2));
 		}
+		chartdata.data[m_day].update(chartdata.data[m_day].y+=parseFloat(dataobj.richnum));
 	}
 }
 
@@ -309,7 +313,7 @@ jQuery(document).ready(function($) {
 			  			$("#richname").val('');
 			  			$("#message").val('').blur();
 			  			
-			  			addamount(dataobj);
+			  			addamount(dataobj, chart);
 			  			
 			  		} else {
 			  			ac_ajax.hide();
@@ -346,6 +350,7 @@ jQuery(document).ready(function($) {
 	$.post("plugin.php?id=account:ajax&func=chart", "chart=SimpleCurY",
 			function(data) {
   				if(data.state.toLowerCase() == 'ok') {
+  					$("#container").html("");
 					chart = new Highcharts.Chart({
 					chart: {
 						renderTo: 'container',
@@ -370,13 +375,16 @@ jQuery(document).ready(function($) {
 						}
 					},
 					series: 	//ac_bug:这里使用全中文字幕会出现文字不居中，现解决方法文字中加上单字节符号			
-						[{ name: ': 收入  ', data: data.data.earn },
-						 { name: ': 支出',  data: data.data.pay  }]
+						[{ name: ': 支出',  data: data.data.pay  },
+						 { name: ': 收入  ', data: data.data.earn }]
 					});
   				} else {
   					;
   				}
 			},"json");
 	
+	$("#container").ajaxSend(function(e, xhr, opt) {
+			$(this).html("Requesting " + opt.url);
+	});
 });
 

@@ -38,7 +38,6 @@ class class_account {
 	        	$ac_profile['firstdate'] = 0;
 	        	$ac_profile['totalearn'] = 0;
 	        	$ac_profile['totalpay'] = 0;
-	        	echo DB::implode_field_value($ac_profile);
 	        	DB::insert('account_profile', $ac_profile);
 	    		fclose($handle);
 			}
