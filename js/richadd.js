@@ -346,45 +346,50 @@ jQuery(document).ready(function($) {
 var chart;
 
 jQuery(document).ready(function($) {
-	
-	$.post("plugin.php?id=account:ajax&func=chart", "chart=SimpleCurY",
-			function(data) {
-  				if(data.state.toLowerCase() == 'ok') {
-  					$("#container").html("");
-					chart = new Highcharts.Chart({
-					chart: {
-						renderTo: 'container',
-						defaultSeriesType: 'line',
-						spacingBottom: 0
-					},
-					title:{text:''},yAxis:{title:{text:''}},yAxis:{title:{text:''}},credits:{enabled:false},
-					xAxis: {
-						categories: data.data.date
-					},
-					yAxis: {
-				        title: {
-				            text: data.data.detail
-				        }
-				    },
-					plotOptions: {
-						line: {
-							dataLabels: {
-								enabled: true
-							},
-						enableMouseTracking: false
-						}
-					},
-					series: 	//ac_bug:这里使用全中文字幕会出现文字不居中，现解决方法文字中加上单字节符号			
-						[{ name: ': 支出',  data: data.data.pay  },
-						 { name: ': 收入  ', data: data.data.earn }]
-					});
-  				} else {
-  					;
-  				}
-			},"json");
-	
-	$("#container").ajaxSend(function(e, xhr, opt) {
-			$(this).html("Requesting " + opt.url);
-	});
+	/*
+	$.ajax({
+		  type: 'POST',
+		  url: 'plugin.php?id=account:ajax&func=chart',
+		  data: 'chart=SimpleCurY',
+		  dataType: 'json',
+		  context: '#container',
+		  beforeSend: function(xhr) {
+			  //$("#container").html('<div style="width:100%; height:100% margin:0 auto;">');
+		  },
+		  success: function(data) {
+			if(data.state.toLowerCase() == 'ok') {
+  				$("#container").html("");
+				chart = new Highcharts.Chart({
+				chart: {
+					renderTo: 'container',
+					defaultSeriesType: 'line',
+					spacingBottom: 0
+				},
+				title:{text:''},yAxis:{title:{text:''}},yAxis:{title:{text:''}},credits:{enabled:false},
+				xAxis: {
+					categories: data.data.date
+				},
+				yAxis: {
+			        title: {
+			            text: data.data.detail
+			        }
+			    },
+				plotOptions: {
+					line: {
+						dataLabels: {
+						enabled: true
+						},
+					enableMouseTracking: false
+				}
+				},
+				series: 	//ac_bug:这里使用全中文字幕会出现文字不居中，现解决方法文字中加上单字节符号			
+					[{ name: ': 支出',  data: data.data.pay  },
+					 { name: ': 收入  ', data: data.data.earn }]
+				});
+  			} else {
+  				;
+  			}
+		}
+	});*/
 });
 
