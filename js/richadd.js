@@ -65,7 +65,7 @@ var set_completedata = function(type, force){
 	} else if(titledata[type] != ""){
 		jQuery( "#richname" ).catcomplete("option", "source", titledata[type]);
 	}
-}
+};
 
 jQuery(document).ready(function($) {
 	$("#li\\.pay").click(function() {
@@ -73,7 +73,7 @@ jQuery(document).ready(function($) {
 		if ("li\\.pay" != change){
 			acc_changeli("li.pay", change);
 			$("#lend\\.p").slideUp();
-			set_default();
+			set_default(("li\\.earn" != change)?1:0);
 			set_completedata("pay", false);
 		}
 	});
@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
 		if ("li.earn" != change) {
 			acc_changeli("li.earn", change);
 			$("#lend\\.p").slideUp();
-			set_default();
+			set_default(("li\\.pay" != change)?1:0);
 			set_completedata("earn", false);
 		}
 	});
@@ -93,6 +93,7 @@ jQuery(document).ready(function($) {
 		if ("li.transfer" != change) {
 			acc_changeli("li.transfer", change);
 			$("#lend\\.p").slideUp();
+			set_default(2);
 		}
 	});
 	
@@ -114,16 +115,44 @@ function hide_addajaxDialog() {
 }
 
 /**
- * 初始数据
+ * 初始化数据
+ * type	:	0	恢复空数据
+ * 			1	恢复 支出/收入页面
+ * 			2	恢复 转账页面
  */
-var set_default = function(){
+var set_default = function(type){
+	
 	var ac_date = new Date();
 	jQuery("#richdate").val(ac_date.getFullYear()+'-'+(ac_date.getMonth()+1)+'-'+ac_date.getDate());
 	jQuery("#richnum").val('');
 	jQuery("#richcategory").val('');
 	jQuery("#richname").val('');
 	jQuery("#message").val('').blur();
-}
+	
+	switch(type){
+		case 1:
+			jQuery("#l_1").html("账单日期：");
+			jQuery("#l_2").html("账单名称：");
+			if(jQuery("#richtype_out_ctrl").length)
+				jQuery("#richtype_out_ctrl").hide();
+			jQuery("#richname").show();
+			jQuery("#richnamebtn").show();
+			jQuery("#l_3").html("账单金额：");
+			jQuery("#l_4").html("账单归属：");
+			break;
+			
+		case 2:
+			jQuery("#l_1").html("转账日期：");
+			jQuery("#l_2").html("转出账名：");
+			jQuery("#richname").hide();
+			jQuery("#richnamebtn").hide();
+			jQuery("#richtype_out_ctrl").length ? jQuery("#richtype_out_ctrl").show():simulateSelect('richtype_out');
+			jQuery("#l_3").html("转账金额：");
+			jQuery("#l_4").html("转入账名：");
+			break;
+		default:break;
+	}
+};
 
 /**
  * 增加财务收支简报表和本月收支趋势图的数据
@@ -194,7 +223,7 @@ var addamount = function(dataobj, chart){
 		}
 		chartdata.data[m_day].update(chartdata.data[m_day].y+=parseFloat(dataobj.richnum));
 	}
-}
+};
 
 
 jQuery(document).ready(function($) {
@@ -346,7 +375,7 @@ jQuery(document).ready(function($) {
 			  				<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table>');
 			  			setTimeout("hide_addajaxDialog()", 1000);
 			  			
-			  			set_default();
+			  			set_default(0);
 			  			addamount(dataobj, chart);
 			  			
 			  		} else {

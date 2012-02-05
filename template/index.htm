@@ -45,18 +45,25 @@
 						</th>
 						<td class = "acarea">
 							<ul class="ul-1">
-								<label style="width: auto;">账单日期：</label>
+								<label id="l_1" style="width: auto;">账单日期：</label>
 								<input type="text" readonly="readonly" onclick="showcalendar(event, this)" value="{$acc_date}" class="px" id="richdate"  tabindex="4" />
-								<label>账单名称：</label>
+								<label id="l_2">账单名称：</label>
+								<span class="ftid" style="margin-right: 0;">
+									<select id="richtype_out" class="ps" width="128" tabindex="4" style= "display:none;">
+									<!--{loop $acc_amount['cattype'] $key $value}-->
+										<option value="{$key}" {if $key == "0"} selected="selected"{/if}>{$value}</option>
+									<!--{/loop}-->
+									</select>
+								</span>
 								<input id="richcategory" type="hidden" value="">
 								<input id="richname" class="px" style="width:120px" tabindex="1"/>
 								<a id="richnamebtn" class="dpbtn" >^</a>
 								<img src="{IMGDIR}/edit.gif" class="aimg" style="" />
 							</ul>
 							<ul class="ul-1">
-								<label style="width: auto;">账单金额：</label>
+								<label id="l_3" style="width: auto;">账单金额：</label>
 								<input id="richnum" class="px" style="width:120px" tabindex="2"/>
-								<label style="width: 83px;">账单归属：</label>
+								<label id="l_4" style="width: 83px;">账单归属：</label>
 								<span class="ftid" style="margin-right: 0;">
 									<select id="richtype" class="ps" width="128" tabindex="3" >
 									<!--{loop $acc_amount['cattype'] $key $value}-->
