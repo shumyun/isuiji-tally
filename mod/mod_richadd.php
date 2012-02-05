@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2011-02-02
+ *    Last Updated: 2011-02-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -12,6 +12,7 @@ if(!defined('IN_DISCUZ')) {
 	exit('Access Denied');
 }
 
+/*
 $operation = in_array($_GET['op'], array('earning', 'transfer', 'lending')) ? trim($_GET['op']) : $defaultop;
 
 if ($operation == 'earning') {
@@ -20,8 +21,11 @@ if ($operation == 'earning') {
 	$titledata = title_arrtojs($account->account_config['pay']);
 }
 $titledata = htmlentities($titledata, ENT_QUOTES | ENT_IGNORE, "UTF-8");
+*/
 
-$richtype = $account->account_config['cattype'];
+if(!$account->run_modrichadd($_G['uid'])){
+	return ;
+}
 
 $acc_datetime = dmktime($acc_date);
 $isoWeekStartDate = strtotime(date('o-\\WW', $_G['timestamp'])); //{isoYear}-W{isoWeekNumber}
@@ -37,7 +41,8 @@ $acc_amount = array(
 		'mem' => '0.00',
 		'mdm' => '-',
 		'remdm' => '-',
-		'totalamount' => $account->account_config['totalamount']
+		'totalamount' => $account->account_config['totalamount'],
+		'cattype' => $account->account_config['cattype']
 );
 $acc_tmp = DB::fetch_first("SELECT paymoney as dpm, earnmoney as dem FROM ".DB::table('account_daytotal')." WHERE uid = '$_G[uid]' AND datadate = '$acc_datetime'");
 if(!empty($acc_tmp)) {

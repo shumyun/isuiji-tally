@@ -51,7 +51,6 @@
 								<input id="richcategory" type="hidden" value="">
 								<input id="richname" class="px" style="width:120px" tabindex="1"/>
 								<a id="richnamebtn" class="dpbtn" >^</a>
-								<input id="richnamevalue" type="hidden" value = "{$titledata}" />
 								<img src="{IMGDIR}/edit.gif" class="aimg" style="" />
 							</ul>
 							<ul class="ul-1">
@@ -60,7 +59,7 @@
 								<label style="width: 83px;">账单归属：</label>
 								<span class="ftid" style="margin-right: 0;">
 									<select id="richtype" class="ps" width="128" tabindex="3" >
-									<!--{loop $account->account_config['cattype'] $key $value}-->
+									<!--{loop $acc_amount['cattype'] $key $value}-->
 										<option value="{$key}" {if $key == "0"} selected="selected"{/if}>{$value}</option>
 									<!--{/loop}-->
 									</select>
@@ -109,7 +108,7 @@
 						<h3><img src="static/image/feed/poll.gif" />&nbsp; 本月收支趋势图</h3>
 					</div>
 					<div  class="bm_c">
-						<div id="container" style="width: 100%; height: 220px; margin: 0 auto"><img src="{$basedir}/js/images/LoadingBlue.gif">&nbsp;<font>正在为您加载本月收支信息...</font></div>
+						<div id="container" style="width: 100%; height: 220px; margin: 0 auto"><img style="padding:65px 0 70px 130px;vertical-align:middle" src="{$basedir}js/images/LoadingBlue.gif"><font style="font-size: 1.2em;">&nbsp;正在为您加载本月收支信息...</font></div>
 					</div>
 				</div>
 			</div>

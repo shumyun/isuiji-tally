@@ -68,8 +68,8 @@ CREATE TABLE pre_account_budget (
 DROP TABLE IF EXISTS pre_account_profile;
 CREATE TABLE pre_account_profile (
   uid mediumint(8) unsigned NOT NULL default '0',
-  titleincome text NOT NULL default '',
-  titlepay text NOT NULL default '',
+  earntype text NOT NULL default '',
+  paytype text NOT NULL default '',
   categorytype text NOT NULL default '',
   firstdate int(10) unsigned NOT NULL default '0',
   totalearn decimal(14,2) unsigned NOT NULL default '0.00',

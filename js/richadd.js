@@ -1,9 +1,10 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-01
+ *    Last Updated: 2012-02-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    未知错误使用已经到 3
  */
 jQuery.noConflict();
 
@@ -51,12 +52,29 @@ function acc_changeli(cur, change) {
 	jQuery(change).attr("style", "cursor:pointer").toggleClass("a");
 }
 
+/**
+ * 获取账单名称
+ */
+var titledata = {};
+var set_completedata = function(type, force){
+	if(force || typeof titledata[type] == "undefined") {
+		jQuery.post("plugin.php?id=account:ajax&func=catcomplete", "type="+type, function(data) {
+			titledata[type] = eval('('+data+')');
+			jQuery( "#richname" ).catcomplete("option", "source", titledata[type]);
+		});
+	} else if(titledata[type] != ""){
+		jQuery( "#richname" ).catcomplete("option", "source", titledata[type]);
+	}
+}
+
 jQuery(document).ready(function($) {
 	$("#li\\.pay").click(function() {
 		var change = $(this).parent().attr("curstatus");
 		if ("li\\.pay" != change){
 			acc_changeli("li.pay", change);
 			$("#lend\\.p").slideUp();
+			set_default();
+			set_completedata("pay", false);
 		}
 	});
 	
@@ -65,6 +83,8 @@ jQuery(document).ready(function($) {
 		if ("li.earn" != change) {
 			acc_changeli("li.earn", change);
 			$("#lend\\.p").slideUp();
+			set_default();
+			set_completedata("earn", false);
 		}
 	});
 	
@@ -85,7 +105,7 @@ jQuery(document).ready(function($) {
 	});
 });
 
-/*
+/**
  * ajax tip Dialog
  */
 var ac_ajax = new Object();
@@ -93,7 +113,21 @@ function hide_addajaxDialog() {
 	ac_ajax.hide();
 }
 
+/**
+ * 初始数据
+ */
+var set_default = function(){
+	var ac_date = new Date();
+	jQuery("#richdate").val(ac_date.getFullYear()+'-'+(ac_date.getMonth()+1)+'-'+ac_date.getDate());
+	jQuery("#richnum").val('');
+	jQuery("#richcategory").val('');
+	jQuery("#richname").val('');
+	jQuery("#message").val('').blur();
+}
 
+/**
+ * 增加财务收支简报表和本月收支趋势图的数据
+ */
 var addamount = function(dataobj, chart){
 	
 	var words = jQuery("#a_totalamount").html();
@@ -167,15 +201,14 @@ jQuery(document).ready(function($) {
 	/*
 	 * 自动匹配功能
 	 */
-	var phpdata = $("#richnamevalue").val();
-	phpdata = eval('('+phpdata+')');
 	$( "#richname" )
 	.catcomplete({
 		delay: 0,
 		minLength: 0,
-		source: phpdata,
+		source: "",
 		category: $("#richcategory")
 	});
+	set_completedata("pay", false);
 	
 	$( "#richnamebtn" )
 	.attr( {"tabIndex":-1, "title":"显示所有名称"} )
@@ -246,14 +279,31 @@ jQuery(document).ready(function($) {
 			*/
 			var berr = true;
 			var tempstr = "";
-			for (x in phpdata) {
-				if( phpdata[x].label.match($("#richname").val())) {
-					if( phpdata[x].category == $("#richcategory").val()) {
-						tempstr = phpdata[x].category;
+			var catcompletedata = "";
+			
+			var dataobj = new Object();
+			switch( $("ul.tb.cl").attr("curstatus") ) {
+				case "li.pay":
+					dataobj.curstatus = "pay";
+					catcompletedata = titledata["pay"];
+					break;
+				case "li.earn":
+					dataobj.curstatus = "earn";
+					catcompletedata = titledata["earn"];
+					break;
+				default:
+					alert("未知错误3");
+					return;
+			}
+			
+			for (x in catcompletedata) {
+				if( catcompletedata[x].label.match($("#richname").val())) {
+					if( catcompletedata[x].category == $("#richcategory").val()) {
+						tempstr = catcompletedata[x].category;
 						berr = false;
 						break;
 					} else {
-						tempstr = phpdata[x].category;
+						tempstr = catcompletedata[x].category;
 						berr = false;
 					}
 				}
@@ -265,16 +315,6 @@ jQuery(document).ready(function($) {
 			$("#richcategory").val(tempstr);
 		}
 		
-		var dataobj = new Object();
-		switch( $("ul.tb.cl").attr("curstatus") ) {
-			case "li.pay":
-				dataobj.curstatus = "pay";
-				break;
-			case "li.earn":
-				dataobj.curstatus = "earn";
-				break;
-			default: break;
-		}
 		dataobj.richdate = $("#richdate").val();
 		dataobj.richnum  = $("#richnum").val();
 		dataobj.richcategory = $("#richcategory").val();
@@ -306,13 +346,7 @@ jQuery(document).ready(function($) {
 			  				<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table>');
 			  			setTimeout("hide_addajaxDialog()", 1000);
 			  			
-			  			var ac_date = new Date();
-			  			$("#richdate").val(ac_date.getFullYear()+'-'+(ac_date.getMonth()+1)+'-'+ac_date.getDate());
-			  			$("#richnum").val('');
-			  			$("#richcategory").val('');
-			  			$("#richname").val('');
-			  			$("#message").val('').blur();
-			  			
+			  			set_default();
 			  			addamount(dataobj, chart);
 			  			
 			  		} else {
@@ -346,16 +380,13 @@ jQuery(document).ready(function($) {
 var chart;
 
 jQuery(document).ready(function($) {
-	/*
+
 	$.ajax({
 		  type: 'POST',
 		  url: 'plugin.php?id=account:ajax&func=chart',
 		  data: 'chart=SimpleCurY',
 		  dataType: 'json',
 		  context: '#container',
-		  beforeSend: function(xhr) {
-			  //$("#container").html('<div style="width:100%; height:100% margin:0 auto;">');
-		  },
 		  success: function(data) {
 			if(data.state.toLowerCase() == 'ok') {
   				$("#container").html("");
@@ -383,13 +414,13 @@ jQuery(document).ready(function($) {
 				}
 				},
 				series: 	//ac_bug:这里使用全中文字幕会出现文字不居中，现解决方法文字中加上单字节符号			
-					[{ name: ': 支出',  data: data.data.pay  },
-					 { name: ': 收入  ', data: data.data.earn }]
+					[{ name: ': 支出  ', data: data.data.pay  },
+					 { name: ': 收入',   data: data.data.earn }]
 				});
   			} else {
   				;
   			}
 		}
-	});*/
+	});
 });
 

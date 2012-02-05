@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-01-31
+ *    Last Updated: 2012-02-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -14,6 +14,9 @@ if(!defined('IN_DISCUZ')) {
 
 define('NOROBOT', TRUE);
 
+if(!$account->run_ajaxcomplete($_G['uid'], $_POST['curstatus'])) {
+	return;
+}
 
 $ac_response = array(
 		'state' => 'ok',
@@ -27,7 +30,7 @@ switch ( $_POST['curstatus'] ) {
 			//echo "请填写大于零的金额";
 			break;
 		}
-		if ( !ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['pay'])) {
+		if ( !ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['paytype'])) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richname';
 			//echo "请选择已存在的账单名称";
@@ -62,8 +65,52 @@ switch ( $_POST['curstatus'] ) {
 			DB::insert('account_daytotal', $insarr);
 		}
 		DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay + '$_POST[richnum]' WHERE uid = '$_G[uid]'");
-		
 		break;
+		
+	case 'earn':
+		if( !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richnum';
+			//echo "请填写大于零的金额";
+			break;
+		}
+		if ( !ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['earntype'])) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richname';
+			//echo "请选择已存在的账单名称";
+			break;
+		}
+		if( !($timestamp = strtotime($_POST['richdate'])) ) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richdate';
+			//echo "请选择正确的日期";
+			break;
+		}
+		
+		$insarr = array(
+			'uid' => $_G['uid'],
+			'amount' => $_POST['richnum'],
+			'title' => $_POST['richname'].'【'.$_POST['richcategory'].'】',
+			'category' => $account->account_config['cattype'][$_POST['richtype']],
+			'info' => $_POST['message'],
+			'datatime' => $timestamp,
+			'recordtime' => $_G['timestamp']
+			);
+		DB::insert('account_earndata', $insarr);
+		DB::query("UPDATE ".DB::table('account_daytotal')." SET earnmoney = earnmoney + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$timestamp'");
+		if (!DB::affected_rows()) {
+			unset($insarr);
+			$insarr = array(
+					'uid' => $_G['uid'],
+					'paymoney' => 0,
+					'earnmoney' => $_POST['richnum'],
+					'datadate' => $timestamp
+			);
+			DB::insert('account_daytotal', $insarr);
+		}
+		DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn + '$_POST[richnum]' WHERE uid = '$_G[uid]'");
+		break;
+		
 	default:
 		break;
 }
@@ -96,4 +143,5 @@ function ac_array_str_exists($richcategory, $richname, $typearr) {
 	}
 	return false;
 }
+
 ?>
