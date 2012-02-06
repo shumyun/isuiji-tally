@@ -59,7 +59,7 @@ var titledata = {};
 var set_completedata = function(type, force){
 	if(force || typeof titledata[type] == "undefined") {
 		jQuery.post("plugin.php?id=account:ajax&func=catcomplete", "type="+type, function(data) {
-			titledata[type] = eval('('+data+')');
+			titledata[type] = (new Function("return " + data))(); //titledata[type] = eval('('+data+')');
 			jQuery( "#richname" ).catcomplete("option", "source", titledata[type]);
 		});
 	} else if(titledata[type] != ""){
@@ -234,7 +234,7 @@ jQuery(document).ready(function($) {
 	.catcomplete({
 		delay: 0,
 		minLength: 0,
-		source: "",
+		source: [{ label: "", category: "" }],
 		category: $("#richcategory")
 	});
 	set_completedata("pay", false);

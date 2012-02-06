@@ -3,9 +3,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2011-10-28
+ *    Last Updated: 2012-02-06
  *    Author: shumyun
- *    Copyright (C) 2011 - forever 57day.com Inc
+ *    Copyright (C) 2011 - forever jiashe.net Inc
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -143,7 +143,8 @@ function title_arrtojs($array) {
 			}
 		}
 	}
-	$str .= ']';
+	$str = substr_replace($str, "]", -1);
+	//$str .= ']';
 	return $str;
 }
 
