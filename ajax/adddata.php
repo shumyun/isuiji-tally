@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-05
+ *    Last Updated: 2012-02-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -109,6 +109,9 @@ switch ( $_POST['curstatus'] ) {
 			DB::insert('account_daytotal', $insarr);
 		}
 		DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn + '$_POST[richnum]' WHERE uid = '$_G[uid]'");
+		break;
+		
+	case 'transfer':
 		break;
 		
 	default:

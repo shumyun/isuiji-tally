@@ -1,8 +1,9 @@
 <?php
+
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2011-01-31
+ *    Last Updated: 2012-02-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -11,9 +12,7 @@ if(!defined('IN_DISCUZ')) {
 	exit('Access Denied');
 }
 
-/*
- * 
- */
+
 $version = '0.1.0';
 $sql = <<<EOF
 DROP TABLE IF EXISTS pre_account_earndata;
@@ -65,12 +64,25 @@ CREATE TABLE pre_account_budget (
 ) ENGINE=MyISAM;
 
 
+DROP TABLE IF EXISTS pre_account_lend;
+CREATE TABLE pre_account_lend (
+  cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
+  uid mediumint(8) unsigned NOT NULL default '0',
+  datadate int(10) unsigned NOT NULL default '0',
+  amount decimal(14,2) unsigned NOT NULL default '0.00',
+  category varchar(255) NOT NULL default '',
+  loan varchar(255) NOT NULL default '',
+  PRIMARY KEY (cid)
+) ENGINE=MyISAM;
+
+
 DROP TABLE IF EXISTS pre_account_profile;
 CREATE TABLE pre_account_profile (
   uid mediumint(8) unsigned NOT NULL default '0',
   earntype text NOT NULL default '',
   paytype text NOT NULL default '',
   categorytype text NOT NULL default '',
+  loantype text NOT NULL default '',
   firstdate int(10) unsigned NOT NULL default '0',
   totalearn decimal(14,2) unsigned NOT NULL default '0.00',
   totalpay decimal(14,2) unsigned NOT NULL default '0.00',

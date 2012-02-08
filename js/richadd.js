@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-05
+ *    Last Updated: 2012-02-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  *    未知错误使用已经到 3
@@ -15,7 +15,15 @@ jQuery.noConflict();
  *	jquery.ui.position.js
  */
 var tipdiv = null, timeID = null;
-function errTip(dom, str, tippos, timeval) {
+var destroyTip = function() {
+	clearTimeout(timeID);
+	if(tipdiv) {
+		tipdiv.remove();
+	}
+	tipdiv = null;
+	timeID = null;
+};
+var errTip = function(dom, str, tippos, timeval) {
 	if(tipdiv != null) {
 		destroyTip();
 	}
@@ -29,31 +37,64 @@ function errTip(dom, str, tippos, timeval) {
 	});
 	jQuery(dom).focus();
 	timeID = setTimeout("destroyTip()", timeval);
-}
-
-function destroyTip() {
-	clearTimeout(timeID);
-	if(tipdiv) {
-		tipdiv.remove();
-	}
-	tipdiv = null;
-	timeID = null;
-}
+};
 
 
 /*
  * 二级菜单
  */
-function acc_changeli(cur, change) {
+var acc_changeli = function(cur, change) {
 	curjquery = '#'+cur.replace(".", "\\.");
 	jQuery(curjquery).parent().attr("curstatus", cur);
 	jQuery(curjquery).attr("style", "cursor:auto").toggleClass("a");
 	change = '#'+change.replace(".", "\\.");
 	jQuery(change).attr("style", "cursor:pointer").toggleClass("a");
-}
+};
 
-/**
+
+/*
+ * 初始化数据
+ * type	:	0	恢复空数据
+ * 			1	恢复 支出/收入页面
+ * 			2	恢复 转账页面
+ */
+var set_default = function(type){
+	
+	var ac_date = new Date();
+	jQuery("#richdate").val(ac_date.getFullYear()+'-'+(ac_date.getMonth()+1)+'-'+ac_date.getDate());
+	jQuery("#richnum").val('');
+	jQuery("#richcategory").val('');
+	jQuery("#richname").val('');
+	jQuery("#message").val('').blur();
+	
+	switch(type){
+		case 1:
+			jQuery("#l_1").html("账单日期：");
+			jQuery("#l_2").html("账单名称：");
+			if(jQuery("#richtype_out_ctrl").length)
+				jQuery("#richtype_out_ctrl").hide();
+			jQuery("#richname").show();
+			jQuery("#richnamebtn").show();
+			jQuery("#l_3").html("账单金额：");
+			jQuery("#l_4").html("账单归属：");
+			break;
+			
+		case 2:
+			jQuery("#l_1").html("转账日期：");
+			jQuery("#l_2").html("归属转出：");
+			jQuery("#richname").hide();
+			jQuery("#richnamebtn").hide();
+			jQuery("#richtype_out_ctrl").length ? jQuery("#richtype_out_ctrl").show():simulateSelect('richtype_out');
+			jQuery("#l_3").html("转账金额：");
+			jQuery("#l_4").html("归属转入：");
+			break;
+		default:break;
+	}
+};
+
+/*
  * 获取账单名称
+ * force  :  强制更新
  */
 var titledata = {};
 var set_completedata = function(type, force){
@@ -106,73 +147,34 @@ jQuery(document).ready(function($) {
 	});
 });
 
-/**
+/*
  * ajax tip Dialog
  */
 var ac_ajax = new Object();
-function hide_addajaxDialog() {
+var hide_addajaxDialog = function() {
 	ac_ajax.hide();
-}
-
-/**
- * 初始化数据
- * type	:	0	恢复空数据
- * 			1	恢复 支出/收入页面
- * 			2	恢复 转账页面
- */
-var set_default = function(type){
-	
-	var ac_date = new Date();
-	jQuery("#richdate").val(ac_date.getFullYear()+'-'+(ac_date.getMonth()+1)+'-'+ac_date.getDate());
-	jQuery("#richnum").val('');
-	jQuery("#richcategory").val('');
-	jQuery("#richname").val('');
-	jQuery("#message").val('').blur();
-	
-	switch(type){
-		case 1:
-			jQuery("#l_1").html("账单日期：");
-			jQuery("#l_2").html("账单名称：");
-			if(jQuery("#richtype_out_ctrl").length)
-				jQuery("#richtype_out_ctrl").hide();
-			jQuery("#richname").show();
-			jQuery("#richnamebtn").show();
-			jQuery("#l_3").html("账单金额：");
-			jQuery("#l_4").html("账单归属：");
-			break;
-			
-		case 2:
-			jQuery("#l_1").html("转账日期：");
-			jQuery("#l_2").html("转出账名：");
-			jQuery("#richname").hide();
-			jQuery("#richnamebtn").hide();
-			jQuery("#richtype_out_ctrl").length ? jQuery("#richtype_out_ctrl").show():simulateSelect('richtype_out');
-			jQuery("#l_3").html("转账金额：");
-			jQuery("#l_4").html("转入账名：");
-			break;
-		default:break;
-	}
 };
 
-/**
+
+/*
  * 增加财务收支简报表和本月收支趋势图的数据
  */
 var addamount = function(dataobj, chart){
 	
 	var words = jQuery("#a_totalamount").html();
-	
+	var str, chartdata;
 	switch (dataobj.curstatus) {
 	case 'pay':
-		var str = 'p';
+		str = 'p';
 		var amount = parseFloat(words) - parseFloat(dataobj.richnum);
 		jQuery("#a_totalamount").html(amount);
-		var chartdata = chart.series[0];
+		chartdata = chart.series[0];
 		break;
 	case 'earn':
-		var str = 'e';
+		str = 'e';
 		var amount = parseFloat(words) + parseFloat(dataobj.richnum);
 		jQuery("#a_totalamount").html(amount);
-		var chartdata = chart.series[1];
+		chartdata = chart.series[1];
 		break;
 	default:
 		return;
@@ -186,13 +188,13 @@ var addamount = function(dataobj, chart){
 	var endweek = parseInt(time) + (7-tmpnum)*24*3600;
 	
 	tmpday.setDate(1);
-	var startmonth = tmpday.getTime()/1000;
+	var startmonth = tmpday.getTime()/1000, endmonth;
 	if( tmpday.getMonth()==11 ) {
 		tmpday.setDate(31);
-		var endmonth = tmpday.getTime()/1000;
+		endmonth = tmpday.getTime()/1000;
 	} else {
 		tmpday.setMonth(tmpday.getMonth()+1);
-		var endmonth = tmpday.getTime()/1000-24*3600;
+		endmonth = tmpday.getTime()/1000-24*3600;
 	}
 	
 	words = dataobj.richdate.split('-');
@@ -223,6 +225,41 @@ var addamount = function(dataobj, chart){
 		}
 		chartdata.data[m_day].update(chartdata.data[m_day].y+=parseFloat(dataobj.richnum));
 	}
+};
+
+
+/*
+ * 支出/收入时测试数据状况
+ * return  :  false  出现错误数据
+ *         :  true   正确
+ */
+var test_earnpay = function(catcompletedata){
+	
+	if ( jQuery("#richname").val() == '' ) {
+		errTip("#richname", "名称不能为空", 1, 2500);
+		return false;
+	}
+
+	var berr = true;
+	var tempstr = "";
+	for (x in catcompletedata) {
+		if( catcompletedata[x].label.match(jQuery("#richname").val())) {
+			if( catcompletedata[x].category == jQuery("#richcategory").val()) {
+				tempstr = catcompletedata[x].category;
+				berr = false;
+				break;
+			} else {
+				tempstr = catcompletedata[x].category;
+				berr = false;
+			}
+		}
+	}
+	if(berr) {
+		errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
+		return false;
+	}
+	jQuery("#richcategory").val(tempstr);
+	return true;
 };
 
 
@@ -262,6 +299,7 @@ jQuery(document).ready(function($) {
 	 */
 	$("#richnum").calculator();
 	
+	
 	/*
 	 * 详细信息框
 	 */
@@ -280,6 +318,7 @@ jQuery(document).ready(function($) {
 		}
 	});
 	
+	
 	/*
 	 * 提交数据
 	 */
@@ -295,60 +334,55 @@ jQuery(document).ready(function($) {
 		if( $("#richnum").val() == '' ) {
 			errTip("#richnum", "金额不能为空", 1, 2500);
 			return ;
-		} else if ( $("#richname").val() == '' ) {
-			errTip("#richname", "名称不能为空", 1, 2500);
-			return ;
-		} else {
-			/*
-			var pyarr = pinyin($("#richname").val(), true);
-			var pystr = '';
-			for (x in pyarr){
-				pystr = pystr + pyarr[x].substring(0, 1).toLowerCase();
-			}
-			*/
-			var berr = true;
-			var tempstr = "";
-			var catcompletedata = "";
-			
-			var dataobj = new Object();
-			switch( $("ul.tb.cl").attr("curstatus") ) {
-				case "li.pay":
-					dataobj.curstatus = "pay";
-					catcompletedata = titledata["pay"];
-					break;
-				case "li.earn":
-					dataobj.curstatus = "earn";
-					catcompletedata = titledata["earn"];
-					break;
-				default:
-					alert("未知错误3");
-					return;
-			}
-			
-			for (x in catcompletedata) {
-				if( catcompletedata[x].label.match($("#richname").val())) {
-					if( catcompletedata[x].category == $("#richcategory").val()) {
-						tempstr = catcompletedata[x].category;
-						berr = false;
-						break;
-					} else {
-						tempstr = catcompletedata[x].category;
-						berr = false;
-					}
+		}
+		/*
+		var pyarr = pinyin($("#richname").val(), true);
+		var pystr = '';
+		for (x in pyarr){
+			pystr = pystr + pyarr[x].substring(0, 1).toLowerCase();
+		}
+		*/
+		var catcompletedata = "";
+		
+		var dataobj = new Object();
+		switch( $("ul.tb.cl").attr("curstatus") ) {
+			case "li.pay":
+				dataobj.curstatus = "pay";
+				catcompletedata = titledata["pay"];
+				if(!test_earnpay(catcompletedata))
+					return ;
+				dataobj.richcategory = $("#richcategory").val();
+				dataobj.richname = $("#richname").val();
+				dataobj.richtype = $("#richtype").get(0).selectedIndex;
+				break;
+				
+			case "li.earn":
+				dataobj.curstatus = "earn";
+				catcompletedata = titledata["earn"];
+				if(!test_earnpay(catcompletedata))
+					return ;
+				dataobj.richcategory = $("#richcategory").val();
+				dataobj.richname = $("#richname").val();
+				dataobj.richtype = $("#richtype").get(0).selectedIndex;
+				break;
+				
+			case "li.transfer":
+				if($("#richtype").get(0).selectedIndex == $("#richtype_out").get(0).selectedIndex) {
+					errTip("#richtype_out_ctrl", "转出和转入的归属不能相同", 1, 2500);
+					return ;
 				}
-			}
-			if(berr) {
-				errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
-				return ;
-			}
-			$("#richcategory").val(tempstr);
+				dataobj.curstatus = "transfer";
+				dataobj.richtype_out = $("#richtype_out").get(0).selectedIndex;
+				dataobj.richtype = $("#richtype").get(0).selectedIndex;
+				break;
+				
+			default:
+				alert("未知错误3");
+				return;
 		}
 		
 		dataobj.richdate = $("#richdate").val();
 		dataobj.richnum  = $("#richnum").val();
-		dataobj.richcategory = $("#richcategory").val();
-		dataobj.richname = $("#richname").val()/* + $("#richname").attr("pinyin")*/;
-		dataobj.richtype = $("#richtype").get(0).selectedIndex;
 		dataobj.message = ($("#message").val() == msgstr ? '':$("#message").val());
 		
 		$("#richaddlist").ajaxStart(function(){
@@ -389,7 +423,6 @@ jQuery(document).ready(function($) {
 			  			} else if(data.curerr == "no_login"){
 			  				showWindow('login', 'plugin.php?id=account:index');
 			  			} else {
-				  			ac_ajax.hide();
 							alert("页面错误1");
 			  			}
 			  		}
@@ -403,7 +436,7 @@ jQuery(document).ready(function($) {
 });
 
 
-/**
+/*
  * 本月收支趋势图
  */
 var chart;
