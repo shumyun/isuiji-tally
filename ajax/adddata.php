@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-08
+ *    Last Updated: 2012-02-09
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -14,7 +14,8 @@ if(!defined('IN_DISCUZ')) {
 
 define('NOROBOT', TRUE);
 
-if(!$account->run_ajaxcomplete($_G['uid'], $_POST['curstatus'])) {
+if(!$account->run_ajaxadd($_G['uid'], $_POST['curstatus'])) {
+	echo "0";
 	return;
 }
 
@@ -22,24 +23,36 @@ $ac_response = array(
 		'state' => 'ok',
 		'curerr' => '');
 
+if( !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
+	$ac_response['state'] = 'err';
+	$ac_response['curerr'] = 'richnum';
+	//echo "请填写大于零的金额";
+	echo json_encode($ac_response);
+	return;
+}
+
+if( !($timestamp = strtotime($_POST['richdate'])) ) {
+	$ac_response['state'] = 'err';
+	$ac_response['curerr'] = 'richdate';
+	//echo "请选择正确的日期";
+	echo json_encode($ac_response);
+	return;
+}
+
+if( $_POST['richtype'] >= count($account->account_config['cattype']) ){
+	$ac_response['state'] = 'err';
+	$ac_response['curerr'] = 'richtype';
+	//echo "请选择正确的归属";
+	echo json_encode($ac_response);
+	return;
+}
+
 switch ( $_POST['curstatus'] ) {
 	case 'pay':
-		if( !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richnum';
-			//echo "请填写大于零的金额";
-			break;
-		}
 		if ( !ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['paytype'])) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richname';
 			//echo "请选择已存在的账单名称";
-			break;
-		}
-		if( !($timestamp = strtotime($_POST['richdate'])) ) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richdate';
-			//echo "请选择正确的日期";
 			break;
 		}
 		
@@ -68,22 +81,10 @@ switch ( $_POST['curstatus'] ) {
 		break;
 		
 	case 'earn':
-		if( !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richnum';
-			//echo "请填写大于零的金额";
-			break;
-		}
 		if ( !ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['earntype'])) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richname';
 			//echo "请选择已存在的账单名称";
-			break;
-		}
-		if( !($timestamp = strtotime($_POST['richdate'])) ) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richdate';
-			//echo "请选择正确的日期";
 			break;
 		}
 		
@@ -112,6 +113,25 @@ switch ( $_POST['curstatus'] ) {
 		break;
 		
 	case 'transfer':
+		if($_POST['richtype'] == $_POST['richtype_out']){
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype_same';
+			//echo "请选择正确的归属";
+		} else if($_POST['richtype_out'] >= count($account->account_config['cattype'])) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype_out';
+		} else {
+			$insarr = array(
+				'uid' => $_G['uid'],
+				'amount' => $_POST['richnum'],
+				'icategory' => $account->account_config['cattype'][$_POST['richtype']],
+				'ocategory' => $account->account_config['cattype'][$_POST['richtype_out']],
+				'info' => $_POST['message'],
+				'datatime' => $timestamp,
+				'recordtime' => $_G['timestamp']
+			);
+			DB::insert('account_transfer', $insarr);
+		}
 		break;
 		
 	default:

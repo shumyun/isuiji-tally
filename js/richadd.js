@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-08
+ *    Last Updated: 2012-02-09
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  *    未知错误使用已经到 3
@@ -77,7 +77,7 @@ var set_default = function(type){
 			jQuery("#richnamebtn").show();
 			jQuery("#l_3").html("账单金额：");
 			jQuery("#l_4").html("账单归属：");
-			break;
+			break;completedata
 			
 		case 2:
 			jQuery("#l_1").html("转账日期：");
@@ -353,7 +353,7 @@ jQuery(document).ready(function($) {
 					return ;
 				dataobj.richcategory = $("#richcategory").val();
 				dataobj.richname = $("#richname").val();
-				dataobj.richtype = $("#richtype").get(0).selectedIndex;
+				dataobj.richtype = $("#richtype").val();
 				break;
 				
 			case "li.earn":
@@ -363,17 +363,17 @@ jQuery(document).ready(function($) {
 					return ;
 				dataobj.richcategory = $("#richcategory").val();
 				dataobj.richname = $("#richname").val();
-				dataobj.richtype = $("#richtype").get(0).selectedIndex;
+				dataobj.richtype = $("#richtype").val();
 				break;
 				
 			case "li.transfer":
-				if($("#richtype").get(0).selectedIndex == $("#richtype_out").get(0).selectedIndex) {
+				if($("#richtype").val() == $("#richtype_out").val()) {
 					errTip("#richtype_out_ctrl", "转出和转入的归属不能相同", 1, 2500);
 					return ;
 				}
 				dataobj.curstatus = "transfer";
-				dataobj.richtype_out = $("#richtype_out").get(0).selectedIndex;
-				dataobj.richtype = $("#richtype").get(0).selectedIndex;
+				dataobj.richtype_out = $("#richtype_out").val();
+				dataobj.richtype = $("#richtype").val();
 				break;
 				
 			default:
@@ -385,15 +385,13 @@ jQuery(document).ready(function($) {
 		dataobj.richnum  = $("#richnum").val();
 		dataobj.message = ($("#message").val() == msgstr ? '':$("#message").val());
 		
-		$("#richaddlist").ajaxStart(function(){
-			ac_ajax
-			.html('<table cellpadding="0" cellspacing="0" class="fwin"><tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
-				<tr><td class="m_l">&nbsp;&nbsp;</td>\
-					<td class="m_c"><h3 class="flb"><em><img src="' + IMGDIR + '/loading.gif"> 正在保存...</em></td>\
-					<td class="m_r"></td></tr>\
-				<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table>')
-			.show();
-		});
+		ac_ajax
+		.html('<table cellpadding="0" cellspacing="0" class="fwin"><tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
+			<tr><td class="m_l">&nbsp;&nbsp;</td>\
+				<td class="m_c"><h3 class="flb"><em><img src="' + IMGDIR + '/loading.gif"> 正在保存...</em></td>\
+				<td class="m_r"></td></tr>\
+			<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table>')
+		.show();
 
 		$.post("plugin.php?id=account:ajax&func=adddata", $.param(dataobj),
 				function(data) {
@@ -414,16 +412,31 @@ jQuery(document).ready(function($) {
 			  			
 			  		} else {
 			  			ac_ajax.hide();
-			  			if(data.curerr == "richdate") {
+			  			switch( data.curerr ) {
+			  			case "richdate":
 			  				errTip("#richdate", "请选择正确的日期", 1, 2500);
-			  			} else if(data.curerr == "richnum") {
+			  				break;
+			  			case "richnum":
 			  				errTip("#richnum", "请填写大于零的金额", 1, 2500);
-			  			} else if(data.curerr == "richname") {
+			  				break;
+			  			case "richname":
 			  				errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
-			  			} else if(data.curerr == "no_login"){
+			  				break;
+			  			case "richtype":
+			  				errTip("#richtype_ctrl", "归属不存在，请重选或添加该名称", 1, 2500);
+			  				break;
+			  			case "richtype_out":
+			  				errTip("#richtype_out_ctrl", "归属不存在，请重选或添加该名称", 1, 2500);
+			  				break;
+			  			case "richtype_same":
+							errTip("#richtype_out_ctrl", "转出和转入的归属不能相同", 1, 2500);
+			  				break;
+			  			case "no_login":
 			  				showWindow('login', 'plugin.php?id=account:index');
-			  			} else {
+			  				break;
+			  			default:
 							alert("页面错误1");
+		  					break;
 			  			}
 			  		}
 				},"json")

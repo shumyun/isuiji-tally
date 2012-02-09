@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-08
+ *    Last Updated: 2012-02-09
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -19,12 +19,12 @@ DROP TABLE IF EXISTS pre_account_earndata;
 CREATE TABLE pre_account_earndata (
   cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
   uid mediumint(8) unsigned NOT NULL default '0',
+  datatime int(10) unsigned NOT NULL default '0',
+  recordtime int(10) unsigned NOT NULL default '0',
   amount decimal(14,2) unsigned NOT NULL default '0.00',
   title varchar(255) NOT NULL default '',
   category varchar(255) NOT NULL default '',
   info varchar(255) NOT NULL default '',
-  datatime int(10) unsigned NOT NULL default '0',
-  recordtime int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (cid)
 ) ENGINE=MyISAM;
 
@@ -33,12 +33,12 @@ DROP TABLE IF EXISTS pre_account_paydata;
 CREATE TABLE pre_account_paydata (
   cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
   uid mediumint(8) unsigned NOT NULL default '0',
+  datatime int(10) unsigned NOT NULL default '0',
+  recordtime int(10) unsigned NOT NULL default '0',
   amount decimal(14,2) unsigned NOT NULL default '0.00',
   title varchar(255) NOT NULL default '',
   category varchar(255) NOT NULL default '',
   info varchar(255) NOT NULL default '',
-  datatime int(10) unsigned NOT NULL default '0',
-  recordtime int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (cid)
 ) ENGINE=MyISAM;
 
@@ -58,7 +58,8 @@ DROP TABLE IF EXISTS pre_account_budget;
 CREATE TABLE pre_account_budget (
   cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
   uid mediumint(8) unsigned NOT NULL default '0',
-  datadate int(10) unsigned NOT NULL default '0',
+  datatime int(10) unsigned NOT NULL default '0',
+  recordtime int(10) unsigned NOT NULL default '0',
   budget decimal(14,2) unsigned NOT NULL default '0.00',
   PRIMARY KEY (cid)
 ) ENGINE=MyISAM;
@@ -68,10 +69,25 @@ DROP TABLE IF EXISTS pre_account_lend;
 CREATE TABLE pre_account_lend (
   cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
   uid mediumint(8) unsigned NOT NULL default '0',
-  datadate int(10) unsigned NOT NULL default '0',
+  datatime int(10) unsigned NOT NULL default '0',
+  recordtime int(10) unsigned NOT NULL default '0',
   amount decimal(14,2) unsigned NOT NULL default '0.00',
   category varchar(255) NOT NULL default '',
   loan varchar(255) NOT NULL default '',
+  PRIMARY KEY (cid)
+) ENGINE=MyISAM;
+
+
+DROP TABLE IF EXISTS pre_account_transfer;
+CREATE TABLE pre_account_transfer (
+  cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
+  uid mediumint(8) unsigned NOT NULL default '0',
+  datatime int(10) unsigned NOT NULL default '0',
+  recordtime int(10) unsigned NOT NULL default '0',
+  amount decimal(14,2) unsigned NOT NULL default '0.00',
+  icategory varchar(255) NOT NULL default '',
+  ocategory varchar(255) NOT NULL default '',
+  info varchar(255) NOT NULL default '',
   PRIMARY KEY (cid)
 ) ENGINE=MyISAM;
 

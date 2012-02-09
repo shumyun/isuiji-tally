@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-08
+ *    Last Updated: 2012-02-09
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -52,16 +52,44 @@ class class_account {
 	
 	public function run_ajaxcomplete($ac_uid, $type) {
 		require_once DISCUZ_ROOT."/source/plugin/account/function/function_account.php";
-		if($type == 'pay'){
+		if ( $type == 'pay' ) {
 			$ac_profile = DB::fetch_first("SELECT paytype FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
 			if (empty($ac_profile))	return false;
 			if (!title_strtoarr($ac_profile['paytype'], $this->account_config['paytype'])) return false;
-		} else if($type = 'earn') {
+		} else if( $type == 'earn' ) {
 			$ac_profile = DB::fetch_first("SELECT earntype FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
 			if (empty($ac_profile))	return false;
 			if (!title_strtoarr($ac_profile['earntype'], $this->account_config['earntype'])) return false;
-		} else {
+		} else
 			return false;
+		return true;
+	}
+	
+	public function run_ajaxadd($ac_uid, $type) {
+		require_once DISCUZ_ROOT."/source/plugin/account/function/function_account.php";
+		switch ( $type ) {
+			case 'pay':
+				$ac_profile = DB::fetch_first("SELECT paytype, categorytype FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
+				if (empty($ac_profile))	return false;
+				if (!title_strtoarr($ac_profile['paytype'], $this->account_config['paytype'])) return false;
+				if (!categorytype_strtoarr($ac_profile['categorytype'], $this->account_config['cattype'])) return false;
+				break;
+				
+			case 'earn':
+				$ac_profile = DB::fetch_first("SELECT earntype, categorytype FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
+				if (empty($ac_profile))	return false;
+				if (!title_strtoarr($ac_profile['earntype'], $this->account_config['earntype'])) return false;
+				if (!categorytype_strtoarr($ac_profile['categorytype'], $this->account_config['cattype'])) return false;
+				break;
+				
+			case 'transfer':
+				$ac_profile = DB::fetch_first("SELECT categorytype FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
+				if (empty($ac_profile))	return false;
+				if (!categorytype_strtoarr($ac_profile['categorytype'], $this->account_config['cattype'])) return false;
+				break;
+				
+			default:
+				return false;
 		}
 		return true;
 	}

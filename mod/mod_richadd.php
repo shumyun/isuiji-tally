@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2011-02-05
+ *    Last Updated: 2011-02-09
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -56,7 +56,7 @@ $acc_tmp = DB::fetch_first("SELECT SUM(paymoney) as mpm, SUM(earnmoney) as mem F
 if( !(empty($acc_tmp['mpm'])||empty($acc_tmp['mem']))) {
 	$acc_amount['mpm'] = $acc_tmp['mpm']; $acc_amount['mem'] = $acc_tmp['mem'];
 }
-$acc_tmp = DB::fetch_first("SELECT SUM(budget) as mdm FROM ".DB::table('account_budget')." WHERE uid = '$_G[uid]' AND datadate >= '$MonthStartDate' AND datadate <= '$MonthEndDate'");
+$acc_tmp = DB::fetch_first("SELECT SUM(budget) as mdm FROM ".DB::table('account_budget')." WHERE uid = '$_G[uid]' AND datatime >= '$MonthStartDate' AND datatime <= '$MonthEndDate'");
 if( !empty($acc_tmp['mdm'])) {
 	$acc_amount['mdm'] = $acc_tmp['mdm']; $acc_amount['remdm'] = $acc_amount['mdm'] - $acc_amount['mpm'];
 }
