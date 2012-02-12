@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-09
+ *    Last Updated: 2012-02-11
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -12,7 +12,10 @@ if(!defined('IN_DISCUZ')) {
 	exit('Access Denied');
 }
 
-
+/**
+ * xxx_account_loandebt
+ * @type	1 : 借入, 2 : 借出, 3 : 还债, 4 : 收债
+ */
 $version = '0.1.0';
 $sql = <<<EOF
 DROP TABLE IF EXISTS pre_account_earndata;
@@ -65,15 +68,17 @@ CREATE TABLE pre_account_budget (
 ) ENGINE=MyISAM;
 
 
-DROP TABLE IF EXISTS pre_account_lend;
-CREATE TABLE pre_account_lend (
+DROP TABLE IF EXISTS pre_account_loandebt;
+CREATE TABLE pre_account_loandebt (
   cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
   uid mediumint(8) unsigned NOT NULL default '0',
+  type tinyint(2) unsigned NOT NULL default '0',
   datatime int(10) unsigned NOT NULL default '0',
   recordtime int(10) unsigned NOT NULL default '0',
   amount decimal(14,2) unsigned NOT NULL default '0.00',
   category varchar(255) NOT NULL default '',
-  loan varchar(255) NOT NULL default '',
+  loandebt varchar(255) NOT NULL default '',
+  info varchar(255) NOT NULL default '',
   PRIMARY KEY (cid)
 ) ENGINE=MyISAM;
 
@@ -98,7 +103,7 @@ CREATE TABLE pre_account_profile (
   earntype text NOT NULL default '',
   paytype text NOT NULL default '',
   categorytype text NOT NULL default '',
-  loantype text NOT NULL default '',
+  loandebt text NOT NULL default '',
   firstdate int(10) unsigned NOT NULL default '0',
   totalearn decimal(14,2) unsigned NOT NULL default '0.00',
   totalpay decimal(14,2) unsigned NOT NULL default '0.00',

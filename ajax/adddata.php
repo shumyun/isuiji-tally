@@ -15,7 +15,6 @@ if(!defined('IN_DISCUZ')) {
 define('NOROBOT', TRUE);
 
 if(!$account->run_ajaxadd($_G['uid'], $_POST['curstatus'])) {
-	echo "0";
 	return;
 }
 
@@ -39,7 +38,7 @@ if( !($timestamp = strtotime($_POST['richdate'])) ) {
 	return;
 }
 
-if( $_POST['richtype'] >= count($account->account_config['cattype']) ){
+if(empty($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype']) ){
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'richtype';
 	//echo "请选择正确的归属";

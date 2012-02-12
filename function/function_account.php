@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-06
+ *    Last Updated: 2012-02-12
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -121,7 +121,7 @@ function title_arrtostr($array, &$sqlstr) {
 }
 
 /**
- * 账单数据转换js
+ * 账单数据转换json
  */
 function title_arrtojs($array) {
 	$str = '[';
@@ -151,7 +151,7 @@ function title_arrtojs($array) {
 /**
  * 账单归属转换(sqlstring <==> array)
  */
-function categorytype_strtoarr($sqlstr, &$array) {
+function catetype_strtoarr($sqlstr, &$array) {
 	if(!isset($sqlstr) || !empty($array)) return false;
 	
 	$strlength = strlen($sqlstr);
@@ -161,6 +161,18 @@ function categorytype_strtoarr($sqlstr, &$array) {
 	
 	$array = explode(',', $tmpstr);
 	return true;
+}
+
+/**
+ * 账单归属转换(array <==> json)
+ */
+function catetype_arrtojs($array) {
+	$str = '["';
+
+	$str .= implode('","', $array);
+	
+	$str .= '"]';
+	return $str;
 }
 
 class class_parsertitle {

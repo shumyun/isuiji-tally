@@ -1,12 +1,136 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-09
+ *    Last Updated: 2012-02-12
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  *    未知错误使用已经到 3
  */
 jQuery.noConflict();
+
+
+/*
+ * 模仿common.js 中 simulateSelect 函数
+ */
+
+function setSelvalue(selectId, value){
+	var selectObj = $(selectId);
+	var ul = document.createElement('ul');
+	
+	for(var i = 0; i < value.length; i++) {
+		var li = document.createElement('li');
+		li.innerHTML = value[i];
+		li.k_id = i;
+		li.k_value = i;
+		if(i == 0) {
+			li.className = 'current';
+			selectObj.setAttribute('selecti', i);
+			selectObj.options.length = 0;
+			selectObj.options[0] = new Option('', li.k_value);
+			eval(selectObj.getAttribute('change'));
+			if($(selectId + '_ctrl'))
+				$(selectId + '_ctrl').innerHTML = value[i];
+		}
+		li.onclick = function() {
+			var menuObj = $(selectId + '_ctrl_menu');
+			if($(selectId + '_ctrl').innerHTML != this.innerHTML) {
+				var lis = menuObj.getElementsByTagName('li');
+				lis[$(selectId).getAttribute('selecti')].className = '';
+				this.className = 'current';
+				$(selectId + '_ctrl').innerHTML = this.innerHTML;
+				$(selectId).setAttribute('selecti', this.k_id);
+				$(selectId).options.length = 0;
+				$(selectId).options[0] = new Option('', this.k_value);
+				eval(selectObj.getAttribute('change'));
+			}
+			hideMenu(menuObj.id);
+			return false;
+		};
+		ul.appendChild(li);
+	}
+	return ul;
+}
+
+function acc_simulateSel(selectId, value) {
+	var selectObj = $(selectId);
+	if(!selectObj || !value) return;
+	if(BROWSER.other) {
+		if(selectObj.getAttribute('change')) {
+			selectObj.onchange = function () {eval(selectObj.getAttribute('change'));}
+		}
+		return;
+	}
+	if($(selectId + '_ctrl_menu') && $(selectId + '_ctrl')){
+		var menuObj = $(selectId + '_ctrl_menu');
+		if(!menuObj.removeChild(menuObj.lastChild)) return;
+		var ul = setSelvalue(selectId, value);
+		menuObj.appendChild(ul);
+		jQuery("#"+selectId+"_ctrl").show();
+	} else {
+		var defaultopt = value[0] ? value[0] : '';
+		var menuObj = document.createElement('div');
+		var ul = setSelvalue(selectId, value);
+		var handleKeyDown = function(e) {
+			e = BROWSER.ie ? event : e;
+			if(e.keyCode == 40 || e.keyCode == 38) doane(e);
+		};
+		var selectwidth = (selectObj.getAttribute('width', i) ? selectObj.getAttribute('width', i) : 70) + 'px';
+		var tabindex = selectObj.getAttribute('tabindex', i) ? selectObj.getAttribute('tabindex', i) : 1;
+		
+		selectObj.style.display = 'none';
+		selectObj.outerHTML += '<a href="javascript:;" id="' + selectId + '_ctrl" style="width:' + selectwidth + '" tabindex="' + tabindex + '">' + defaultopt + '</a>';
+
+		menuObj.id = selectId + '_ctrl_menu';
+		menuObj.className = 'sltm';
+		menuObj.style.display = 'none';
+		menuObj.style.width = selectwidth;
+		menuObj.appendChild(ul);
+		$('append_parent').appendChild(menuObj);
+
+		$(selectId + '_ctrl').onclick = function(e) {
+			$(selectId + '_ctrl_menu').style.width = selectwidth;
+			showMenu({'ctrlid':(selectId == 'loginfield' ? 'account' : selectId + '_ctrl'),'menuid':selectId + '_ctrl_menu','evt':'click','pos':'43'});
+			doane(e);
+		};
+		$(selectId + '_ctrl').onfocus = menuObj.onfocus = function() {
+			_attachEvent(document.body, 'keydown', handleKeyDown);
+		};
+		$(selectId + '_ctrl').onblur = menuObj.onblur = function() {
+			_detachEvent(document.body, 'keydown', handleKeyDown);
+		};
+		$(selectId + '_ctrl').onkeyup = function(e) {
+			e = e ? e : window.event;
+			value = e.keyCode;
+			if(value == 40 || value == 38) {
+				if(menuObj.style.display == 'none') {
+					$(selectId + '_ctrl').onclick();
+				} else {
+					lis = menuObj.getElementsByTagName('li');
+					selecti = selectObj.getAttribute('selecti');
+					lis[selecti].className = '';
+					if(value == 40) {
+						selecti = parseInt(selecti) + 1;
+					} else if(value == 38) {
+						selecti = parseInt(selecti) - 1;
+					}
+					if(selecti < 0) {
+						selecti = lis.length - 1
+					} else if(selecti > lis.length - 1) {
+						selecti = 0;
+					}
+					lis[selecti].className = 'current';
+					selectObj.setAttribute('selecti', selecti);
+					lis[selecti].parentNode.scrollTop = lis[selecti].offsetTop;
+				}
+			} else if(value == 13) {
+				var lis = menuObj.getElementsByTagName('li');
+				lis[selectObj.getAttribute('selecti')].onclick();
+			} else if(value == 27) {
+				hideMenu(menuObj.id);
+			}
+		};
+	}
+}
 
 
 /*
@@ -57,6 +181,7 @@ var acc_changeli = function(cur, change) {
  * type	:	0	恢复空数据
  * 			1	恢复 支出/收入页面
  * 			2	恢复 转账页面
+ * 			3	恢复 借贷页面
  */
 var set_default = function(type){
 	
@@ -69,25 +194,40 @@ var set_default = function(type){
 	
 	switch(type){
 		case 1:
+			jQuery("#richtype_out");
 			jQuery("#l_1").html("账单日期：");
 			jQuery("#l_2").html("账单名称：");
 			if(jQuery("#richtype_out_ctrl").length)
 				jQuery("#richtype_out_ctrl").hide();
 			jQuery("#richname").show();
 			jQuery("#richnamebtn").show();
+			jQuery("#s_help").show();
 			jQuery("#l_3").html("账单金额：");
 			jQuery("#l_4").html("账单归属：");
-			break;completedata
+			break;
 			
 		case 2:
 			jQuery("#l_1").html("转账日期：");
-			jQuery("#l_2").html("归属转出：");
+			jQuery("#l_2").html("转出归属：");
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
-			jQuery("#richtype_out_ctrl").length ? jQuery("#richtype_out_ctrl").show():simulateSelect('richtype_out');
+			jQuery("#s_help").hide();
+			acc_simulateSel('richtype_out', ["hello", "2"]);
 			jQuery("#l_3").html("转账金额：");
-			jQuery("#l_4").html("归属转入：");
+			jQuery("#l_4").html("转入归属：");
 			break;
+			
+		case 3:
+			jQuery("#l_1").html("负债日期：");
+			jQuery("#l_2").html("负债账户：");
+			jQuery("#richname").hide();
+			jQuery("#richnamebtn").hide();
+			jQuery("#s_help").hide();
+			acc_simulateSel('richtype_out', ["hello", "1"]);
+			jQuery("#l_3").html("负债金额：");
+			jQuery("#l_4").html("存入归属：");
+			break;
+			
 		default:break;
 	}
 };
@@ -97,15 +237,47 @@ var set_default = function(type){
  * force  :  强制更新
  */
 var titledata = {};
-var set_completedata = function(type, force){
-	if(force || typeof titledata[type] == "undefined") {
-		jQuery.post("plugin.php?id=account:ajax&func=catcomplete", "type="+type, function(data) {
-			titledata[type] = (new Function("return " + data))(); //titledata[type] = eval('('+data+')');
-			jQuery( "#richname" ).catcomplete("option", "source", titledata[type]);
-		});
-	} else if(titledata[type] != ""){
-		jQuery( "#richname" ).catcomplete("option", "source", titledata[type]);
+var ajax_radata = function(arr, force){
+	var tmparr = {};
+	if(force) {
+		tmparr = arr;
+	} else {
+		for (x in arr)
+		{
+			if(typeof titledata[x] == "undefined" || titledata[x] == "") {
+				tmparr[x] = arr[x];
+			} else {
+				switch(x) {
+					case "pay":
+					case "earn":
+						$( "#richname" ).catcomplete( "option", "source",  titledata[x]);
+						break;
+						
+					default:break;
+				}
+			}
+		}
 	}
+	
+	jQuery.post("plugin.php?id=account:ajax&func=ra_data", jQuery.param(tmparr), function(data) {
+		var ar_data = (new Function("return " + data))(); //var ar_data = eval('('+data+')');
+		for( x in ar_data) {
+			for (y in ar_data[x]) {
+				titledata[y] = ar_data[x][y];
+				switch(y) {
+					case "pay":
+					case "earn":
+						jQuery( "#richname" ).catcomplete( "option", "source",  titledata[y]);
+						break;
+					case "richtype":
+						acc_simulateSel('richtype', titledata[y]);
+						break;
+						
+					default:break;
+				}
+			}
+		}
+	});
 };
 
 jQuery(document).ready(function($) {
@@ -115,7 +287,7 @@ jQuery(document).ready(function($) {
 			acc_changeli("li.pay", change);
 			$("#lend\\.p").slideUp();
 			set_default(("li\\.earn" != change)?1:0);
-			set_completedata("pay", false);
+			ajax_radata({"catcomplete" : "pay"}, false);
 		}
 	});
 	
@@ -125,7 +297,7 @@ jQuery(document).ready(function($) {
 			acc_changeli("li.earn", change);
 			$("#lend\\.p").slideUp();
 			set_default(("li\\.pay" != change)?1:0);
-			set_completedata("earn", false);
+			ajax_radata({"catcomplete" : "earn"}, false);
 		}
 	});
 	
@@ -135,14 +307,16 @@ jQuery(document).ready(function($) {
 			acc_changeli("li.transfer", change);
 			$("#lend\\.p").slideUp();
 			set_default(2);
+			acc_simulateSel('richtype_out', titledata['richtype']);
 		}
 	});
 	
-	$("#li\\.lend").click(function() {
+	$("#li\\.loandebt").click(function() {
 		var change = $(this).parent().attr("curstatus");
-		if ("li.lend" != change) {
-			acc_changeli("li.lend", change);
-			$("#lend\\.p").show("fast");
+		if ("li.loandebt" != change) {
+			acc_changeli("li.loandebt", change);
+			$("#loandebt\\.p").show("fast");
+			set_default(3);
 		}
 	});
 });
@@ -264,6 +438,7 @@ var test_earnpay = function(catcompletedata){
 
 
 jQuery(document).ready(function($) {
+	
 	/*
 	 * 自动匹配功能
 	 */
@@ -273,8 +448,7 @@ jQuery(document).ready(function($) {
 		minLength: 0,
 		source: [{ label: "", category: "" }],
 		category: $("#richcategory")
-	});
-	set_completedata("pay", false);
+	});	
 	
 	$( "#richnamebtn" )
 	.attr( {"tabIndex":-1, "title":"显示所有名称"} )
@@ -292,6 +466,13 @@ jQuery(document).ready(function($) {
 		$("input#richname").catcomplete( "search", "" );
 		$("input#richname").focus();
 	});
+	
+	
+	/*
+	 * 获取一些控件的数据
+	 */
+	var arr = {"catcomplete" : "pay", "select" : "richtype"};
+	ajax_radata(arr, false);
 	
 	
 	/*
