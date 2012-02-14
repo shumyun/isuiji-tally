@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-13
+ *    Last Updated: 2012-02-14
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  *    未知错误使用已经到 3
@@ -340,7 +340,7 @@ jQuery(document).ready(function($) {
 		var change = $(this).parent().attr("curstatus");
 		if ("li\\.pay" != change){
 			acc_changehtml("li.pay", change);
-			$("#loandebt\\.p").slideUp();
+			$("#p\\.loandebt").slideUp();
 			set_default(("li\\.earn" != change)?1:0);
 			ajax_radata(["pay"], false);
 		}
@@ -350,7 +350,7 @@ jQuery(document).ready(function($) {
 		var change = $(this).parent().attr("curstatus");
 		if ("li.earn" != change) {
 			acc_changehtml("li.earn", change);
-			$("#loandebt\\.p").slideUp();
+			$("#p\\.loandebt").slideUp();
 			set_default(("li\\.pay" != change)?1:0);
 			ajax_radata(["earn"], false);
 		}
@@ -360,7 +360,7 @@ jQuery(document).ready(function($) {
 		var change = $(this).parent().attr("curstatus");
 		if ("li.transfer" != change) {
 			acc_changehtml("li.transfer", change);
-			$("#loandebt\\.p").slideUp();
+			$("#p\\.loandebt").slideUp();
 			set_default(2);
 			ajax_radata(["richtype_out"], false);
 		}
@@ -370,11 +370,11 @@ jQuery(document).ready(function($) {
 		var change = $(this).parent().attr("curstatus");
 		if ("li.loandebt" != change) {
 			acc_changehtml("li.loandebt", change);
-			$("#loandebt\\.p").show("fast");
+			$("#p\\.loandebt").show("fast");
 			set_default(3);
-			change = $("#loandebt\\.p").attr("curstatus");
-			if ("a.inloan" != change)
-				acc_changehtml("a.inloan", change);
+			change = $("#p\\.loandebt").attr("curstatus");
+			if ("a.borrow" != change)
+				acc_changehtml("a.borrow", change);
 			ajax_radata(["loan"], false);
 		}
 	});
@@ -382,37 +382,37 @@ jQuery(document).ready(function($) {
 	/*
 	 * 隶属 “借贷” 的二级菜单
 	 */
-	$("#a\\.inloan").click(function() {
+	$("#a\\.borrow").click(function() {
 		var change = $(this).parent().attr("curstatus");
-		if ("a.inloan" != change) {
-			acc_changehtml("a.inloan", change);
+		if ("a.borrow" != change) {
+			acc_changehtml("a.borrow", change);
 			set_default(4);
 			ajax_radata(["loan"], false);
 		}
 	});
 
-	$("#a\\.outdebt").click(function() {
+	$("#a\\.loan").click(function() {
 		var change = $(this).parent().attr("curstatus");
-		if ("a.outdebt" != change) {
-			acc_changehtml("a.outdebt", change);
+		if ("a.loan" != change) {
+			acc_changehtml("a.loan", change);
 			set_default(5);
 			ajax_radata(["debt"], false);
 		}
 	});
 
-	$("#a\\.outloan").click(function() {
+	$("#a\\.repay").click(function() {
 		var change = $(this).parent().attr("curstatus");
-		if ("a.outloan" != change) {
-			acc_changehtml("a.outloan", change);
+		if ("a.repay" != change) {
+			acc_changehtml("a.repay", change);
 			set_default(6);
 			ajax_radata(["loan"], false);
 		}
 	});
 
-	$("#a\\.indebt").click(function() {
+	$("#a\\.debt").click(function() {
 		var change = $(this).parent().attr("curstatus");
-		if ("a.indebt" != change) {
-			acc_changehtml("a.indebt", change);
+		if ("a.debt" != change) {
+			acc_changehtml("a.debt", change);
 			set_default(7);
 			ajax_radata(["debt"], false);
 		}
@@ -652,6 +652,28 @@ jQuery(document).ready(function($) {
 				}
 				dataobj.curstatus = "transfer";
 				dataobj.richtype_out = $("#richtype_out").val();
+				dataobj.richtype = $("#richtype").val();
+				break;
+				
+			case "li.loandebt":
+				switch($("#p\\.loandebt").attr("curstatus")) {
+					case "a.borrow":
+						dataobj.curstatus = "borrow";
+						break;
+					case "a.loan":
+						dataobj.curstatus = "loan";
+						break;
+					case "a.repay":
+						dataobj.curstatus = "repay";
+						break;
+					case "a.debt":
+						dataobj.curstatus = "debt";
+						break;
+					default:
+						alert("未知错误3");
+						return;
+				}
+				dataobj.loandebt = $("#richtype_out").val();
 				dataobj.richtype = $("#richtype").val();
 				break;
 				

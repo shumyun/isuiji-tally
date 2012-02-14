@@ -123,12 +123,88 @@ switch ( $_POST['curstatus'] ) {
 				'uid' => $_G['uid'],
 				'amount' => $_POST['richnum'],
 				'icategory' => $account->account_config['catetype'][$_POST['richtype']],
-				'ocategory' => $account->account_config['catetype'][$_POST['richtype_out']],
+				'ocategory' => $account->account_config['catetype'][$_POST['loandebt']],
 				'info' => $_POST['message'],
 				'datatime' => $timestamp,
 				'recordtime' => $_G['timestamp']
 			);
 			DB::insert('account_transfer', $insarr);
+		}
+		break;
+
+	case "borrow":
+		if(!isset($_POST['loandebt']) || $_POST['loandebt'] >= count($account->account_config['loandebt'])) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'borrow';
+		} else {
+			$insarr = array(
+				'uid' => $_G['uid'],
+				'type' => 1,
+				'amount' => $_POST['richnum'],
+				'category' => $account->account_config['catetype'][$_POST['richtype']],
+				'loandebt' => $account->account_config['loandebt'][$_POST['loandebt']],
+				'info' => $_POST['message'],
+				'datatime' => $timestamp,
+				'recordtime' => $_G['timestamp']
+			);
+			DB::insert('account_loandebt', $insarr);
+		}
+		break;
+		
+	case "loan":
+		if(!isset($_POST['loandebt']) || $_POST['loandebt'] >= count($account->account_config['loandebt'])) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'loan';
+		} else {
+			$insarr = array(
+				'uid' => $_G['uid'],
+				'type' => 2,
+				'amount' => $_POST['richnum'],
+				'category' => $account->account_config['catetype'][$_POST['richtype']],
+				'loandebt' => $account->account_config['loandebt'][$_POST['loandebt']],
+				'info' => $_POST['message'],
+				'datatime' => $timestamp,
+				'recordtime' => $_G['timestamp']
+			);
+			DB::insert('account_loandebt', $insarr);
+		}
+		break;
+		
+	case "repay":
+		if(!isset($_POST['loandebt']) || $_POST['loandebt'] >= count($account->account_config['loandebt'])) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'repay';
+		} else {
+			$insarr = array(
+				'uid' => $_G['uid'],
+				'type' => 3,
+				'amount' => $_POST['richnum'],
+				'category' => $account->account_config['catetype'][$_POST['richtype']],
+				'loandebt' => $account->account_config['loandebt'][$_POST['loandebt']],
+				'info' => $_POST['message'],
+				'datatime' => $timestamp,
+				'recordtime' => $_G['timestamp']
+			);
+			DB::insert('account_loandebt', $insarr);
+		}
+		break;
+		
+	case "debt":
+		if(!isset($_POST['loandebt']) || $_POST['loandebt'] >= count($account->account_config['loandebt'])) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'repay';
+		} else {
+			$insarr = array(
+				'uid' => $_G['uid'],
+				'type' => 4,
+				'amount' => $_POST['richnum'],
+				'category' => $account->account_config['catetype'][$_POST['richtype']],
+				'loandebt' => $account->account_config['loandebt'][$_POST['loandebt']],
+				'info' => $_POST['message'],
+				'datatime' => $timestamp,
+				'recordtime' => $_G['timestamp']
+			);
+			DB::insert('account_loandebt', $insarr);
 		}
 		break;
 		

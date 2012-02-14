@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-13
+ *    Last Updated: 2012-02-14
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -100,6 +100,16 @@ class class_account {
 				$ac_profile = DB::fetch_first("SELECT categorytype FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
 				if (empty($ac_profile))	return false;
 				if (!catetype_strtoarr($ac_profile['categorytype'], $this->account_config['catetype'])) return false;
+				break;
+				
+			case "borrow":
+			case "loan":
+			case "repay":
+			case "debt":
+				$ac_profile = DB::fetch_first("SELECT categorytype, loandebt FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
+				if (empty($ac_profile))	return false;
+				if (!catetype_strtoarr($ac_profile['categorytype'], $this->account_config['catetype'])) return false;
+				if (!catetype_strtoarr($ac_profile['loandebt'], $this->account_config['loandebt'])) return false;
 				break;
 				
 			default:
