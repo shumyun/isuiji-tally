@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-12
+ *    Last Updated: 2012-02-13
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  *    未知错误使用已经到 3
@@ -167,7 +167,7 @@ var errTip = function(dom, str, tippos, timeval) {
 /*
  * 二级菜单
  */
-var acc_changeli = function(cur, change) {
+var acc_changehtml = function(cur, change) {
 	curjquery = '#'+cur.replace(".", "\\.");
 	jQuery(curjquery).parent().attr("curstatus", cur);
 	jQuery(curjquery).attr("style", "cursor:auto").toggleClass("a");
@@ -212,19 +212,40 @@ var set_default = function(type){
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
 			jQuery("#s_help").hide();
-			acc_simulateSel('richtype_out', ["hello", "2"]);
 			jQuery("#l_3").html("转账金额：");
 			jQuery("#l_4").html("转入归属：");
 			break;
 			
 		case 3:
-			jQuery("#l_1").html("负债日期：");
-			jQuery("#l_2").html("负债账户：");
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
 			jQuery("#s_help").hide();
-			acc_simulateSel('richtype_out', ["hello", "1"]);
+			
+		case 4:
+			jQuery("#l_1").html("负债日期：");
+			jQuery("#l_2").html("负债账户：");
 			jQuery("#l_3").html("负债金额：");
+			jQuery("#l_4").html("存入归属：");
+			break;
+			
+		case 5:
+			jQuery("#l_1").html("借出日期：");
+			jQuery("#l_2").html("债权账户：");
+			jQuery("#l_3").html("借出金额：");
+			jQuery("#l_4").html("借出归属：");
+			break;
+			
+		case 6:
+			jQuery("#l_1").html("还债日期：");
+			jQuery("#l_2").html("负债账户：");
+			jQuery("#l_3").html("还债金额：");
+			jQuery("#l_4").html("还债归属：");
+			break;
+			
+		case 7:
+			jQuery("#l_1").html("收债日期：");
+			jQuery("#l_2").html("债权账户：");
+			jQuery("#l_3").html("收债金额：");
 			jQuery("#l_4").html("存入归属：");
 			break;
 			
@@ -239,38 +260,72 @@ var set_default = function(type){
 var titledata = {};
 var ajax_radata = function(arr, force){
 	var tmparr = {};
+	var bajax = false;
+	var tmpstr = "";
 	if(force) {
 		tmparr = arr;
 	} else {
 		for (x in arr)
 		{
-			if(typeof titledata[x] == "undefined" || titledata[x] == "") {
+			if(arr[x] == "richtype_out")
+				tmpstr = "richtype";
+			else if (arr[x] == "loan" || arr[x] == "debt")
+				tmpstr = "loandebt";
+			else
+				tmpstr = arr[x];
+			
+			if(typeof titledata[tmpstr] == "undefined" || titledata[tmpstr] == "") {
 				tmparr[x] = arr[x];
+				bajax = true;
 			} else {
-				switch(x) {
+				switch(arr[x]) {
 					case "pay":
 					case "earn":
-						$( "#richname" ).catcomplete( "option", "source",  titledata[x]);
+						jQuery( "#richname" ).catcomplete( "option", "source",  titledata[arr[x]]);
+						break;
+
+					case "richtype":
+					case "richtype_out":
+						acc_simulateSel(arr[x], titledata['richtype']);
 						break;
 						
+					case "loan":
+					case "debt":
+						acc_simulateSel("richtype_out", titledata['loandebt']);
 					default:break;
 				}
 			}
 		}
 	}
 	
+	if( !bajax )
+		return ;
+	
 	jQuery.post("plugin.php?id=account:ajax&func=ra_data", jQuery.param(tmparr), function(data) {
 		var ar_data = (new Function("return " + data))(); //var ar_data = eval('('+data+')');
 		for( x in ar_data) {
 			for (y in ar_data[x]) {
-				titledata[y] = ar_data[x][y];
+				if(y == "richtype_out")
+					titledata["richtype"] = ar_data[x][y];
+				else if(y == "loan" || y == "debt")
+					titledata["loandebt"] = ar_data[x][y];
+				else
+					titledata[y] = ar_data[x][y];
+				
 				switch(y) {
 					case "pay":
 					case "earn":
 						jQuery( "#richname" ).catcomplete( "option", "source",  titledata[y]);
 						break;
+						
 					case "richtype":
-						acc_simulateSel('richtype', titledata[y]);
+					case "richtype_out":
+						acc_simulateSel(y, titledata["richtype"]);
+						break;
+					
+					case "loan":
+					case "debt":
+						acc_simulateSel("richtype_out", titledata["loandebt"]);
 						break;
 						
 					default:break;
@@ -284,39 +339,82 @@ jQuery(document).ready(function($) {
 	$("#li\\.pay").click(function() {
 		var change = $(this).parent().attr("curstatus");
 		if ("li\\.pay" != change){
-			acc_changeli("li.pay", change);
-			$("#lend\\.p").slideUp();
+			acc_changehtml("li.pay", change);
+			$("#loandebt\\.p").slideUp();
 			set_default(("li\\.earn" != change)?1:0);
-			ajax_radata({"catcomplete" : "pay"}, false);
+			ajax_radata(["pay"], false);
 		}
 	});
 	
 	$("#li\\.earn").click(function() {
 		var change = $(this).parent().attr("curstatus");
 		if ("li.earn" != change) {
-			acc_changeli("li.earn", change);
-			$("#lend\\.p").slideUp();
+			acc_changehtml("li.earn", change);
+			$("#loandebt\\.p").slideUp();
 			set_default(("li\\.pay" != change)?1:0);
-			ajax_radata({"catcomplete" : "earn"}, false);
+			ajax_radata(["earn"], false);
 		}
 	});
 	
 	$("#li\\.transfer").click(function() {
 		var change = $(this).parent().attr("curstatus");
 		if ("li.transfer" != change) {
-			acc_changeli("li.transfer", change);
-			$("#lend\\.p").slideUp();
+			acc_changehtml("li.transfer", change);
+			$("#loandebt\\.p").slideUp();
 			set_default(2);
-			acc_simulateSel('richtype_out', titledata['richtype']);
+			ajax_radata(["richtype_out"], false);
 		}
 	});
 	
 	$("#li\\.loandebt").click(function() {
 		var change = $(this).parent().attr("curstatus");
 		if ("li.loandebt" != change) {
-			acc_changeli("li.loandebt", change);
+			acc_changehtml("li.loandebt", change);
 			$("#loandebt\\.p").show("fast");
 			set_default(3);
+			change = $("#loandebt\\.p").attr("curstatus");
+			if ("a.inloan" != change)
+				acc_changehtml("a.inloan", change);
+			ajax_radata(["loan"], false);
+		}
+	});
+	
+	/*
+	 * 隶属 “借贷” 的二级菜单
+	 */
+	$("#a\\.inloan").click(function() {
+		var change = $(this).parent().attr("curstatus");
+		if ("a.inloan" != change) {
+			acc_changehtml("a.inloan", change);
+			set_default(4);
+			ajax_radata(["loan"], false);
+		}
+	});
+
+	$("#a\\.outdebt").click(function() {
+		var change = $(this).parent().attr("curstatus");
+		if ("a.outdebt" != change) {
+			acc_changehtml("a.outdebt", change);
+			set_default(5);
+			ajax_radata(["debt"], false);
+		}
+	});
+
+	$("#a\\.outloan").click(function() {
+		var change = $(this).parent().attr("curstatus");
+		if ("a.outloan" != change) {
+			acc_changehtml("a.outloan", change);
+			set_default(6);
+			ajax_radata(["loan"], false);
+		}
+	});
+
+	$("#a\\.indebt").click(function() {
+		var change = $(this).parent().attr("curstatus");
+		if ("a.indebt" != change) {
+			acc_changehtml("a.indebt", change);
+			set_default(7);
+			ajax_radata(["debt"], false);
 		}
 	});
 });
@@ -471,7 +569,7 @@ jQuery(document).ready(function($) {
 	/*
 	 * 获取一些控件的数据
 	 */
-	var arr = {"catcomplete" : "pay", "select" : "richtype"};
+	var arr = ["pay", "richtype"];
 	ajax_radata(arr, false);
 	
 	
@@ -679,4 +777,3 @@ jQuery(document).ready(function($) {
 		}
 	});
 });
-

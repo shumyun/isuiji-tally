@@ -15,22 +15,25 @@ if(!defined('IN_DISCUZ')) {
 define('NOROBOT', TRUE);
 
 
-$arr = '';
-$i = 0;
-foreach($_POST as $key => $data) {
-	switch($key) {
-		case 'catcomplete':
-			if($data == 'pay') {
-				$arr[$i++] = 'paytype';
-			}else if($data == 'earn') {
-				$arr[$i++] = 'earntype';
-			}
+$arr_post = '';
+foreach($_POST as $data) {
+	switch($data) {
+		case 'pay':
+			$arr_post['paytype'] = $data;
 			break;
 			
-		case 'select':
-			if($data == 'richtype') {
-				$arr[$i++] = 'categorytype';
-			}
+		case 'earn':
+			$arr_post['earntype'] = $data;
+			break;
+			
+		case 'richtype':
+		case 'richtype_out':
+			$arr_post['categorytype'] = $data;
+			break;
+			
+		case "loan":
+		case "debt":
+			$arr_post['loandebt'] = $data;
 			break;
 			
 		default:
@@ -39,7 +42,9 @@ foreach($_POST as $key => $data) {
 	}
 }
 
-if(!$account->run_radata($_G['uid'], $arr)) {
+$arr = array_keys($arr_post);
+
+if($arr == '' || !$account->run_radata($_G['uid'], $arr)) {
 	echo 'err';
 	return;
 }
@@ -49,15 +54,19 @@ $titledata = '[';
 foreach($arr as $data) {
 	switch($data) {
 		case 'paytype':
-			$titledata .= '{"pay":'.title_arrtojs($account->account_config['paytype']).'},';
+			$titledata .= '{"'.$arr_post[$data].'":'.title_arrtojs($account->account_config['paytype']).'},';
 			break;
 				
 		case 'earntype':
-			$titledata .= '{"earn":'.title_arrtojs($account->account_config['earntype']).'},';
+			$titledata .= '{"'.$arr_post[$data].'":'.title_arrtojs($account->account_config['earntype']).'},';
 			break;
 			
 		case 'categorytype':
-			$titledata .= '{"richtype":'.catetype_arrtojs($account->account_config['catetype']).'},';
+			$titledata .= '{"'.$arr_post[$data].'":'.catetype_arrtojs($account->account_config['catetype']).'},';
+			break;
+			
+		case 'loandebt':
+			$titledata .= '{"'.$arr_post[$data].'":'.catetype_arrtojs($account->account_config['loandebt']).'},';
 			break;
 			
 		default:

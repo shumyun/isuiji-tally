@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-09
+ *    Last Updated: 2012-02-13
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -38,7 +38,7 @@ if( !($timestamp = strtotime($_POST['richdate'])) ) {
 	return;
 }
 
-if(empty($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype']) ){
+if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype']) ){
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'richtype';
 	//echo "请选择正确的归属";
@@ -59,7 +59,7 @@ switch ( $_POST['curstatus'] ) {
 			'uid' => $_G['uid'],
 			'amount' => $_POST['richnum'],
 			'title' => $_POST['richname'].'【'.$_POST['richcategory'].'】',
-			'category' => $account->account_config['cattype'][$_POST['richtype']],
+			'category' => $account->account_config['catetype'][$_POST['richtype']],
 			'info' => $_POST['message'],
 			'datatime' => $timestamp,
 			'recordtime' => $_G['timestamp']
@@ -91,7 +91,7 @@ switch ( $_POST['curstatus'] ) {
 			'uid' => $_G['uid'],
 			'amount' => $_POST['richnum'],
 			'title' => $_POST['richname'].'【'.$_POST['richcategory'].'】',
-			'category' => $account->account_config['cattype'][$_POST['richtype']],
+			'category' => $account->account_config['catetype'][$_POST['richtype']],
 			'info' => $_POST['message'],
 			'datatime' => $timestamp,
 			'recordtime' => $_G['timestamp']
@@ -112,19 +112,18 @@ switch ( $_POST['curstatus'] ) {
 		break;
 		
 	case 'transfer':
-		if($_POST['richtype'] == $_POST['richtype_out']){
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richtype_same';
-			//echo "请选择正确的归属";
-		} else if($_POST['richtype_out'] >= count($account->account_config['cattype'])) {
+		if(!isset($_POST['richtype_out']) || $_POST['richtype_out'] >= count($account->account_config['catetype'])) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype_out';
+		} else if($_POST['richtype'] == $_POST['richtype_out']){
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype_same';
 		} else {
 			$insarr = array(
 				'uid' => $_G['uid'],
 				'amount' => $_POST['richnum'],
-				'icategory' => $account->account_config['cattype'][$_POST['richtype']],
-				'ocategory' => $account->account_config['cattype'][$_POST['richtype_out']],
+				'icategory' => $account->account_config['catetype'][$_POST['richtype']],
+				'ocategory' => $account->account_config['catetype'][$_POST['richtype_out']],
 				'info' => $_POST['message'],
 				'datatime' => $timestamp,
 				'recordtime' => $_G['timestamp']

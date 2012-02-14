@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-11
+ *    Last Updated: 2012-02-13
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -21,7 +21,8 @@ class class_account {
 	public $account_config = array(
 			'earntype'    => '',
 			'paytype'     => '',
-			'catetype'     => '',
+			'catetype'    => '',
+			'loandebt'    => '',
 			'totalamount' => 0);
 	
 	public function run_modrichadd($ac_uid) {
@@ -67,6 +68,9 @@ class class_account {
 					break;
 				case 'categorytype':
 					if (!catetype_strtoarr($ac_profile['categorytype'], $this->account_config['catetype'])) return false;
+					break;
+				case 'loandebt':
+					if (!catetype_strtoarr($ac_profile['loandebt'], $this->account_config['loandebt'])) return false;
 					break;
 				default:
 					return false;
