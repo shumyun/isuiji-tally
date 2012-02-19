@@ -1,13 +1,14 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2011-11-16
+ *    Last Updated: 2012-02-19
  *    Author: shumyun
- *    Copyright (C) 2011 - forever 57day.com Inc
+ *    Copyright (C) 2011 - forever jiashe.net Inc
  */
 
 /** plugin::account **/
 
+/* 账单增加页面 */
 /* 图片 */
 .ac-icon { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 2px; }
 .ac-icon-pay { background-position: 0 -28px; }
@@ -57,14 +58,23 @@
 	/* 财务收支简报表 */
 	.ac_smreport img { float: left; margin-top: 7px; }
 		/* 表格(参照module.css 用户组页面 home_spacecp) */
-		.ac_tb { width: 100%; overflow: hidden; zoom: 1; margin: 10px 0; *padding-bottom: 10px; }
+		.ac_tb { width: 100%; overflow: hidden; zoom: 1; margin: 10px 0; padding-bottom: 10px; }
 			.ac_tb th, .ac_tb td { overflow: hidden; padding: 0 5px; height: 26px; border-width: 0 1px 0 0; border-color: {WRAPBG}; white-space: nowrap; }
 			.ac_tb th { height: 40px; font-weight: 700; border-right: 2px solid #FFF; border-left: 2px solid #FFF; text-align: center; }
 			.ac_tb .h th { height: 24px; border-top: 1px solid {COMMONBORDER}; border-bottom: 1px solid #E5E5E5; background: url({IMGDIR}/tb.png) repeat-x 0 -4px; color: {MIDTEXT}; zoom: 1; }
 		/* 金额数 */
 		a .num {}
 
-
+		
+/* 账单列表 */
+	/* 选项条 */
+	.ac_fl { border: none; }
+	/* 下拉菜单 */
+	.ac_showm { padding-right: 16px; background: url({IMGDIR}/arrwd.gif) no-repeat 100% 50%; cursor: pointer; white-space: nowrap; }
+	.ac_showm a:hover { text-decoration: none; }
+	.ac_hidem { padding-right: 16px; background: #FFF url({IMGDIR}/arrow_top.gif) no-repeat 100% 50%; cursor: pointer; white-space: nowrap; border: 1px solid {COMMONBORDER}; border-bottom-color: #FFF; }
+	.ac_hidem a:hover { text-decoration: none; }
+	
 /** end **/
 /*
  * .mi .moodfm_input { width: 350px; height: 58px; background: {COMMONBORDER} url({IMGDIR}/mood_input.png) no-repeat 0 0; }

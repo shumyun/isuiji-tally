@@ -35,10 +35,12 @@ $acc_mod = in_array($_GET['mod'], array('richadd', 'richlist', 'richbudget', 'ri
 
 switch ($acc_mod) {
 	case 'richlist':
+		require_once 'mod/mod_richlist.php';
+		include template('account:richlist');
 		break;
 		
 	default:
-		require_once DISCUZ_ROOT.$basedir.'mod/mod_richadd.php';
+		require_once 'mod/mod_richadd.php';
 		include template('account:index');
 		break;
 }

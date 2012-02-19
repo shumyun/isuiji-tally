@@ -1,0 +1,57 @@
+<!--{template common/header}-->
+
+<div id="pt" class="bm cl">
+	<div class="z">
+		<a href="./" class="nvhm" title="{lang homepage}">$_G[setting][bbname]</a>
+		<em>&rsaquo;</em>
+		<a href="$baseurl">理财中心</a> <em>&rsaquo;</em> 账单清单
+	</div>
+</div>
+
+<style id="diy_style" type="text/css"></style>
+
+<!--[diy=diyaccounttop]--><div id="diyaccounttop" class="area"></div><!--[/diy]-->
+
+<div class="ct2_a wp cl">
+	<div class="mn">
+		<!--[diy=diycontenttop]--><div id="diycontenttop" class="area"></div><!--[/diy]-->
+		<div class="bm bw0">
+			<h1 class="mt">account_list</h1>
+			<ul class="tb cl">
+				<li class="ac_hidem"><a style="padding-right: 0; border: none; background: transparent;">2012年</a></li>
+				<li class="a"><a>全年</a></li>
+				<li class="y showmenu"><a style="padding-right: 0;">收起周报表</a></li>
+			</ul>
+		</div>
+		<div class="fl ac_fl">
+		<div class="bm">
+			<div class="bm_h">
+			<span class="ac_x showmenu"><a>所有账单名称</a></span><span class="pipe">|</span>
+			<span class="ac_x showmenu"><a>所有收支分类</a></span><span class="pipe">|</span>
+			<span class="ac_x showmenu"><a>所有归属</a></span><span class="pipe">|</span>
+			<span class="ac_x showmenu"><a>时间范围</a></span>
+			</div>
+		</div>
+		</div>
+	</div>
+	
+	<div class="appl">
+		<div class="tbn">
+			<h2 class="mt bbda">理财中心</h2>
+			<ul>
+				<li><a href="$baseurl">账单新增</a></li>
+				<li class="a"><a href="$baseurl&mod=richlist">账本清单</a></li>
+				<li><a href="$baseurl&mod=richbudget&act=showlist">账目预算</a></li>
+				<li><a href="$baseurl&mod=richcount&act=showlist">报表统计</a>
+				<li><a href="$baseurl&mod=richset&act=set">账本设置</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<!--[diy=diyaccountbottom]--><div id="diyaccountbottom" class="area"></div><!--[/diy]-->
+
+<script type="text/javascript" src="{$basedir}js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="{$basedir}js/richlist.js"></script>
+
+<!--{template common/footer}-->
