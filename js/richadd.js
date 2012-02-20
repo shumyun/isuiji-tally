@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-14
+ *    Last Updated: 2012-02-20
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  *    未知错误使用已经到 3
@@ -601,12 +601,12 @@ jQuery(document).ready(function($) {
 	/*
 	 * 提交数据
 	 */
-	ac_ajax = jQuery('<div style="position: absolute;" />')
+	ac_ajax = $('<div style="position: absolute;" />')
 				.appendTo("body")
 				.position({
 				  my: "center center",
 				  at: "center center",
-				  of: jQuery("#richaddlist"),
+				  of: $("#richaddlist"),
 				  offset: "-50 -50"
 				}).hide();
 	$("#richaddbtn").click( function() {
