@@ -8,6 +8,8 @@
 
 jQuery.noConflict();
 
-jQuery(".ac_x.showmenu").click(function() {
-	alert('OK');
+jQuery(document).ready(function($) {
+	  $("#li_popmenu").click(function() {
+	    $("#li_popmenu").toggleClass("ac_showm ac_hidem");
+	  });
 });
