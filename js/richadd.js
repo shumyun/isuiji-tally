@@ -340,9 +340,9 @@ jQuery(document).ready(function($) {
 		var change = $(this).parent().attr("curstatus");
 		if ("li\\.pay" != change){
 			acc_changehtml("li.pay", change);
-			$("#p\\.loandebt").slideUp();
 			set_default(("li\\.earn" != change)?1:0);
 			ajax_radata(["pay"], false);
+			$("#p\\.loandebt").slideUp();
 		}
 	});
 	
@@ -350,9 +350,9 @@ jQuery(document).ready(function($) {
 		var change = $(this).parent().attr("curstatus");
 		if ("li.earn" != change) {
 			acc_changehtml("li.earn", change);
-			$("#p\\.loandebt").slideUp();
 			set_default(("li\\.pay" != change)?1:0);
 			ajax_radata(["earn"], false);
+			$("#p\\.loandebt").slideUp();
 		}
 	});
 	
@@ -360,9 +360,9 @@ jQuery(document).ready(function($) {
 		var change = $(this).parent().attr("curstatus");
 		if ("li.transfer" != change) {
 			acc_changehtml("li.transfer", change);
-			$("#p\\.loandebt").slideUp();
 			set_default(2);
 			ajax_radata(["richtype_out"], false);
+			$("#p\\.loandebt").slideUp();
 		}
 	});
 	
@@ -370,12 +370,12 @@ jQuery(document).ready(function($) {
 		var change = $(this).parent().attr("curstatus");
 		if ("li.loandebt" != change) {
 			acc_changehtml("li.loandebt", change);
-			$("#p\\.loandebt").show("fast");
 			set_default(3);
 			change = $("#p\\.loandebt").attr("curstatus");
 			if ("a.borrow" != change)
 				acc_changehtml("a.borrow", change);
 			ajax_radata(["loan"], false);
+			$("#p\\.loandebt").show();
 		}
 	});
 	
