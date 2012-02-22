@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-20
+ *    Last Updated: 2012-02-22
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
