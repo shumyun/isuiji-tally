@@ -36,8 +36,8 @@ jQuery(document).ready(function($) {
 			$("#a_time").attr("style", "border-bottom-color: #fff;");
 		}
 	});
-	$("#a_popmenu").focusout(function() {
-		//ac_ajax.hide();
-		$("#a_popmenu").click();
+	
+	$(document).click(function(e){
+		alert(e.target.id);
 	});
 });
