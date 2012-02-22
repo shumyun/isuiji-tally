@@ -8,6 +8,10 @@
 
 jQuery.noConflict();
 
+
+/*
+ * 时间选择控件
+ */
 jQuery(document).ready(function($) {
 	// z-index:301;
 	ac_ajax = $('<div class="p_pop" style="position: absolute; border-top: none;">1</div>')
@@ -19,17 +23,21 @@ jQuery(document).ready(function($) {
 		offset: "0 2"
 	}).hide();
 	
-	$("#li_popmenu").toggle(
+	$("#a_popmenu").toggle(
 		function() {ac_ajax.show();},
 		function() {ac_ajax.hide();}
 	);
 	
-	$("#li_popmenu").click(function() {
+	$("#a_popmenu").click(function() {
 		$("#li_popmenu").toggleClass("ac_showm ac_hidem");
 		if($("#li_popmenu").hasClass("ac_hidem")) {
 			$("#a_time").attr("style", "border-bottom-color: #CDCDCD;");
 		} else {
 			$("#a_time").attr("style", "border-bottom-color: #fff;");
 		}
+	});
+	$("#a_popmenu").focusout(function() {
+		//ac_ajax.hide();
+		$("#a_popmenu").click();
 	});
 });

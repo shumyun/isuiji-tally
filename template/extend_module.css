@@ -71,11 +71,9 @@
 	.ac_fl { border: none; }
 	/* 下拉菜单 */
 	.ac_showm { padding-right: 16px; background: url({IMGDIR}/arrwd.gif) no-repeat 100% 50%; cursor: pointer; white-space: nowrap; }
-	.ac_showm a:hover { text-decoration: none; }
 	.ac_hidem { padding-right: 16px; background: #FFF url({IMGDIR}/arrow_top.gif) no-repeat 100% 50%; cursor: pointer; white-space: nowrap; border: 1px solid {COMMONBORDER}; border-bottom-color: #fff; }
-	.ie6 .ac_hidem, .ie6 #a_time { position: relative; }
-	.ac_a {  }
-	.ac_hidem a:hover { text-decoration: none; }
+	.ie6 .ac_hidem { position: relative; }
+	.ac_showm a:hover, .ac_hidem a:hover, .ac_x a:hover { text-decoration: none; }
 	
 /** end **/
 /*
