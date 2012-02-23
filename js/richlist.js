@@ -14,7 +14,10 @@ jQuery.noConflict();
  */
 jQuery(document).ready(function($) {
 	// z-index:301;
-	ac_ajax = $('<div class="p_pop" style="position: absolute; border-top: none;">1</div>')
+	ac_ajax = $('<div class="p_pop ac_li" style="position: absolute; border-top: none;">\
+					<ul>\
+						<li>本月</li><li>上一个月</li><li>本年</li><li>按月查询</li><li>按时间段查询</li>\
+					</ul></div>')
 	.appendTo("body")
 	.position({
 		my: "left top",
@@ -24,12 +27,12 @@ jQuery(document).ready(function($) {
 	}).hide();
 	
 	$(document).click(function(e){
-		if( !ac_ajax.is(":hidden") && e.target.id != "a_popmenu") {
-			$("#a_popmenu").click();
+		if( !ac_ajax.is(":hidden") && e.target.id != "li_popmenu") {
+			$("#li_popmenu").click();
 		}
 	});
 	
-	$("#a_popmenu").click(function() {
+	$("#li_popmenu").click(function() {
 		$("#li_popmenu").toggleClass("ac_showm ac_hidem");
 		if(ac_ajax.is(":hidden")){
 			$("#a_time").attr("style", "border-bottom-color: #CDCDCD;");
@@ -39,6 +42,5 @@ jQuery(document).ready(function($) {
 			ac_ajax.hide();
 		}
 	});
-	
 	
 });

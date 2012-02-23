@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-20
+ *    Last Updated: 2012-02-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -74,7 +74,8 @@
 	.ac_hidem { padding-right: 16px; background: #FFF url({IMGDIR}/arrow_top.gif) no-repeat 100% 50%; cursor: pointer; white-space: nowrap; border: 1px solid {COMMONBORDER}; border-bottom-color: #fff; }
 	.ie6 .ac_hidem { position: relative; }
 	.ac_showm a:hover, .ac_hidem a:hover, .ac_x a:hover { text-decoration: none; }
-	
+	.ac_li li{ color: #666666; cursor: pointer; padding: 2px 0; list-style: disc inside none; display: list-item; }
+	.ac_li li:hover { color: #F26C4F; }
 /** end **/
 /*
  * .mi .moodfm_input { width: 350px; height: 58px; background: {COMMONBORDER} url({IMGDIR}/mood_input.png) no-repeat 0 0; }
