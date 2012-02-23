@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-22
+ *    Last Updated: 2012-02-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -23,21 +23,22 @@ jQuery(document).ready(function($) {
 		offset: "0 2"
 	}).hide();
 	
-	$("#a_popmenu").toggle(
-		function() {ac_ajax.show();},
-		function() {ac_ajax.hide();}
-	);
-	
-	$("#a_popmenu").click(function() {
-		$("#li_popmenu").toggleClass("ac_showm ac_hidem");
-		if($("#li_popmenu").hasClass("ac_hidem")) {
-			$("#a_time").attr("style", "border-bottom-color: #CDCDCD;");
-		} else {
-			$("#a_time").attr("style", "border-bottom-color: #fff;");
+	$(document).click(function(e){
+		if( !ac_ajax.is(":hidden") && e.target.id != "a_popmenu") {
+			$("#a_popmenu").click();
 		}
 	});
 	
-	$(document).click(function(e){
-		alert(e.target.id);
+	$("#a_popmenu").click(function() {
+		$("#li_popmenu").toggleClass("ac_showm ac_hidem");
+		if(ac_ajax.is(":hidden")){
+			$("#a_time").attr("style", "border-bottom-color: #CDCDCD;");
+			ac_ajax.show();
+		} else {
+			$("#a_time").attr("style", "border-bottom-color: #fff;");
+			ac_ajax.hide();
+		}
 	});
+	
+	
 });
