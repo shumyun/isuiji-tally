@@ -13,32 +13,27 @@ jQuery.noConflict();
  * 时间选择控件
  */
 jQuery(document).ready(function($) {
-	var sel_time1 = $('<div class="p_pop ac_li" style="position: absolute; border-top: none;">\
-					<ul>\
-						<li>最近一个月</li><li>上一个月</li><li>最近一年</li><li>按月份查询</li>\
-					</ul></div>')
-	.appendTo("body")
-	.position({
+	$('#pop_time1').position({
 		my: "left top",
 		at: "left bottom",
 		of: $("#li_popmenu"),
 		offset: "0 2"
-	}).hide();
+	});
 	
 	$(document).click(function(e){
-		if( !sel_time1.is(":hidden") && e.target.id != "li_popmenu" && e.target.id != "a_popmenu") {
+		if( !$('#pop_time1').is(":hidden") && e.target.id != "li_popmenu" && e.target.id != "a_popmenu") {
 			$("#li_popmenu").click();
 		}
 	});
 	
 	$("#li_popmenu").click(function() {
 		$("#li_popmenu").toggleClass("ac_showm ac_hidem");
-		if(sel_time1.is(":hidden")){
+		if($('#pop_time1').is(":hidden")){
 			$("#a_time").attr("style", "border-bottom-color: #CDCDCD;");
-			sel_time1.show();
+			$('#pop_time1').show();
 		} else {
 			$("#a_time").attr("style", "border-bottom-color: #fff;");
-			sel_time1.hide();
+			$('#pop_time1').hide();
 		}
 	});
 
