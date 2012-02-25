@@ -72,12 +72,32 @@
 	
 	/* 下拉菜单的按钮 */
 	.ac_showm { padding-right: 16px; background: url({IMGDIR}/arrwd.gif) no-repeat 100% 50%; cursor: pointer; white-space: nowrap; }
-	.ac_hidem {padding-right: 16px; background: #FFF url({IMGDIR}/arrow_top.gif) no-repeat 100% 50%; cursor: pointer; white-space: nowrap; border: 1px solid {COMMONBORDER}; border-bottom-color: #fff; }
-	.ie6 .ac_hidem { position: relative; }
-	.ac_showm a:hover, .ac_hidem a:hover, .ac_x a:hover { text-decoration: none; }
-	.ac_li { line-height: 20px; }
-		.ac_li li{ float:none; color: #666666; cursor: pointer; padding: 2px 0; list-style: disc inside none; display: list-item; }
-		.ac_li li:hover { color: #F26C4F; }
+	.ac_hidem { line-height: 15px; position: absolute; z-index: 110; display: none; background: #FFF url({IMGDIR}/arrow_top.gif) no-repeat 100% 50%; cursor: pointer; white-space: nowrap; border: 1px solid {COMMONBORDER}; border-bottom-color: #fff; }
+	.li_hidem { padding-right: 16px; background: #FFF url({IMGDIR}/arrow_top.gif) no-repeat 100% 50%; cursor: pointer; white-space: nowrap; border: 1px solid {COMMONBORDER}; border-bottom-color: #fff; }
+		.ie6 .li_hidem { position: relative; }
+	.ac_showm a:hover, .ac_hidem a:hover, .li_hidem a:hover, .ac_x a:hover { text-decoration: none; }
+		
+	/* 下拉菜单界面 */
+	/* 选择框图片 */
+	.selimg_empty { padding-left: 20px; background: url(../../source/plugin/account/js/images/checkbox_14x90.gif) no-repeat 0 0; }
+	.selimg_part { background-position: 0 -15px; }
+	.selimg_full { background-position: 0 -30px; }
+	.selimg_hempty { background-position: 0 -45px; }
+	.selimg_hpart { background-position: 0 -60px; }
+	.selimg_hfull { background-position: 0 -75px; }
+	/* 顶级菜单图片 */
+	.selimg_arrow { padding-right: 15px; background: url(../../source/plugin/account/js/images/arrows_15x40.gif) no-repeat 100% 0; }
+	.selimg_harrow { background-position: 100% -20px; }
+	
+	/* 参考 .p_pop 写法 */
+	.ac_pop { padding: 4px; border: 1px solid; min-width: 60px; border-color: {DROPMENUBORDER}; {DROPMENUBGCODE}; box-shadow: 1px 2px 2px rgba(0,0,0,0.3); line-height: 20px; position: absolute; z-index: 100; display: none; }
+		.ie6 .p_pop { width: 100px; }
+		.ac_pop li { cursor: pointer; }
+		.ac_pop a:hover { color: #F26C4F; }
+		
+	.ac_li { position: absolute; border-top: none; line-height: 20px; }
+		.ac_li li { float:none; color: #666666; cursor: pointer; padding: 2px 0; list-style: disc inside none; display: list-item; }
+		.ac_li li:hover, .ac_pop li:hover { color: #F26C4F; }
 	
 	.ac_sel { padding: 3px 16px 3px 6px; }
 /** end **/
