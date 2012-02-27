@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-26
+ *    Last Updated: 2012-02-27
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -32,7 +32,7 @@ foreach($type as $data) {
 			$ac_ndiv .= '<li a_clsid="0"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
 		} else if(is_array($val)) {
 			$div_arr[$div_i] = $val;
-			$ac_ndiv .= '<li class="selimg_arrow" a_clsid="0" div_id="popn_'.$div_i.'"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
+			$ac_ndiv .= '<li class="selimg_arrow" a_clsid="0" sum="0" count="'.count($val).'" div_id="popn_'.$div_i.'"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
 			$div_i++;
 		}
 	}

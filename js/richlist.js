@@ -56,9 +56,15 @@ jQuery(document).ready(function($) {
 		$("#ac_popn").attr("style", "display: none");
 	});
 	
-	var time_id, divid, li_id;
+	var time_id = divid = null, li_id;
 	$("#ul_popn > li").each(function(){
 		$(this).mouseenter(function() {
+			if(time_id && divid){
+				clearTimeout(time_id);
+				$("#"+divid).attr("style", "display: none");
+				divid = null;
+				time_id = null;
+			}
 			li_id = this;
 			var a_clsid = $(this).attr("a_clsid");
 			var a_hclsid = parseInt(a_clsid) + 3;
@@ -81,15 +87,17 @@ jQuery(document).ready(function($) {
 			$(this).attr("a_clsid", a_clsid);
 			if($(this).hasClass("selimg_arrow")) {
 				$(this).removeClass("selimg_harrow");
-				if(time_id){
+				if(time_id && divid){
 					clearTimeout(time_id);
 					$("#"+divid).attr("style", "display: none");
+					time_id = null;
+					divid = null;
 				}
+				divid = $(this).attr("div_id");
 				time_id = setTimeout(function() {
 					jQuery("#"+divid).attr("style", "display: none");
 					time_id = null;
 				}, 150);
-				divid = $(this).attr("div_id");
 			}
 			$("a", this).addClass("selimg_"+a_clsid);
 			$("a", this).removeClass("ac_ahover selimg_"+a_hclsid);
@@ -142,6 +150,28 @@ jQuery(document).ready(function($) {
 		$(this).click(function(){
 			$("a", this).toggleClass("selimg_3 selimg_5");
 			var a_clsid = $(this).attr("a_clsid");
+			if(li_id){
+				var tmp = $(li_id).attr("sum");
+				if(a_clsid == "3") {
+					tmp++;
+				} else if(a_clsid == "5") {
+					tmp--;
+				}
+				$(li_id).attr("sum", tmp);
+				if(tmp == 0){
+					$("a", li_id).addClass("selimg_3");
+					$("a", li_id).removeClass("selimg_4 selimg_5");
+					$(li_id).attr("a_clsid", 0);
+				} else if (tmp == $(li_id).attr("count")) {
+					$("a", li_id).addClass("selimg_5");
+					$("a", li_id).removeClass("selimg_3 selimg_4");
+					$(li_id).attr("a_clsid", 2);
+				} else {
+					$("a", li_id).addClass("selimg_4");
+					$("a", li_id).removeClass("selimg_3 selimg_5");
+					$(li_id).attr("a_clsid", 1);
+				}
+			}
 			$(this).attr("a_clsid", (a_clsid-1)%4+3);
 		});
 	});
