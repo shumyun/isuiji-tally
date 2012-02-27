@@ -25,11 +25,11 @@ $type = $account->account_config['paytype'];
 $div_i = 0;
 $div_arr = array();
 $ac_ndiv = '<div id="ac_popn" class="ac_pop">';
-$ac_ndiv .= '<ul id="ul_popn">';
+$ac_ndiv .= '<ul id="ul_popn" class="ac_ul">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){
-			$ac_ndiv .= '<li a_clsid="0"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
+			$ac_ndiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
 		} else if(is_array($val)) {
 			$div_arr[$div_i] = $val;
 			$ac_ndiv .= '<li class="selimg_arrow" a_clsid="0" sum="0" count="'.count($val).'" div_id="popn_'.$div_i.'"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
