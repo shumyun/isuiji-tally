@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-26
+ *    Last Updated: 2012-02-27
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -61,7 +61,7 @@ jQuery(document).ready(function($) {
 		$(this).mouseenter(function() {
 			li_id = this;
 			var a_clsid = $(this).attr("a_clsid");
-			var a_hclsid = a_clsid + 3;
+			var a_hclsid = parseInt(a_clsid) + 3;
 			$(this).attr("a_clsid", a_hclsid);
 			if($(this).hasClass("selimg_arrow")) {
 				$(this).addClass("selimg_harrow");
@@ -76,9 +76,9 @@ jQuery(document).ready(function($) {
 		});
 	
 		$(this).mouseleave(function() {
-			var a_clsid = $(this).attr("a_clsid");
-			var a_hclsid = a_clsid - 3;
-			$(this).attr("a_clsid", a_hclsid);
+			var a_hclsid = $(this).attr("a_clsid");
+			var a_clsid = parseInt(a_hclsid) - 3;
+			$(this).attr("a_clsid", a_clsid);
 			if($(this).hasClass("selimg_arrow")) {
 				$(this).removeClass("selimg_harrow");
 				if(time_id){
@@ -105,7 +105,7 @@ jQuery(document).ready(function($) {
 			if(li_id){
 				$(li_id).addClass("selimg_harrow");
 				var a_clsid = $(li_id).attr("a_clsid");
-				var a_hclsid = a_clsid + 3;
+				var a_hclsid = parseInt(a_clsid) + 3;
 				$("a", li_id).removeClass("selimg_"+a_clsid);
 				$("a", li_id).addClass("ac_ahover selimg_"+a_hclsid);
 			}
@@ -116,7 +116,7 @@ jQuery(document).ready(function($) {
 			if(li_id){
 				$(li_id).removeClass("selimg_harrow");
 				var a_clsid = $(li_id).attr("a_clsid");
-				var a_hclsid = a_clsid + 3;
+				var a_hclsid = parseInt(a_clsid) + 3;
 				$("a", li_id).addClass("selimg_"+a_clsid);
 				$("a", li_id).removeClass("ac_ahover selimg_"+a_hclsid);
 				li_id = null;
@@ -137,6 +137,12 @@ jQuery(document).ready(function($) {
 			var a_hclsid = parseInt(a_clsid) - 3;
 			$(this).attr("a_clsid", a_hclsid);
 			$("a", this).toggleClass("ac_ahover selimg_"+a_clsid+" selimg_"+a_hclsid);
+		});
+		
+		$(this).click(function(){
+			$("a", this).toggleClass("selimg_3 selimg_5");
+			var a_clsid = $(this).attr("a_clsid");
+			$(this).attr("a_clsid", (a_clsid-1)%4+3);
 		});
 	});
 	
