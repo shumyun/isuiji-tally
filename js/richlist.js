@@ -13,6 +13,10 @@ jQuery.noConflict();
  * 时间选择控件
  */
 jQuery(document).ready(function($) {
+	
+	/*
+	 * 顶头显示时间选项
+	 */
 	var pop_time1 = $('<div class="p_pop ac_li"><ul><li>最近一个月</li><li>上一个月</li><li>最近一年</li><li>按月份查询</li></ul></div>')
 	.appendTo("body")
 	.position({
@@ -52,44 +56,71 @@ jQuery(document).ready(function($) {
 		$("#ac_popn").attr("style", "display: none");
 	});
 	
-
+	var time_id, divid, li_id;
 	$("#ul_popn > li").each(function(){
 		$(this).mouseenter(function() {
+			li_id = this;
 			var a_clsid = $(this).attr("a_clsid");
-			var a_hclsid = parseInt(a_clsid) + 3;
+			var a_hclsid = a_clsid + 3;
 			$(this).attr("a_clsid", a_hclsid);
 			if($(this).hasClass("selimg_arrow")) {
-				$(this).toggleClass("selimg_harrow");
+				$(this).addClass("selimg_harrow");
 				var divid = $(this).attr("div_id");
 				var pos = $(this).position();
 				pos.top = parseFloat(popn_pos.top) + parseFloat(pos.top);
 				pos.left = $("#ac_popn").width() + 5 + popn_pos.left;
 				$("#"+divid).attr("style", "display: block; left:"+pos.left+"px; top:"+pos.top+"px;");
 			}
-			$("a", this).toggleClass("ac_ahover selimg_"+a_clsid+" selimg_"+a_hclsid);
+			$("a", this).removeClass("selimg_"+a_clsid);
+			$("a", this).addClass("ac_ahover selimg_"+a_hclsid);
 		});
 	
 		$(this).mouseleave(function() {
 			var a_clsid = $(this).attr("a_clsid");
-			var a_hclsid = parseInt(a_clsid) - 3;
+			var a_hclsid = a_clsid - 3;
 			$(this).attr("a_clsid", a_hclsid);
 			if($(this).hasClass("selimg_arrow")) {
-				$(this).toggleClass("selimg_harrow");
-				var divid = $(this).attr("div_id");
-				$("#"+divid).mouseenter();
-				/*
-				$("#"+divid).attr("style", "display: none");*/
+				$(this).removeClass("selimg_harrow");
+				if(time_id){
+					clearTimeout(time_id);
+					$("#"+divid).attr("style", "display: none");
+				}
+				time_id = setTimeout(function() {
+					jQuery("#"+divid).attr("style", "display: none");
+					time_id = null;
+				}, 150);
+				divid = $(this).attr("div_id");
 			}
-			$("a", this).toggleClass("ac_ahover selimg_"+a_clsid+" selimg_"+a_hclsid);
+			$("a", this).addClass("selimg_"+a_clsid);
+			$("a", this).removeClass("ac_ahover selimg_"+a_hclsid);
 		});
 	});
 	
 	$("[popn='div']").each(function(){
 		$(this).mouseenter(function() {
+			if(time_id){
+				clearTimeout(time_id);
+				time_id = null;
+			}
+			if(li_id){
+				$(li_id).addClass("selimg_harrow");
+				var a_clsid = $(li_id).attr("a_clsid");
+				var a_hclsid = a_clsid + 3;
+				$("a", li_id).removeClass("selimg_"+a_clsid);
+				$("a", li_id).addClass("ac_ahover selimg_"+a_hclsid);
+			}
 		});
 
 		$(this).mouseleave(function() {
 			$(this).attr("style", "display: none");
+			if(li_id){
+				$(li_id).removeClass("selimg_harrow");
+				var a_clsid = $(li_id).attr("a_clsid");
+				var a_hclsid = a_clsid + 3;
+				$("a", li_id).addClass("selimg_"+a_clsid);
+				$("a", li_id).removeClass("ac_ahover selimg_"+a_hclsid);
+				li_id = null;
+			}
 		});
 	});
 	
