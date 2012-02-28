@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-27
+ *    Last Updated: 2012-02-28
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -14,8 +14,21 @@ jQuery.noConflict();
  */
 jQuery(document).ready(function($) {
 	
+	var hiden_time1 = true, hiden_pop = true, cur_popbtn = null, cur_pop = null;
+	$(document).click(function(e){
+		if( !pop_time1.is(":hidden") && hiden_time1) {
+			$("#li_popmenu").click();
+		}
+		if( cur_popbtn && cur_pop && hiden_pop) {
+			$(cur_popbtn).attr("style", "display: none");
+			$(cur_pop).attr("style", "display: none");
+			cur_popbtn = cur_pop = null;
+		}
+		hiden_time1 = hiden_pop = true;
+	});
+	
 	/*
-	 * 顶头显示时间选项
+	 * 显示时间选项
 	 */
 	var pop_time1 = $('<div class="p_pop ac_li"><ul><li>最近一个月</li><li>上一个月</li><li>最近一年</li><li>按月份查询</li></ul></div>')
 	.appendTo("body")
@@ -26,44 +39,88 @@ jQuery(document).ready(function($) {
 		offset: "0 2"
 	}).hide();
 	
-	$(document).click(function(e){
-		if( !pop_time1.is(":hidden") && e.target.id != "li_popmenu" && e.target.id != "a_popmenu") {
-			$("#li_popmenu").click();
-		}
-	});
-	
 	$("#li_popmenu").click(function() {
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		if(pop_time1.is(":hidden")){
 			$("#a_time").attr("style", "border-bottom-color: #CDCDCD;");
 			pop_time1.show();
+			hiden_time1 = false;
 		} else {
 			$("#a_time").attr("style", "border-bottom-color: #fff;");
 			pop_time1.hide();
 		}
 	});
 	
-	var popn_pos;
-	$("#sel_shown").click(function(){
-		popn_pos = $("#sel_shown").position();
-		$("#sel_hiden").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
-		popn_pos.top = popn_pos.top + 22;
-		$("#ac_popn").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
-	});
-	
-	$("#sel_hiden").click(function(){
-		$("#sel_hiden").attr("style", "display: none");
-		$("#ac_popn").attr("style", "display: none");
-	});
-	
+	/**
+	 * @popn_pos	弹出的一级菜单坐标
+	 * @popn_width	弹出的一级菜单宽度
+	 */
+	var popn_pos, popn_width;
 	/*
-	 * time_id	子菜单消失定时器
-	 * div_id   子菜单ID
-	 * li_id    子菜单对应的上级选项
+	 * 支出菜单
+	 */
+	$("#sel_showp").click(function(){
+		if(cur_popbtn && cur_pop){
+			$(cur_popbtn).attr("style", "display: none");
+			$(cur_pop).attr("style", "display: none");
+		}
+		cur_popbtn = "#sel_hidep";
+		cur_pop = "#ac_popp";
+		hiden_pop = false;
+		
+		popn_pos = $("#sel_showp").position();
+		$("#sel_hidep").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_pos.top = popn_pos.top + 22;
+		$("#ac_popp").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_width = $("#ac_popp").width();
+	});
+	
+	$("#sel_hidep").click(function(){
+		$("#sel_hidep").attr("style", "display: none");
+		$("#ac_popp").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+	});
+	/*
+	 * 收入菜单
+	 */
+	$("#sel_showe").click(function(){
+		if(cur_popbtn && cur_pop){
+			$(cur_popbtn).attr("style", "display: none");
+			$(cur_pop).attr("style", "display: none");
+		}
+		cur_popbtn = "#sel_hidee";
+		cur_pop = "#ac_pope";
+		hiden_pop = false;
+		
+		popn_pos = $("#sel_showe").position();
+		$("#sel_hidee").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_pos.top = popn_pos.top + 22;
+		$("#ac_pope").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_width = $("#ac_pope").width();
+	});
+	
+	$("#sel_hidee").click(function(){
+		$("#sel_hidee").attr("style", "display: none");
+		$("#ac_pope").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+	});
+	
+	/**
+	 * @time_id	 子菜单消失定时器
+	 * @div_id   子菜单ID
+	 * @li_id    子菜单对应的上级选项
 	 */
 	var time_id = div_id = null, li_id;
 	/*
-	 * 一级菜单的移入、移开、单击
+	 * 一级菜单的单击
+	 */
+	$("[ac_pop]").each(function(){
+		$(this).click(function(){
+			hiden_pop = false;
+		});
+	});
+	/*
+	 * 一级菜单选项的移入、移开、单击
 	 */
 	$("[ulstyle='ul_popn'] > li").each(function(){
 		$(this).mouseenter(function() {
@@ -81,7 +138,7 @@ jQuery(document).ready(function($) {
 				div_id = $(this).attr("div_id");
 				var pos = $(this).position();
 				pos.top = parseFloat(popn_pos.top) + parseFloat(pos.top);
-				pos.left = $("#ac_popn").width() + 5 + popn_pos.left;
+				pos.left = popn_width + 5 + popn_pos.left;
 				$("#"+div_id).attr("style", "display: block; left:"+pos.left+"px; top:"+pos.top+"px;");
 			}
 			$("a", this).removeClass("selimg_"+a_clsid).addClass("ac_ahover selimg_"+a_hclsid);
@@ -163,6 +220,10 @@ jQuery(document).ready(function($) {
 				li_id = null;
 				divid = null;
 			}
+		});
+		
+		$(this).click(function(){
+			hiden_pop = false;
 		});
 	});
 	

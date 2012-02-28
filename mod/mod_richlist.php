@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-27
+ *    Last Updated: 2012-02-28
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -19,58 +19,78 @@ $arr = array(
 
 $account->run_radata($_G['uid'], $arr);
 
+/*
+ * 支出菜单
+ */
+$ac_pdiv = '<div id="ac_popp" ac_pop="pay" class="ac_pop">';
 $div_i = 0;
 $div_arr = array();
-$ac_ndiv = '<div id="ac_popn" class="ac_pop">';
-
-/*
- * 一级菜单
- */
 $type = $account->account_config['paytype'];
-$ac_ndiv .= '<ul ulstyle="ul_popn" class="ac_ul">';
+$ac_pdiv .= '<ul ulstyle="ul_popn" class="ac_ul">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){
-			$ac_ndiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
+			$ac_pdiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
 		} else if(is_array($val)) {
 			$div_arr[$div_i] = $val;
-			$ac_ndiv .= '<li class="selimg_arrow" a_clsid="0" sum="0" count="'.count($val).'" div_id="popn_'.$div_i.'"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
+			$ac_pdiv .= '<li class="selimg_arrow" a_clsid="0" sum="0" count="'.count($val).'" div_id="pop_p'.$div_i.'"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
 			$div_i++;
 		}
 	}
 }
-$ac_ndiv .= '</ul>';
-$type = $account->account_config['earntype'];
-$ac_ndiv .= '<ul ulstyle="ul_popn">';
-foreach($type as $data) {
-	foreach($data as $key => $val) {
-		if($val == '.'){
-			$ac_ndiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
-		} else if(is_array($val)) {
-			$div_arr[$div_i] = $val;
-			$ac_ndiv .= '<li class="selimg_arrow" a_clsid="0" sum="0" count="'.count($val).'" div_id="popn_'.$div_i.'"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
-			$div_i++;
-		}
-	}
-}
-$ac_ndiv .= '</ul>';
-$ac_ndiv .= '</div>';
-
-/*
- * 子菜单
- */
+$ac_pdiv .= '</ul>';
+$ac_pdiv .= '</div>';
+//支出子菜单
 foreach($div_arr as $key => $data) {
-	$ac_ndiv .= '<div id="popn_'.$key.'" class="ac_pop" popn="div">';
-	$ac_ndiv .= '<ul popn="div_ul">';
+	$ac_pdiv .= '<div id="pop_p'.$key.'" class="ac_pop" popn="div">';
+	$ac_pdiv .= '<ul popn="div_ul">';
 	foreach($data as $val) {
 		foreach($val as $name => $data1){
 			if($data1 == '.') {
-				$ac_ndiv .= '<li a_clsid="0"><a class="selimg_empty selimg_0">'.$name.'</a></li>';
+				$ac_pdiv .= '<li a_clsid="0"><a class="selimg_empty selimg_0">'.$name.'</a></li>';
 			}
 		}
 	}
-	$ac_ndiv .= '</ul>';
-	$ac_ndiv .= '</div>';
+	$ac_pdiv .= '</ul>';
+	$ac_pdiv .= '</div>';
+}
+
+/*
+ * 收入菜单
+ */
+$ac_ediv = '<div id="ac_pope" ac_pop="earn" class="ac_pop">';
+$div_i = 0;
+unset($div_arr);
+unset($type);
+$div_arr = array();
+$type = $account->account_config['earntype'];
+$ac_ediv .= '<ul ulstyle="ul_popn" class="ac_ul">';
+foreach($type as $data) {
+	foreach($data as $key => $val) {
+		if($val == '.'){
+			$ac_ediv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
+		} else if(is_array($val)) {
+			$div_arr[$div_i] = $val;
+			$ac_ediv .= '<li class="selimg_arrow" a_clsid="0" sum="0" count="'.count($val).'" div_id="pop_e'.$div_i.'"><a class="selimg_empty selimg_0">'.$key.'</a></li>';
+			$div_i++;
+		}
+	}
+}
+$ac_ediv .= '</ul>';
+$ac_ediv .= '</div>';
+//收入子菜单
+foreach($div_arr as $key => $data) {
+	$ac_ediv .= '<div id="pop_e'.$key.'" class="ac_pop" popn="div">';
+	$ac_ediv .= '<ul popn="div_ul">';
+	foreach($data as $val) {
+		foreach($val as $name => $data1){
+			if($data1 == '.') {
+				$ac_ediv .= '<li a_clsid="0"><a class="selimg_empty selimg_0">'.$name.'</a></li>';
+			}
+		}
+	}
+	$ac_ediv .= '</ul>';
+	$ac_ediv .= '</div>';
 }
 
 ?>
