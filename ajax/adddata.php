@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-13
+ *    Last Updated: 2012-02-28
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -58,7 +58,8 @@ switch ( $_POST['curstatus'] ) {
 		$insarr = array(
 			'uid' => $_G['uid'],
 			'amount' => $_POST['richnum'],
-			'title' => $_POST['richname'].'【'.$_POST['richcategory'].'】',
+			'onelv' => $_POST['richcategory'],
+			'seclv' => $_POST['richname'],
 			'category' => $account->account_config['catetype'][$_POST['richtype']],
 			'info' => $_POST['message'],
 			'datatime' => $timestamp,
@@ -90,7 +91,8 @@ switch ( $_POST['curstatus'] ) {
 		$insarr = array(
 			'uid' => $_G['uid'],
 			'amount' => $_POST['richnum'],
-			'title' => $_POST['richname'].'【'.$_POST['richcategory'].'】',
+			'onelv' => $_POST['richcategory'],
+			'seclv' => $_POST['richname'],
 			'category' => $account->account_config['catetype'][$_POST['richtype']],
 			'info' => $_POST['message'],
 			'datatime' => $timestamp,

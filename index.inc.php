@@ -38,7 +38,7 @@ switch ($acc_mod) {
 		require_once 'mod/mod_richlist.php';
 		include template('account:richlist');
 		break;
-		
+
 	default:
 		require_once 'mod/mod_richadd.php';
 		include template('account:index');

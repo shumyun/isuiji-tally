@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-11
+ *    Last Updated: 2012-02-28
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -25,7 +25,8 @@ CREATE TABLE pre_account_earndata (
   datatime int(10) unsigned NOT NULL default '0',
   recordtime int(10) unsigned NOT NULL default '0',
   amount decimal(14,2) unsigned NOT NULL default '0.00',
-  title varchar(255) NOT NULL default '',
+  onelv varchar(255) NOT NULL default '',
+  seclv varchar(255) NOT NULL default '',
   category varchar(255) NOT NULL default '',
   info varchar(255) NOT NULL default '',
   PRIMARY KEY (cid)
@@ -39,7 +40,8 @@ CREATE TABLE pre_account_paydata (
   datatime int(10) unsigned NOT NULL default '0',
   recordtime int(10) unsigned NOT NULL default '0',
   amount decimal(14,2) unsigned NOT NULL default '0.00',
-  title varchar(255) NOT NULL default '',
+  onelv varchar(255) NOT NULL default '',
+  seclv varchar(255) NOT NULL default '',
   category varchar(255) NOT NULL default '',
   info varchar(255) NOT NULL default '',
   PRIMARY KEY (cid)

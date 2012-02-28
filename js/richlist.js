@@ -65,7 +65,7 @@ jQuery(document).ready(function($) {
 	/*
 	 * 一级菜单的移入、移开、单击
 	 */
-	$("#ul_popn > li").each(function(){
+	$("[ulstyle='ul_popn'] > li").each(function(){
 		$(this).mouseenter(function() {
 			if(time_id && div_id){	//隐藏上个子菜单
 				clearTimeout(time_id);
