@@ -111,8 +111,6 @@ CREATE TABLE pre_account_profile (
   totalpay decimal(14,2) unsigned NOT NULL default '0.00',
   PRIMARY KEY (uid)
 ) ENGINE=MyISAM;
-
-
 EOF;
 runquery($sql);
 $finish = TRUE;

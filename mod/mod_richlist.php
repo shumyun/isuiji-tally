@@ -26,7 +26,7 @@ $ac_pdiv = '<div id="ac_popp" ac_pop="pay" class="ac_pop">';
 $div_i = 0;
 $div_arr = array();
 $type = $account->account_config['paytype'];
-$ac_pdiv .= '<ul ulstyle="ul_popn" class="ac_ul">';
+$ac_pdiv .= '<ul ulstyle="ul_pay" class="ac_ul">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){
@@ -39,7 +39,7 @@ foreach($type as $data) {
 	}
 }
 $ac_pdiv .= '</ul>';
-$ac_pdiv .= '</div>';
+$ac_pdiv .= '<a class="ac_h selimg_empty selimg_0" a_ulid="ul_pay" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
 //支出子菜单
 foreach($div_arr as $key => $data) {
 	$ac_pdiv .= '<div id="pop_p'.$key.'" class="ac_pop" popn="div">';
@@ -64,7 +64,7 @@ unset($div_arr);
 unset($type);
 $div_arr = array();
 $type = $account->account_config['earntype'];
-$ac_ediv .= '<ul ulstyle="ul_popn" class="ac_ul">';
+$ac_ediv .= '<ul ulstyle="ul_earn" class="ac_ul">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){
@@ -77,7 +77,7 @@ foreach($type as $data) {
 	}
 }
 $ac_ediv .= '</ul>';
-$ac_ediv .= '</div>';
+$ac_ediv .= '<a class="ac_h selimg_empty selimg_0" a_ulid="ul_earn" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
 //收入子菜单
 foreach($div_arr as $key => $data) {
 	$ac_ediv .= '<div id="pop_e'.$key.'" class="ac_pop" popn="div">';

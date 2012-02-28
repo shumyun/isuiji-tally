@@ -80,6 +80,7 @@ jQuery(document).ready(function($) {
 		$("#ac_popp").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
 	});
+	
 	/*
 	 * 收入菜单
 	 */
@@ -105,6 +106,31 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 	});
 	
+	/*
+	 * 账单类型菜单
+	 */
+	$("#sel_showt").click(function(){
+		if(cur_popbtn && cur_pop){
+			$(cur_popbtn).attr("style", "display: none");
+			$(cur_pop).attr("style", "display: none");
+		}
+		cur_popbtn = "#sel_hidet";
+		cur_pop = "#ac_popt";
+		hiden_pop = false;
+		
+		popn_pos = $("#sel_showt").position();
+		$("#sel_hidet").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_pos.top = popn_pos.top + 22;
+		$("#ac_popt").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_width = $("#ac_popt").width();
+	});
+	
+	$("#sel_hidet").click(function(){
+		$("#sel_hidet").attr("style", "display: none");
+		$("#ac_popt").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+	});
+	
 	/**
 	 * @time_id	 子菜单消失定时器
 	 * @div_id   子菜单ID
@@ -116,13 +142,62 @@ jQuery(document).ready(function($) {
 	 */
 	$("[ac_pop]").each(function(){
 		$(this).click(function(){
-			hiden_pop = false;
+			hiden_pop = false;	//在之后的document接受单击信号时不删除菜单
+		});
+	});
+	/*
+	 * “全部”选项的移入、移出、单击
+	 */
+	$("[a_ulid]").each(function(){
+		$(this).mouseenter(function() {
+			var a_clsid = $(this).attr("a_clsid");
+			var a_hclsid = parseInt(a_clsid) + 3;
+			$(this).removeClass("selimg_"+a_clsid).addClass("ac_ahover selimg_"+a_hclsid);
+		});
+
+		$(this).mouseleave(function() {
+			var a_clsid = $(this).attr("a_clsid");
+			var a_hclsid = parseInt(a_clsid) + 3;
+			$(this).addClass("selimg_"+a_clsid).removeClass("ac_ahover selimg_"+a_hclsid);
+		});
+		
+		$(this).click(function() {
+			var ulstyle = $(this).attr("a_ulid");
+			var a_clsid = $(this).attr("a_clsid");
+			if(a_clsid == "0") {
+				$("[ulstyle='"+ulstyle+"'] > li").each(function(){
+					$("a", this).addClass("selimg_2").removeClass("selimg_0");
+					var sum = $(this).attr("count");
+					$(this).attr("sum", sum);
+					$(this).attr("a_clsid", 2);
+					var child_div = $(this).attr("div_id");
+					$("#"+child_div+" > ul > li").each(function(){
+						$(this).attr("a_clsid", 2);
+						$("a", this).addClass("selimg_2").removeClass("selimg_0");
+					});
+				});
+				$(this).attr("a_clsid", 2);
+				$(this).addClass("selimg_5").removeClass("selimg_3");
+			} else if (a_clsid == "2") {
+				$("[ulstyle='"+ulstyle+"'] > li").each(function(){
+					$("a", this).addClass("selimg_0").removeClass("selimg_2");
+					$(this).attr("sum", 0);
+					$(this).attr("a_clsid", 0);
+					var child_div = $(this).attr("div_id");
+					$("#"+child_div+" > ul > li").each(function(){
+						$(this).attr("a_clsid", 0);
+						$("a", this).addClass("selimg_0").removeClass("selimg_2");
+					});
+				});
+				$(this).attr("a_clsid", 0);
+				$(this).addClass("selimg_3").removeClass("selimg_5");
+			}
 		});
 	});
 	/*
 	 * 一级菜单选项的移入、移开、单击
 	 */
-	$("[ulstyle='ul_popn'] > li").each(function(){
+	$("[ulstyle] > li").each(function(){
 		$(this).mouseenter(function() {
 			if(time_id && div_id){	//隐藏上个子菜单
 				clearTimeout(time_id);
@@ -194,7 +269,7 @@ jQuery(document).ready(function($) {
 	});
 	
 	/*
-	 * 子菜单的移入、移出
+	 * 子菜单的移入、移出、单击
 	 */
 	$("[popn='div']").each(function(){
 		$(this).mouseenter(function() {

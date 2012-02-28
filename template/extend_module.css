@@ -93,9 +93,9 @@
 	/* 参考 .p_pop 写法 */
 	.ac_pop { padding: 4px; border: 1px solid; min-width: 60px; border-color: {DROPMENUBORDER}; {DROPMENUBGCODE}; box-shadow: 1px 2px 2px rgba(0,0,0,0.3); line-height: 23px; position: absolute; z-index: 100; display: none; }
 		.ie6 .p_pop { width: 100px; }
-		.ac_pop li { cursor: pointer; }
+		.ac_pop li, .ac_pop a { cursor: pointer; }
 		.ac_ahover { color: {NOTICETEXT}; }
-		.ac_ul { border-bottom: 1px solid {DROPMENUBORDER}; margin-bottom: 5px; padding-bottom: 6px; }
+		.ac_ul { border-bottom: 1px solid {DROPMENUBORDER}; margin-bottom: 4px; padding-bottom: 5px; }
 		
 	.ac_li { position: absolute; border-top: none; line-height: 20px; }
 		.ac_li li { float:none; color: #666666; cursor: pointer; padding: 2px 0; list-style: disc inside none; display: list-item; }

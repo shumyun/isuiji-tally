@@ -21,12 +21,32 @@
 					<strong>明细查询条件:&nbsp;&nbsp;&nbsp;</strong>
 					<span id="sel_showp" class="ac_sel ac_showm"><a>支出名称</a></span><span class="pipe">|</span>
 					<span id="sel_showe" class="ac_sel ac_showm"><a>收入名称</a></span><span class="pipe">|</span>
-					<span id="sel_type" class="ac_sel ac_showm"><a>账单类别</a></span><span class="pipe">|</span>
-					<span id="sel_belong" class="ac_sel ac_showm"><a>账单归属</a></span><span class="pipe">|</span>
+					<span id="sel_showt" class="ac_sel ac_showm"><a>账单类别</a></span><span class="pipe">|</span>
+					<span id="sel_showb" class="ac_sel ac_showm"><a>账单归属</a></span><span class="pipe">|</span>
 					<span id="sel_time" class="ac_sel ac_showm"><a>时间范围</a></span>
 					<div id="sel_hidep" class="ac_sel ac_hidem"><a>支出名称</a></div>
 					<div id="sel_hidee" class="ac_sel ac_hidem"><a>收入名称</a></div>
+					<div id="sel_hidet" class="ac_sel ac_hidem"><a>账单类别</a></div>
+					<div id="sel_hideb" class="ac_sel ac_hidem"><a>账单归属</a></div>
 					{$ac_pdiv}{$ac_ediv}
+					<div id="ac_popt" ac_pop="type" class="ac_pop">
+						<ul ulstyle="ul_type" class="ac_ul">
+							<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">支出类型</a></li>
+							<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">收入类型</a></li>
+							<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">转账类型</a></li>
+							<li class="selimg_arrow" sum="0" count="4" div_id="pop_t1" a_clsid="0"><a class="selimg_empty selimg_0">借贷类型</a></li>
+						</ul>
+						<a class="ac_h selimg_empty selimg_0" a_ulid="ul_type" a_clsid="0">全部</a><br />
+						<button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button>
+					</div>
+					<div id="pop_t1" class="ac_pop" popn="div">
+						<ul popn="div_ul">
+							<li a_clsid="0"><a class="selimg_empty selimg_0">借入</a></li>
+							<li a_clsid="0"><a class="selimg_empty selimg_0">借出</a></li>
+							<li a_clsid="0"><a class="selimg_empty selimg_0">还债</a></li>
+							<li a_clsid="0"><a class="selimg_empty selimg_0">收债</a></li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>
