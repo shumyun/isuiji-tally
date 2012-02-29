@@ -14,7 +14,9 @@ if(!defined('IN_DISCUZ')) {
 
 $arr = array(
 		0 => 'paytype',
-		1 => 'earntype'
+		1 => 'earntype',
+		2 => 'categorytype',
+		3 => 'loandebt' 
 		);
 
 $account->run_radata($_G['uid'], $arr);
@@ -92,5 +94,35 @@ foreach($div_arr as $key => $data) {
 	$ac_ediv .= '</ul>';
 	$ac_ediv .= '</div>';
 }
+
+/*
+ * 账单归属菜单
+ */
+$ac_bdiv = '<div id="ac_popb" ac_pop="belong" class="ac_pop">';
+$div_i = 0;
+unset($div_arr);
+unset($type);
+$type = $account->account_config['catetype'];
+$ac_bdiv .= '<ul ulstyle="ul_belong" class="ac_ul" sum="0" count="'.count($type).'">';
+foreach($type as $data) {
+	$ac_bdiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$data.'</a></li>';
+}
+$ac_bdiv .= '</ul>';
+$ac_bdiv .= '<a class="ac_h selimg_empty selimg_0" a_ulid="ul_belong" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
+
+/*
+ * 借贷归属菜单
+*/
+$ac_ldiv = '<div id="ac_popl" ac_pop="loandebt" class="ac_pop">';
+$div_i = 0;
+unset($div_arr);
+unset($type);
+$type = $account->account_config['loandebt'];
+$ac_ldiv .= '<ul ulstyle="ul_loandebt" class="ac_ul" sum="0" count="'.count($type).'">';
+foreach($type as $data) {
+	$ac_ldiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$data.'</a></li>';
+}
+$ac_ldiv .= '</ul>';
+$ac_ldiv .= '<a class="ac_h selimg_empty selimg_0" a_ulid="ul_loandebt" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
 
 ?>

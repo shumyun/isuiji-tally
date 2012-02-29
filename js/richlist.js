@@ -131,6 +131,56 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 	});
 	
+	/*
+	 * 账单归属菜单
+	 */
+	$("#sel_showb").click(function(){
+		if(cur_popbtn && cur_pop){
+			$(cur_popbtn).attr("style", "display: none");
+			$(cur_pop).attr("style", "display: none");
+		}
+		cur_popbtn = "#sel_hideb";
+		cur_pop = "#ac_popb";
+		hiden_pop = false;
+		
+		popn_pos = $("#sel_showb").position();
+		$("#sel_hideb").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_pos.top = popn_pos.top + 22;
+		$("#ac_popb").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_width = $("#ac_popb").width();
+	});
+	
+	$("#sel_hideb").click(function(){
+		$("#sel_hideb").attr("style", "display: none");
+		$("#ac_popb").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+	});
+	
+	/*
+	 * 账单归属菜单
+	 */
+	$("#sel_showl").click(function(){
+		if(cur_popbtn && cur_pop){
+			$(cur_popbtn).attr("style", "display: none");
+			$(cur_pop).attr("style", "display: none");
+		}
+		cur_popbtn = "#sel_hidel";
+		cur_pop = "#ac_popl";
+		hiden_pop = false;
+		
+		popn_pos = $("#sel_showl").position();
+		$("#sel_hidel").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_pos.top = popn_pos.top + 22;
+		$("#ac_popl").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_width = $("#ac_popl").width();
+	});
+	
+	$("#sel_hidel").click(function(){
+		$("#sel_hidel").attr("style", "display: none");
+		$("#ac_popl").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+	});
+	
 	/**
 	 * @time_id	 子菜单消失定时器
 	 * @div_id   子菜单ID
@@ -178,6 +228,8 @@ jQuery(document).ready(function($) {
 				});
 				$(this).attr("a_clsid", 2);
 				$(this).addClass("selimg_5").removeClass("selimg_3");
+				var sum = $("[ulstyle='"+ulstyle+"']").attr("count");
+				$("[ulstyle='"+ulstyle+"']").attr("sum", sum);
 			} else if (a_clsid == "2") {
 				$("[ulstyle='"+ulstyle+"'] > li").each(function(){
 					$("a", this).addClass("selimg_0").removeClass("selimg_2");
@@ -191,6 +243,7 @@ jQuery(document).ready(function($) {
 				});
 				$(this).attr("a_clsid", 0);
 				$(this).addClass("selimg_3").removeClass("selimg_5");
+				$("[ulstyle='"+ulstyle+"']").attr("sum", 0);
 			}
 		});
 	});
@@ -352,6 +405,10 @@ jQuery(document).ready(function($) {
 		
 		$(this).click(function(){
 			var a_clsid = $(this).attr("a_clsid");
+			var li_parent = $(li_id).parent();
+			var sum = li_parent.attr("sum");
+			var ulstyle = li_parent.attr("ulstyle");
+			var count = li_parent.attr("count");
 			if(li_id){
 				var tmp = $(li_id).attr("sum");
 				if(a_clsid == "0") {
@@ -362,25 +419,27 @@ jQuery(document).ready(function($) {
 					$("a", this).addClass("selimg_3").removeClass("selimg_5");
 					$(this).attr("a_clsid", 0);
 					tmp--;
+					if(sum == count && tmp != 0) {
+						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+						sum--;
+						li_parent.attr("sum", sum);
+					}
 				}
 				$(li_id).attr("sum", tmp);
-				var li_parent = $(li_id).parent();
-				var sum = li_parent.attr("sum");
-				var ulstyle = li_parent.attr("ulstyle");
 				if(tmp == 0){
 					$("a", li_id).addClass("selimg_3").removeClass("selimg_4 selimg_5");
 					$(li_id).attr("a_clsid", 0);
-					if(sum == li_parent.attr("count")) {
+					if(sum == count) {
 						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+						sum--;
+						li_parent.attr("sum", sum);
 					}
-					sum--;
-					li_parent.attr("sum", sum);
 				} else if (tmp == $(li_id).attr("count")) {
 					$("a", li_id).addClass("selimg_5").removeClass("selimg_3 selimg_4");
 					$(li_id).attr("a_clsid", 2);
 					sum++;
 					li_parent.attr("sum", sum);
-					if(sum == li_parent.attr("count")) {
+					if(sum == count) {
 						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
 					}
 				} else {
