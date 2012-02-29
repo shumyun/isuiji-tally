@@ -51,6 +51,11 @@
 						</ul>
 					</div>
 					{$ac_bdiv}{$ac_ldiv}
+					<div id="ac_popt2" ac_pop="time2" class="ac_pop">
+						<font style="margin:0 3px;">从</font><input type="text" readonly="readonly" onclick="showcalendar(event, this)" style="width:70px;" class="px" id="bdate"/>
+						<font style="margin:0 3px;">到</font><input type="text" readonly="readonly" onclick="showcalendar(event, this)" style="width:70px;" class="px" id="edate"/>
+						<button class="pn pnc" style="margin:0 4px 2px 4px; height: 21px;"><strong>确定</strong></button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -80,6 +85,7 @@
 
 <!--[diy=diyaccountbottom]--><div id="diyaccountbottom" class="area"></div><!--[/diy]-->
 
+<script type="text/javascript" src="{$_G[setting][jspath]}calendar.js?{VERHASH}"></script>
 <script type="text/javascript" src="{$basedir}js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="{$basedir}js/position-1.8.17.min.js"></script>
 <script type="text/javascript" src="{$basedir}js/richlist.js"></script>

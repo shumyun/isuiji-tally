@@ -181,6 +181,30 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 	});
 	
+	/*
+	 * 时间选择菜单
+	 */
+	$("#sel_stime2").click(function(){
+		if(cur_popbtn && cur_pop){
+			$(cur_popbtn).attr("style", "display: none");
+			$(cur_pop).attr("style", "display: none");
+		}
+		cur_popbtn = "#sel_htime2";
+		cur_pop = "#ac_popt2";
+		hiden_pop = false;
+		
+		popn_pos = $("#sel_stime2").position();
+		$("#sel_htime2").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_pos.top = popn_pos.top + 22;
+		$("#ac_popt2").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px; padding-top:8px;");
+	});
+	
+	$("#sel_htime2").click(function(){
+		$("#sel_htime2").attr("style", "display: none");
+		$("#ac_popt2").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+	});
+	
 	/**
 	 * @time_id	 子菜单消失定时器
 	 * @div_id   子菜单ID
