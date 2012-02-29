@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-28
+ *    Last Updated: 2012-02-29
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -26,7 +26,7 @@ $ac_pdiv = '<div id="ac_popp" ac_pop="pay" class="ac_pop">';
 $div_i = 0;
 $div_arr = array();
 $type = $account->account_config['paytype'];
-$ac_pdiv .= '<ul ulstyle="ul_pay" class="ac_ul">';
+$ac_pdiv .= '<ul ulstyle="ul_pay" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){
@@ -64,7 +64,7 @@ unset($div_arr);
 unset($type);
 $div_arr = array();
 $type = $account->account_config['earntype'];
-$ac_ediv .= '<ul ulstyle="ul_earn" class="ac_ul">';
+$ac_ediv .= '<ul ulstyle="ul_earn" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){

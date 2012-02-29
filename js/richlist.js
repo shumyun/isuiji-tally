@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-28
+ *    Last Updated: 2012-02-29
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -241,10 +241,26 @@ jQuery(document).ready(function($) {
 					$("a", this).addClass("selimg_3").removeClass("selimg_5");
 					$(this).attr("sum", 0);
 					$(this).attr("a_clsid", 0);
+					var parent = $(this).parent();
+					var sum = parent.attr("sum");
+					var ulstyle = parent.attr("ulstyle");
+					if(sum == parent.attr("count")) {
+						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+					}
+					sum--;
+					parent.attr("sum", sum);
 				} else {
 					$("a", this).addClass("selimg_5").removeClass("selimg_3");
 					$(this).attr("sum", 1);
 					$(this).attr("a_clsid", 2);
+					var parent = $(this).parent();
+					var sum = parent.attr("sum");
+					var ulstyle = parent.attr("ulstyle");
+					sum++;
+					parent.attr("sum", sum);
+					if(sum == parent.attr("count")) {
+						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
+					}
 				}
 			} else {
 				if(a_clsid == "2"){
@@ -255,6 +271,14 @@ jQuery(document).ready(function($) {
 						$(this).attr("a_clsid", 0);
 						$("a", this).addClass("selimg_0").removeClass("selimg_2");
 					});
+					var parent = $(this).parent();
+					var sum = parent.attr("sum");
+					var ulstyle = parent.attr("ulstyle");
+					if(sum == parent.attr("count")) {
+						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+					}
+					sum--;
+					parent.attr("sum", sum);
 				} else {
 					$("a", this).addClass("selimg_5").removeClass("selimg_3 selimg_4");
 					$(this).attr("sum", count);
@@ -263,6 +287,14 @@ jQuery(document).ready(function($) {
 						$(this).attr("a_clsid", 2);
 						$("a", this).addClass("selimg_2").removeClass("selimg_0");
 					});
+					var parent = $(this).parent();
+					var sum = parent.attr("sum");
+					var ulstyle = parent.attr("ulstyle");
+					sum++;
+					parent.attr("sum", sum);
+					if(sum == parent.attr("count")) {
+						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
+					}
 				}
 			}
 		});
@@ -332,12 +364,25 @@ jQuery(document).ready(function($) {
 					tmp--;
 				}
 				$(li_id).attr("sum", tmp);
+				var li_parent = $(li_id).parent();
+				var sum = li_parent.attr("sum");
+				var ulstyle = li_parent.attr("ulstyle");
 				if(tmp == 0){
 					$("a", li_id).addClass("selimg_3").removeClass("selimg_4 selimg_5");
 					$(li_id).attr("a_clsid", 0);
+					if(sum == li_parent.attr("count")) {
+						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+					}
+					sum--;
+					li_parent.attr("sum", sum);
 				} else if (tmp == $(li_id).attr("count")) {
 					$("a", li_id).addClass("selimg_5").removeClass("selimg_3 selimg_4");
 					$(li_id).attr("a_clsid", 2);
+					sum++;
+					li_parent.attr("sum", sum);
+					if(sum == li_parent.attr("count")) {
+						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
+					}
 				} else {
 					$("a", li_id).addClass("selimg_4").removeClass("selimg_3 selimg_5");
 					$(li_id).attr("a_clsid", 1);
