@@ -236,10 +236,10 @@ jQuery(document).ready(function($) {
 		});
 		
 		$(this).click(function() {
-			var ulstyle = $(this).attr("a_ulid");
+			var ul_id = $(this).attr("a_ulid");
 			var a_clsid = $(this).attr("a_clsid");
 			if(a_clsid == "0") {
-				$("[ulstyle='"+ulstyle+"'] > li").each(function(){
+				$("#"+ul_id+" > li").each(function(){
 					$("a", this).addClass("selimg_2").removeClass("selimg_0");
 					var sum = $(this).attr("count");
 					$(this).attr("sum", sum);
@@ -252,10 +252,10 @@ jQuery(document).ready(function($) {
 				});
 				$(this).attr("a_clsid", 2);
 				$(this).addClass("selimg_5").removeClass("selimg_3");
-				var sum = $("[ulstyle='"+ulstyle+"']").attr("count");
-				$("[ulstyle='"+ulstyle+"']").attr("sum", sum);
+				var sum = $("#"+ul_id).attr("count");
+				$("#"+ul_id).attr("sum", sum);
 			} else if (a_clsid == "2") {
-				$("[ulstyle='"+ulstyle+"'] > li").each(function(){
+				$("#"+ul_id+" > li").each(function(){
 					$("a", this).addClass("selimg_0").removeClass("selimg_2");
 					$(this).attr("sum", 0);
 					$(this).attr("a_clsid", 0);
@@ -267,7 +267,7 @@ jQuery(document).ready(function($) {
 				});
 				$(this).attr("a_clsid", 0);
 				$(this).addClass("selimg_3").removeClass("selimg_5");
-				$("[ulstyle='"+ulstyle+"']").attr("sum", 0);
+				$("#"+ul_id).attr("sum", 0);
 			}
 		});
 	});
@@ -320,9 +320,9 @@ jQuery(document).ready(function($) {
 					$(this).attr("a_clsid", 0);
 					var parent = $(this).parent();
 					var sum = parent.attr("sum");
-					var ulstyle = parent.attr("ulstyle");
+					var ul_id = parent.attr("id");
 					if(sum == parent.attr("count")) {
-						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+						$("[a_ulid='"+ul_id+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
 					}
 					sum--;
 					parent.attr("sum", sum);
@@ -332,11 +332,11 @@ jQuery(document).ready(function($) {
 					$(this).attr("a_clsid", 2);
 					var parent = $(this).parent();
 					var sum = parent.attr("sum");
-					var ulstyle = parent.attr("ulstyle");
 					sum++;
 					parent.attr("sum", sum);
+					var ul_id = parent.attr("id");
 					if(sum == parent.attr("count")) {
-						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
+						$("[a_ulid='"+ul_id+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
 					}
 				}
 			} else {
@@ -350,9 +350,9 @@ jQuery(document).ready(function($) {
 					});
 					var parent = $(this).parent();
 					var sum = parent.attr("sum");
-					var ulstyle = parent.attr("ulstyle");
+					var ul_id = parent.attr("id");
 					if(sum == parent.attr("count")) {
-						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+						$("[a_ulid='"+ul_id+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
 					}
 					sum--;
 					parent.attr("sum", sum);
@@ -366,11 +366,11 @@ jQuery(document).ready(function($) {
 					});
 					var parent = $(this).parent();
 					var sum = parent.attr("sum");
-					var ulstyle = parent.attr("ulstyle");
+					var ul_id = parent.attr("id");
 					sum++;
 					parent.attr("sum", sum);
 					if(sum == parent.attr("count")) {
-						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
+						$("[a_ulid='"+ul_id+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
 					}
 				}
 			}
@@ -430,8 +430,8 @@ jQuery(document).ready(function($) {
 		$(this).click(function(){
 			var a_clsid = $(this).attr("a_clsid");
 			var li_parent = $(li_id).parent();
+			var ul_pid = li_parent.attr("id");
 			var sum = li_parent.attr("sum");
-			var ulstyle = li_parent.attr("ulstyle");
 			var count = li_parent.attr("count");
 			if(li_id){
 				var tmp = $(li_id).attr("sum");
@@ -444,7 +444,7 @@ jQuery(document).ready(function($) {
 					$(this).attr("a_clsid", 0);
 					tmp--;
 					if(sum == count && tmp != 0) {
-						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+						$("[a_ulid='"+li_parent.id+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
 						sum--;
 						li_parent.attr("sum", sum);
 					}
@@ -454,7 +454,7 @@ jQuery(document).ready(function($) {
 					$("a", li_id).addClass("selimg_3").removeClass("selimg_4 selimg_5");
 					$(li_id).attr("a_clsid", 0);
 					if(sum == count) {
-						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+						$("[a_ulid='"+ul_pid+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
 						sum--;
 						li_parent.attr("sum", sum);
 					}
@@ -464,7 +464,7 @@ jQuery(document).ready(function($) {
 					sum++;
 					li_parent.attr("sum", sum);
 					if(sum == count) {
-						$("[a_ulid='"+ulstyle+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
+						$("[a_ulid='"+ul_pid+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
 					}
 				} else {
 					$("a", li_id).addClass("selimg_4").removeClass("selimg_3 selimg_5");

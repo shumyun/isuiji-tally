@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-29
+ *    Last Updated: 2012-03-31
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -28,7 +28,7 @@ $ac_pdiv = '<div id="ac_popp" ac_pop="pay" class="ac_pop">';
 $div_i = 0;
 $div_arr = array();
 $type = $account->account_config['paytype'];
-$ac_pdiv .= '<ul ulstyle="ul_pay" class="ac_ul" sum="0" count="'.count($type).'">';
+$ac_pdiv .= '<ul id="ul_pay" ulstyle="" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){
@@ -66,7 +66,7 @@ unset($div_arr);
 unset($type);
 $div_arr = array();
 $type = $account->account_config['earntype'];
-$ac_ediv .= '<ul ulstyle="ul_earn" class="ac_ul" sum="0" count="'.count($type).'">';
+$ac_ediv .= '<ul id="ul_earn" ulstyle="" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){
@@ -103,7 +103,7 @@ $div_i = 0;
 unset($div_arr);
 unset($type);
 $type = $account->account_config['catetype'];
-$ac_bdiv .= '<ul ulstyle="ul_belong" class="ac_ul" sum="0" count="'.count($type).'">';
+$ac_bdiv .= '<ul id="ul_belong" ulstyle="" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	$ac_bdiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$data.'</a></li>';
 }
@@ -113,12 +113,12 @@ $ac_bdiv .= '<a class="ac_h selimg_empty selimg_0" a_ulid="ul_belong" a_clsid="0
 /*
  * 借贷归属菜单
 */
-$ac_ldiv = '<div id="ac_popl" ac_pop="loandebt" class="ac_pop">';
+$ac_ldiv = '<div id="ac_popl" ulstyle="" ac_pop="loandebt" class="ac_pop">';
 $div_i = 0;
 unset($div_arr);
 unset($type);
 $type = $account->account_config['loandebt'];
-$ac_ldiv .= '<ul ulstyle="ul_loandebt" class="ac_ul" sum="0" count="'.count($type).'">';
+$ac_ldiv .= '<ul id="ul_loandebt" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	$ac_ldiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$data.'</a></li>';
 }
