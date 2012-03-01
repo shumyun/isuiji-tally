@@ -33,17 +33,17 @@
 					<div id="sel_htime2" class="ac_sel ac_hidem"><a>时间范围</a></div>
 					{$ac_pdiv}{$ac_ediv}
 					<div id="ac_popt" ac_pop="type" class="ac_pop">
-						<ul id="ul_type" ulstyle="" class="ac_ul" sum="0" count="4">
+						<ul id="ul_type" ul_aid="a_type" class="ac_ul" sum="0" count="4">
 							<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">支出类型</a></li>
 							<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">收入类型</a></li>
 							<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">转账类型</a></li>
-							<li class="selimg_arrow" sum="0" count="4" div_id="pop_t1" a_clsid="0"><a class="selimg_empty selimg_0">借贷类型</a></li>
+							<li class="selimg_arrow" sum="0" count="4" div_id="pop_type1" a_clsid="0"><a class="selimg_empty selimg_0">借贷类型</a></li>
 						</ul>
-						<a class="ac_h selimg_empty selimg_0" a_ulid="ul_type" a_clsid="0">全部</a><br />
+						<a id="a_type" class="ac_h selimg_empty selimg_0" a_ulid="ul_type" a_clsid="0">全部</a><br />
 						<button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button>
 					</div>
-					<div id="pop_t1" class="ac_pop" popn="div">
-						<ul popn="div_ul">
+					<div id="pop_type1" class="ac_pop" div_ulid="ul_type1">
+						<ul id="ul_type1" popn="div_ul">
 							<li a_clsid="0"><a class="selimg_empty selimg_0">借入</a></li>
 							<li a_clsid="0"><a class="selimg_empty selimg_0">借出</a></li>
 							<li a_clsid="0"><a class="selimg_empty selimg_0">还债</a></li>
@@ -52,8 +52,8 @@
 					</div>
 					{$ac_bdiv}{$ac_ldiv}
 					<div id="ac_popt2" ac_pop="time2" class="ac_pop">
-						<font style="margin:0 3px;">从</font><input type="text" readonly="readonly" onclick="showcalendar(event, this)" style="width:70px;" class="px" id="bdate"/>
-						<font style="margin:0 3px;">到</font><input type="text" readonly="readonly" onclick="showcalendar(event, this)" style="width:70px;" class="px" id="edate"/>
+						<font style="margin:0 3px;">从</font><input type="text" readonly="readonly" onclick="showcalendar(event, this)" style="width:65px;" class="px" id="bdate"/>
+						<font style="margin:0 3px;">到</font><input type="text" readonly="readonly" onclick="showcalendar(event, this)" style="width:65px;" class="px" id="edate"/>
 						<button class="pn pnc" style="margin:0 4px 2px 4px; height: 21px;"><strong>确定</strong></button>
 					</div>
 				</div>

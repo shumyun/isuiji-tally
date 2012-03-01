@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-29
+ *    Last Updated: 2012-03-01
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -10,7 +10,8 @@ jQuery.noConflict();
 
 
 /*
- * 时间选择控件
+ * 条件选择控件
+ * 注意：ie7,ie8,ie9支持的$(a, this) 速度很慢
  */
 jQuery(document).ready(function($) {
 	
@@ -239,34 +240,34 @@ jQuery(document).ready(function($) {
 			var ul_id = $(this).attr("a_ulid");
 			var a_clsid = $(this).attr("a_clsid");
 			if(a_clsid == "0") {
+				$(this).attr("a_clsid", 2);
+				$(this).addClass("selimg_5").removeClass("selimg_3");
 				$("#"+ul_id+" > li").each(function(){
 					$("a", this).addClass("selimg_2").removeClass("selimg_0");
 					var sum = $(this).attr("count");
 					$(this).attr("sum", sum);
 					$(this).attr("a_clsid", 2);
-					var child_div = $(this).attr("div_id");
-					$("#"+child_div+" > ul > li").each(function(){
+					var child_ul =$("#"+$(this).attr("div_id")).attr("div_ulid");
+					$("#"+child_ul+" > li").each(function(){
 						$(this).attr("a_clsid", 2);
 						$("a", this).addClass("selimg_2").removeClass("selimg_0");
 					});
 				});
-				$(this).attr("a_clsid", 2);
-				$(this).addClass("selimg_5").removeClass("selimg_3");
 				var sum = $("#"+ul_id).attr("count");
 				$("#"+ul_id).attr("sum", sum);
 			} else if (a_clsid == "2") {
+				$(this).attr("a_clsid", 0);
+				$(this).addClass("selimg_3").removeClass("selimg_5");
 				$("#"+ul_id+" > li").each(function(){
 					$("a", this).addClass("selimg_0").removeClass("selimg_2");
 					$(this).attr("sum", 0);
 					$(this).attr("a_clsid", 0);
-					var child_div = $(this).attr("div_id");
-					$("#"+child_div+" > ul > li").each(function(){
+					var child_ul =$("#"+$(this).attr("div_id")).attr("div_ulid");
+					$("#"+child_ul+" > li").each(function(){
 						$(this).attr("a_clsid", 0);
 						$("a", this).addClass("selimg_0").removeClass("selimg_2");
 					});
 				});
-				$(this).attr("a_clsid", 0);
-				$(this).addClass("selimg_3").removeClass("selimg_5");
 				$("#"+ul_id).attr("sum", 0);
 			}
 		});
@@ -274,7 +275,7 @@ jQuery(document).ready(function($) {
 	/*
 	 * 一级菜单选项的移入、移开、单击
 	 */
-	$("[ulstyle] > li").each(function(){
+	$("[ul_aid] > li").each(function(){
 		$(this).mouseenter(function() {
 			if(time_id && div_id){	//隐藏上个子菜单
 				clearTimeout(time_id);
@@ -315,44 +316,45 @@ jQuery(document).ready(function($) {
 			var count = $(this).attr("count");
 			if(count == "0"){
 				if(a_clsid == "2"){
-					$("a", this).addClass("selimg_3").removeClass("selimg_5");
-					$(this).attr("sum", 0);
-					$(this).attr("a_clsid", 0);
 					var parent = $(this).parent();
 					var sum = parent.attr("sum");
-					var ul_id = parent.attr("id");
+					var a_id = parent.attr("ul_aid");
 					if(sum == parent.attr("count")) {
-						$("[a_ulid='"+ul_id+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+						$("#"+a_id).attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
 					}
 					sum--;
 					parent.attr("sum", sum);
+					$(this).attr("sum", 0);
+					$(this).attr("a_clsid", 0);
+					$("a", this).addClass("selimg_3").removeClass("selimg_5");
 				} else {
-					$("a", this).addClass("selimg_5").removeClass("selimg_3");
-					$(this).attr("sum", 1);
-					$(this).attr("a_clsid", 2);
 					var parent = $(this).parent();
 					var sum = parent.attr("sum");
 					sum++;
 					parent.attr("sum", sum);
-					var ul_id = parent.attr("id");
+					var a_id = parent.attr("ul_aid");
 					if(sum == parent.attr("count")) {
-						$("[a_ulid='"+ul_id+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
+						$("#"+a_id).attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
 					}
+					$(this).attr("sum", 1);
+					$(this).attr("a_clsid", 2);
+					$("a", this).addClass("selimg_5").removeClass("selimg_3");
 				}
 			} else {
 				if(a_clsid == "2"){
 					$("a", this).addClass("selimg_3").removeClass("selimg_5");
 					$(this).attr("sum", 0);
 					$(this).attr("a_clsid", 0);
-					$("#"+div_id+" > ul > li").each(function(){
+					var child_ul = $("#"+div_id).attr("div_ulid");
+					$("#"+child_ul+" > li").each(function(){
 						$(this).attr("a_clsid", 0);
 						$("a", this).addClass("selimg_0").removeClass("selimg_2");
 					});
 					var parent = $(this).parent();
 					var sum = parent.attr("sum");
-					var ul_id = parent.attr("id");
+					var a_id = parent.attr("ul_aid");
 					if(sum == parent.attr("count")) {
-						$("[a_ulid='"+ul_id+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+						$("#"+a_id).attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
 					}
 					sum--;
 					parent.attr("sum", sum);
@@ -360,17 +362,18 @@ jQuery(document).ready(function($) {
 					$("a", this).addClass("selimg_5").removeClass("selimg_3 selimg_4");
 					$(this).attr("sum", count);
 					$(this).attr("a_clsid", 2);
-					$("#"+div_id+" > ul > li").each(function(){
+					var child_ul = $("#"+div_id).attr("div_ulid");
+					$("#"+child_ul+" > li").each(function(){
 						$(this).attr("a_clsid", 2);
 						$("a", this).addClass("selimg_2").removeClass("selimg_0");
 					});
 					var parent = $(this).parent();
 					var sum = parent.attr("sum");
-					var ul_id = parent.attr("id");
+					var a_id = parent.attr("ul_aid");
 					sum++;
 					parent.attr("sum", sum);
 					if(sum == parent.attr("count")) {
-						$("[a_ulid='"+ul_id+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
+						$("#"+a_id).attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
 					}
 				}
 			}
@@ -380,7 +383,7 @@ jQuery(document).ready(function($) {
 	/*
 	 * 子菜单的移入、移出、单击
 	 */
-	$("[popn='div']").each(function(){
+	$("[div_ulid]").each(function(){
 		$(this).mouseenter(function() {
 			if(time_id){
 				clearTimeout(time_id);
@@ -430,46 +433,45 @@ jQuery(document).ready(function($) {
 		$(this).click(function(){
 			var a_clsid = $(this).attr("a_clsid");
 			var li_parent = $(li_id).parent();
-			var ul_pid = li_parent.attr("id");
+			var a_id = li_parent.attr("ul_aid");
 			var sum = li_parent.attr("sum");
 			var count = li_parent.attr("count");
 			if(li_id){
 				var tmp = $(li_id).attr("sum");
 				if(a_clsid == "0") {
+					tmp++;
+					if (tmp == $(li_id).attr("count")) {
+						sum++;
+						if(sum == count) {
+							$("#"+a_id).addClass("selimg_2").removeClass("selimg_0").attr("a_clsid", 2);
+						}
+						li_parent.attr("sum", sum);
+						$("a", li_id).addClass("selimg_5").removeClass("selimg_3 selimg_4");
+						$(li_id).attr("a_clsid", 2);
+					} else {
+						$("a", li_id).addClass("selimg_4").removeClass("selimg_3 selimg_5");
+						$(li_id).attr("a_clsid", 1);
+					}
 					$("a", this).addClass("selimg_5").removeClass("selimg_3");
 					$(this).attr("a_clsid", 2);
-					tmp++;
 				} else if(a_clsid == "2") {
+					tmp--;
+					if(sum == count) {
+						$("#"+a_id).attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+						sum--;
+						li_parent.attr("sum", sum);
+					}
+					if(tmp == 0){
+						$("a", li_id).addClass("selimg_3").removeClass("selimg_4 selimg_5");
+						$(li_id).attr("a_clsid", 0);
+					} else {
+						$("a", li_id).addClass("selimg_4").removeClass("selimg_3 selimg_5");
+						$(li_id).attr("a_clsid", 1);
+					}
 					$("a", this).addClass("selimg_3").removeClass("selimg_5");
 					$(this).attr("a_clsid", 0);
-					tmp--;
-					if(sum == count && tmp != 0) {
-						$("[a_ulid='"+li_parent.id+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
-						sum--;
-						li_parent.attr("sum", sum);
-					}
 				}
 				$(li_id).attr("sum", tmp);
-				if(tmp == 0){
-					$("a", li_id).addClass("selimg_3").removeClass("selimg_4 selimg_5");
-					$(li_id).attr("a_clsid", 0);
-					if(sum == count) {
-						$("[a_ulid='"+ul_pid+"']").attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
-						sum--;
-						li_parent.attr("sum", sum);
-					}
-				} else if (tmp == $(li_id).attr("count")) {
-					$("a", li_id).addClass("selimg_5").removeClass("selimg_3 selimg_4");
-					$(li_id).attr("a_clsid", 2);
-					sum++;
-					li_parent.attr("sum", sum);
-					if(sum == count) {
-						$("[a_ulid='"+ul_pid+"']").attr("a_clsid", 2).addClass("selimg_2").removeClass("selimg_0");
-					}
-				} else {
-					$("a", li_id).addClass("selimg_4").removeClass("selimg_3 selimg_5");
-					$(li_id).attr("a_clsid", 1);
-				}
 			}
 		});
 	});

@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-03-31
+ *    Last Updated: 2012-03-01
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -28,7 +28,7 @@ $ac_pdiv = '<div id="ac_popp" ac_pop="pay" class="ac_pop">';
 $div_i = 0;
 $div_arr = array();
 $type = $account->account_config['paytype'];
-$ac_pdiv .= '<ul id="ul_pay" ulstyle="" class="ac_ul" sum="0" count="'.count($type).'">';
+$ac_pdiv .= '<ul id="ul_pay" ul_aid="a_pay" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){
@@ -41,11 +41,11 @@ foreach($type as $data) {
 	}
 }
 $ac_pdiv .= '</ul>';
-$ac_pdiv .= '<a class="ac_h selimg_empty selimg_0" a_ulid="ul_pay" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
+$ac_pdiv .= '<a id="a_pay" class="ac_h selimg_empty selimg_0" a_ulid="ul_pay" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
 //支出子菜单
 foreach($div_arr as $key => $data) {
-	$ac_pdiv .= '<div id="pop_p'.$key.'" class="ac_pop" popn="div">';
-	$ac_pdiv .= '<ul popn="div_ul">';
+	$ac_pdiv .= '<div id="pop_p'.$key.'" class="ac_pop" div_ulid="ul_p'.$key.'">';
+	$ac_pdiv .= '<ul id="ul_p'.$key.'" popn="div_ul">';
 	foreach($data as $val) {
 		foreach($val as $name => $data1){
 			if($data1 == '.') {
@@ -66,7 +66,7 @@ unset($div_arr);
 unset($type);
 $div_arr = array();
 $type = $account->account_config['earntype'];
-$ac_ediv .= '<ul id="ul_earn" ulstyle="" class="ac_ul" sum="0" count="'.count($type).'">';
+$ac_ediv .= '<ul id="ul_earn" ul_aid="a_earn" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	foreach($data as $key => $val) {
 		if($val == '.'){
@@ -79,11 +79,11 @@ foreach($type as $data) {
 	}
 }
 $ac_ediv .= '</ul>';
-$ac_ediv .= '<a class="ac_h selimg_empty selimg_0" a_ulid="ul_earn" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
+$ac_ediv .= '<a id="a_earn" class="ac_h selimg_empty selimg_0" a_ulid="ul_earn" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
 //收入子菜单
 foreach($div_arr as $key => $data) {
-	$ac_ediv .= '<div id="pop_e'.$key.'" class="ac_pop" popn="div">';
-	$ac_ediv .= '<ul popn="div_ul">';
+	$ac_ediv .= '<div id="pop_e'.$key.'" class="ac_pop" div_ulid="ul_e'.$key.'">';
+	$ac_ediv .= '<ul id="ul_e'.$key.'" popn="div_ul">';
 	foreach($data as $val) {
 		foreach($val as $name => $data1){
 			if($data1 == '.') {
@@ -103,26 +103,26 @@ $div_i = 0;
 unset($div_arr);
 unset($type);
 $type = $account->account_config['catetype'];
-$ac_bdiv .= '<ul id="ul_belong" ulstyle="" class="ac_ul" sum="0" count="'.count($type).'">';
+$ac_bdiv .= '<ul id="ul_belong" ul_aid="a_belong" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	$ac_bdiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$data.'</a></li>';
 }
 $ac_bdiv .= '</ul>';
-$ac_bdiv .= '<a class="ac_h selimg_empty selimg_0" a_ulid="ul_belong" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
+$ac_bdiv .= '<a id="a_belong" class="ac_h selimg_empty selimg_0" a_ulid="ul_belong" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
 
 /*
  * 借贷归属菜单
 */
-$ac_ldiv = '<div id="ac_popl" ulstyle="" ac_pop="loandebt" class="ac_pop">';
+$ac_ldiv = '<div id="ac_popl" ac_pop="loandebt" class="ac_pop">';
 $div_i = 0;
 unset($div_arr);
 unset($type);
 $type = $account->account_config['loandebt'];
-$ac_ldiv .= '<ul id="ul_loandebt" class="ac_ul" sum="0" count="'.count($type).'">';
+$ac_ldiv .= '<ul id="ul_loandebt" ul_aid="a_loandebt" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data) {
 	$ac_ldiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$data.'</a></li>';
 }
 $ac_ldiv .= '</ul>';
-$ac_ldiv .= '<a class="ac_h selimg_empty selimg_0" a_ulid="ul_loandebt" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
+$ac_ldiv .= '<a id="a_loandebt" class="ac_h selimg_empty selimg_0" a_ulid="ul_loandebt" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px; height: 21px;"><strong>确定</strong></button></div>';
 
 ?>
