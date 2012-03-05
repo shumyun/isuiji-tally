@@ -197,7 +197,7 @@ jQuery(document).ready(function($) {
 		popn_pos = $("#sel_stime2").position();
 		$("#sel_htime2").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
 		popn_pos.top = popn_pos.top + 22;
-		$("#ac_popt2").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px; padding-top:8px;");
+		$("#ac_popt2").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px; padding-top:8px; width:248px;");
 	});
 	
 	$("#sel_htime2").click(function(){
