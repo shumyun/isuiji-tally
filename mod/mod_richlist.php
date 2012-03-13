@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-03-01
+ *    Last Updated: 2012-03-13
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -124,5 +124,8 @@ foreach($type as $data) {
 }
 $ac_ldiv .= '</ul>';
 $ac_ldiv .= '<a id="a_loandebt" class="ac_h selimg_empty selimg_0" a_ulid="ul_loandebt" a_clsid="0">全部</a><br /><button class="pn pnc" style="margin: 0px 0px 6px 20px;"><strong>确定</strong></button></div>';
+
+$richlist_y = date('Y', $_G['timestamp']);
+$richlist_m = date('n', $_G['timestamp']);
 
 ?>

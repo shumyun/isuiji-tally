@@ -24,7 +24,9 @@
 					<span id="sel_showt" class="ac_sel ac_showm"><a>账单类别</a></span><span class="pipe">|</span>
 					<span id="sel_showb" class="ac_sel ac_showm"><a>账单归属</a></span><span class="pipe">|</span>
 					<span id="sel_showl" class="ac_sel ac_showm"><a>借贷归属</a></span><span class="pipe">|</span>
-					<span id="sel_stime2" class="ac_sel ac_showm"><a>时间范围</a></span>
+					<span id="sel_stime2" class="ac_sel ac_showm"><a>时间范围</a></span><span class="pipe">|</span>
+					<span id="sel_clr" class="ac_selclr"><a>条件清除</a></span><span class="pipe">|</span>
+					<span id="sel_all" class="ac_selall"><a>全部数据</a></span>
 					<div id="sel_hidep" class="ac_sel ac_hidem"><a>支出名称</a></div>
 					<div id="sel_hidee" class="ac_sel ac_hidem"><a>收入名称</a></div>
 					<div id="sel_hidet" class="ac_sel ac_hidem"><a>账单类别</a></div>
@@ -60,16 +62,16 @@
 			</div>
 		</div>
 		<div class="bm bw0 ac_y">
-			<h1 class="mt">account_list</h1>
+			<h1 class="mt">account_tab</h1>
 			<ul class="tb cl">
-				<li id="li_popmenu" class="ac_showm"><a id="a_popmenu" style="padding-right: 0; border: none; background: transparent;">2012年</a></li>
-				<li class="a"><a id="a_time">2012年12月31日&nbsp;至&nbsp;2012年12月31日</a></li>
-				<li class="a"><a id="a_time">支出条件</a></li>
-				<li class="a"><a id="a_time">收入条件</a></li>
-				<li class="a"><a id="a_time">类别条件</a></li>
-				<li class="a"><a id="a_time">账单归属条件</a></li>
-				<li class="a"><a id="a_time">借贷归属条件</a></li>
-				<li class="y showmenu" style="display: none"><a style="padding-right: 0;">收起周报表</a></li>
+				<li id="li_popmenu" class="ac_showm"><a id="a_popmenu" style="padding-right: 0; border: none; background: transparent;" year="{$richlist_y}">{$richlist_y}年</a></li>
+				<li><a ac_tab="undo" id="tb_time1" month="{$richlist_m}">{$richlist_m}月份</a></li>
+				<li><a ac_tab="use" id="tb_pay" style="display: none;">支出条件</a></li>
+				<li><a ac_tab="use" id="tb_earn" style="display: none;">收入条件</a></li>
+				<li><a ac_tab="use" id="tb_type" style="display: none;">类别条件</a></li>
+				<li><a ac_tab="use" id="tb_category" style="display: none;">账单归属条件</a></li>
+				<li><a ac_tab="use" id="tb_debt" style="display: none;">借贷归属条件</a></li>
+				<li class="y showmenu" style="display: none;"><a style="padding-right: 0;">收起周报表</a></li>
 			</ul>
 		</div>
 	</div>

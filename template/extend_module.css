@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-03-01
+ *    Last Updated: 2012-03-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -107,12 +107,13 @@
 		.ac_ul { border-bottom: 1px solid {DROPMENUBORDER}; margin-bottom: 4px; padding-bottom: 5px; }
 		.ac_pop label { cursor: default; float: left; line-height: 22px; vertical-align: middle; }
 		.ac_pop input { float: left; width:65px; }
-		
 	.ac_li { position: absolute; border-top: none; line-height: 20px; }
 		.ac_li li { float:none; color: #666666; cursor: pointer; padding: 2px 0; list-style: disc inside none; display: list-item; }
 		.ac_li li:hover { color: {NOTICETEXT}; }
 	
 	.ac_sel { padding: 3px 16px 3px 6px; }
+	.ac_selclr { padding: 3px 2px 3px 20px; cursor: pointer; }
+	.ac_selall { padding: 3px 0px; cursor: pointer; }
 /** end **/
 /*
  * .mi .moodfm_input { width: 350px; height: 58px; background: {COMMONBORDER} url({IMGDIR}/mood_input.png) no-repeat 0 0; }

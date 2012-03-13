@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-03-01
+ *    Last Updated: 2012-03-13
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -31,7 +31,9 @@ jQuery(document).ready(function($) {
 	/*
 	 * 显示时间选项
 	 */
-	var pop_time1 = $('<div class="p_pop ac_li"><ul><li>最近一个月</li><li>上一个月</li><li>最近一年</li><li>按月份查询</li></ul></div>')
+	var display_year = $("#a_popmenu").attr("year");
+	var display_month = $("#tb_time1").attr("month");
+	var pop_time1 = $('<div class="p_pop ac_li"><ul><li id="time1_m">最近一个月</li><li id="time1_last">上一个月</li><li id="time1_y">最近一年</li><li id="time1_month">按月份查询</li></ul></div>')
 	.appendTo("body")
 	.position({
 		my: "left top",
@@ -39,19 +41,54 @@ jQuery(document).ready(function($) {
 		of: $("#li_popmenu"),
 		offset: "0 2"
 	}).hide();
+	$("#time1_m").click(function(){
+		$("#a_popmenu").html(display_year+"年");
+		$("#li_popmenu").toggleClass("ac_showm li_hidem");
+		pop_time1.hide();
+		$("#tb_time1").html(display_month+"月份").attr("ac_tab", "undo");
+	});
+	$("#time1_last").click(function(){
+		$("#li_popmenu").toggleClass("ac_showm li_hidem");
+		pop_time1.hide();
+		var tmp_m = 0;
+		if((tmp_m = display_month-1) == 0){
+			var tmp = parseInt(display_year) - 1;
+			$("#a_popmenu").html(tmp+"年");
+			$("#tb_time1").html("12月份").attr("ac_tab", "use");
+		} else {
+			$("#a_popmenu").html(display_year+"年");
+			$("#tb_time1").html(tmp_m+"月份").attr("ac_tab", "use");
+		};
+	});
+	$("#time1_y").click(function(){
+		$("#li_popmenu").toggleClass("ac_showm li_hidem");
+		pop_time1.hide();
+		$("#a_popmenu").html("查询条件");
+		$("#tb_time1").html(display_year+"年全年").attr("ac_tab", "use");
+	});
 	
 	$("#li_popmenu").click(function() {
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		if(pop_time1.is(":hidden")){
-			$("#a_time").attr("style", "border-bottom-color: #CDCDCD;");
 			pop_time1.show();
 			hiden_time1 = false;
 		} else {
-			$("#a_time").attr("style", "border-bottom-color: #fff;");
 			pop_time1.hide();
 		}
 	});
 	
+	$("[ac_tab='use']").each(function(){
+		$(this).hover(function(){
+			$(this).attr("style", "padding: 0 17px 0 3px; background: url(static/image/common/data_invalid.gif) no-repeat 98% 50%; font-weight: 700; cursor: pointer;");
+		},function(){
+			if(!$(this).is(":hidden")){
+				$(this).attr("style", "");
+			}
+		});
+		$(this).click(function(){
+			$(this).hide();
+		});
+	});
 	/**
 	 * @popn_pos	弹出的一级菜单坐标
 	 * @popn_width	弹出的一级菜单宽度
@@ -456,8 +493,9 @@ jQuery(document).ready(function($) {
 					$(this).attr("a_clsid", 2);
 				} else if(a_clsid == "2") {
 					tmp--;
-					if(sum == count) {
-						$("#"+a_id).attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
+					if($(li_id).attr("sum") == $(li_id).attr("count")) {
+						if(sum == count)
+							$("#"+a_id).attr("a_clsid", 0).addClass("selimg_0").removeClass("selimg_2");
 						sum--;
 						li_parent.attr("sum", sum);
 					}
