@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-03-13
+ *    Last Updated: 2012-03-14
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -33,7 +33,15 @@ jQuery(document).ready(function($) {
 	 */
 	var display_year = $("#a_popmenu").attr("year");
 	var display_month = $("#tb_time1").attr("month");
-	var pop_time1 = $('<div class="p_pop ac_li"><ul><li id="time1_m">最近一个月</li><li id="time1_last">上一个月</li><li id="time1_y">最近一年</li><li id="time1_month">按月份查询</li></ul></div>')
+	var pop_time1 = $('<div class="p_pop ac_li">\
+						<ul class="ac_ul"><li id="time1_m">最近一个月</li><li id="time1_last">上一个月</li><li id="time1_y">最近一年</li></ul>\
+						<div><strong>按月份查询：</strong><br />\
+							<div style="margin: 4px 0px;">\
+								<input id="time1_year" class="px" style="width:30px;" value="'+display_year+'"/>&nbsp;-&nbsp;\
+								<input id="time1_month" class="px" style="width:15px;" value="'+display_month+'"/><br /></div>\
+							<button class="pn pnc" style="margin: 2px 0px 6px 18px;"><strong>确定</strong></button>\
+						</div>\
+					  </div>')
 	.appendTo("body")
 	.position({
 		my: "left top",
@@ -66,6 +74,16 @@ jQuery(document).ready(function($) {
 		$("#a_popmenu").html("查询条件");
 		$("#tb_time1").html(display_year+"年全年").attr("ac_tab", "use");
 	});
+	$("#time1_year").click(function(){
+		hiden_time1 = false;
+	}).keypress(function(e){
+		if ((e.which < 48 || e.which > 57) && e.which != 8) return false;
+	});
+	$("#time1_month").click(function(){
+		hiden_time1 = false;
+	}).keypress(function(e){
+		if ((e.which < 48 || e.which > 57) && e.which != 8) return false;
+	});
 	
 	$("#li_popmenu").click(function() {
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
@@ -89,6 +107,23 @@ jQuery(document).ready(function($) {
 			$(this).hide();
 		});
 	});
+	
+	$("#tb_time1").hover(function(){
+		if($(this).attr("ac_tab") == "use"){
+			$(this).attr("style", "padding: 0 17px 0 3px; background: url(static/image/common/data_invalid.gif) no-repeat 98% 50%; font-weight: 700; cursor: pointer;");
+		}
+	}, function(){
+		if(!$(this).is(":hidden") && $(this).attr("ac_tab") == "use"){
+			$(this).attr("style", "");
+		}
+	}).click(function(){
+		if($(this).attr("ac_tab") == "use"){
+			$(this).attr("style", "");
+			$("#a_popmenu").html(display_year+"年");
+			$("#tb_time1").html(display_month+"月份").attr("ac_tab", "undo");
+		}
+	});
+	
 	/**
 	 * @popn_pos	弹出的一级菜单坐标
 	 * @popn_width	弹出的一级菜单宽度
