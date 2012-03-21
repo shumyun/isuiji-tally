@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-03-14
+ *    Last Updated: 2012-03-15
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -53,7 +53,7 @@ jQuery(document).ready(function($) {
 		$("#a_popmenu").html(display_year+"年");
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
-		$("#tb_time1").html(display_month+"月份").attr("ac_tab", "undo");
+		$("#tb_time1").html(display_month+"月份").attr("ac_tab", "undo").attr("title", "");
 	});
 	$("#time1_last").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
@@ -62,17 +62,17 @@ jQuery(document).ready(function($) {
 		if((tmp_m = display_month-1) == 0){
 			var tmp = parseInt(display_year) - 1;
 			$("#a_popmenu").html(tmp+"年");
-			$("#tb_time1").html("12月份").attr("ac_tab", "use");
+			$("#tb_time1").html("12月份").attr("ac_tab", "use").attr("title", "关闭");
 		} else {
 			$("#a_popmenu").html(display_year+"年");
-			$("#tb_time1").html(tmp_m+"月份").attr("ac_tab", "use");
+			$("#tb_time1").html(tmp_m+"月份").attr("ac_tab", "use").attr("title", "关闭");
 		};
 	});
 	$("#time1_y").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
 		$("#a_popmenu").html("查询条件");
-		$("#tb_time1").html(display_year+"年全年").attr("ac_tab", "use");
+		$("#tb_time1").html(display_year+"年全年").attr("ac_tab", "use").attr("title", "关闭");
 	});
 	$("#time1_year").click(function(){
 		hiden_time1 = false;
@@ -120,7 +120,7 @@ jQuery(document).ready(function($) {
 		if($(this).attr("ac_tab") == "use"){
 			$(this).attr("style", "");
 			$("#a_popmenu").html(display_year+"年");
-			$("#tb_time1").html(display_month+"月份").attr("ac_tab", "undo");
+			$("#tb_time1").html(display_month+"月份").attr("ac_tab", "undo").attr("title", "");
 		}
 	});
 	

@@ -58,7 +58,7 @@
 	/* 财务收支简报表 */
 	.ac_smreport img { float: left; margin-top: 7px; }
 		/* 表格(参照module.css 用户组页面 home_spacecp) */
-		.ac_tb { width: 100%; overflow: hidden; zoom: 1; margin: 10px 0; padding-bottom: 10px; }
+		.ac_tb { width: 100%; overflow: hidden; zoom: 1; margin: 10px 0; *padding-bottom: 10px; }
 			.ac_tb th, .ac_tb td { overflow: hidden; padding: 0 5px; height: 26px; border-width: 0 1px 0 0; border-color: {WRAPBG}; white-space: nowrap; }
 			.ac_tb th { height: 40px; font-weight: 700; border-right: 2px solid #FFF; border-left: 2px solid #FFF; text-align: center; }
 			.ac_tb .h th { height: 24px; border-top: 1px solid {COMMONBORDER}; border-bottom: 1px solid #E5E5E5; background: url({IMGDIR}/tb.png) repeat-x 0 -4px; color: {MIDTEXT}; zoom: 1; }
@@ -107,6 +107,7 @@
 		.ac_ul { border-bottom: 1px solid {DROPMENUBORDER}; margin-bottom: 4px; padding-bottom: 5px; }
 		.ac_pop label { cursor: default; float: left; line-height: 22px; vertical-align: middle; }
 		.ac_pop input { float: left; width:65px; }
+		
 	.ac_li { position: absolute; border-top: none; line-height: 20px; }
 		.ac_li li { float:none; color: #666666; cursor: pointer; padding: 2px 0; list-style: disc inside none; display: list-item; }
 		.ac_li li:hover { color: {NOTICETEXT}; }
@@ -114,6 +115,27 @@
 	.ac_sel { padding: 3px 16px 3px 6px; }
 	.ac_selclr { padding: 3px 2px 3px 20px; cursor: pointer; }
 	.ac_selall { padding: 3px 0px; cursor: pointer; }
+	
+	/* datatables */
+	.ac_dt {width:100%; border-collapse: separate; }
+		.ac_dt thead th { border-right: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; cursor: pointer; text-align: center; font-weight: 700;}
+		.ac_dt .th_1 { width: 90px; }
+			.ie6 .ac_dt .th_1 { width: 70px; }
+		.ac_dt .th_2 { width: 95px; }
+			.ie6 .ac_dt .th_2 { width: 75px; }
+		.ac_dt .th_3 { width: 150px; }
+			.ie6 .ac_dt .th_3 { width: 130px; }
+		.ac_dt .th_4 { width: 140px; }
+			.ie6 .ac_dt .th_4 { width: 120px; }
+		.ac_dt td { border-width: 0px 1px; border-color: {COMMONBG}; border-style: solid; line-height: 25px; }
+		.ac_dt .notrans_td td { background-color: {COMMONBG}; border-width: 0 1px; border-color:#FFF; border-style: solid; }
+		.tr_sum td { background-color: {SPECIALBG}; border-width: 1px; border-color:#FFF; border-style: solid; line-height: 30px; }
+		.td_left { padding-left: 15px; text-align: left; }
+		.td_center { padding-left: 15px; text-align: left; }
+		.td_right { padding-right: 17px; text-align: right; }
+	
+	/* 参考 .fl .bm_h */
+	.ac_thead {  } /* 提示：{TITLEBGCODE} 在module.css下调用会出现bug，即对单引号、双引号进行反编译 */
 /** end **/
 /*
  * .mi .moodfm_input { width: 350px; height: 58px; background: {COMMONBORDER} url({IMGDIR}/mood_input.png) no-repeat 0 0; }

@@ -61,18 +61,56 @@
 				</div>
 			</div>
 		</div>
-		<div class="bm bw0 ac_y">
+		<div class="bm bw0 ac_y" style="margin-bottom: 0px;">
 			<h1 class="mt">account_tab</h1>
 			<ul class="tb cl">
-				<li id="li_popmenu" class="ac_showm"><a id="a_popmenu" style="padding-right: 0; border: none; background: transparent;" year="{$richlist_y}">{$richlist_y}年</a></li>
-				<li><a ac_tab="undo" id="tb_time1" month="{$richlist_m}">{$richlist_m}月份</a></li>
-				<li><a ac_tab="use" id="tb_pay" style="display: none;">支出条件</a></li>
-				<li><a ac_tab="use" id="tb_earn" style="display: none;">收入条件</a></li>
-				<li><a ac_tab="use" id="tb_type" style="display: none;">类别条件</a></li>
-				<li><a ac_tab="use" id="tb_category" style="display: none;">账单归属条件</a></li>
-				<li><a ac_tab="use" id="tb_debt" style="display: none;">借贷归属条件</a></li>
-				<li class="y showmenu" style="display: none;"><a style="padding-right: 0;">收起周报表</a></li>
+				<li id="li_popmenu" class="ac_showm"><a id="a_popmenu" style="padding-right: 0; border: none; background: transparent;" year="{$richlist_y}"><strong>条&nbsp;件&nbsp;</strong></a></li>
+				<li><a ac_tab="undo" id="tb_time1" month="{$richlist_m}">{$richlist_y}年{$richlist_m}月份</a></li>
+				<li><a ac_tab="use" id="tb_pay" title="关闭" style="display: none;">支出条件</a></li>
+				<li><a ac_tab="use" id="tb_earn" title="关闭" style="display: none;">收入条件</a></li>
+				<li><a ac_tab="use" id="tb_type" title="关闭" style="display: none;">类别条件</a></li>
+				<li><a ac_tab="use" id="tb_category" title="关闭" style="display: none;">账单归属条件</a></li>
+				<li><a ac_tab="use" id="tb_debt" title="关闭" style="display: none;">借贷归属条件</a></li>
+				<li class="y"><label style="padding-right: 0;">搜索：</label><input id="s_input" class="px" style="width: 100px;"></li>
 			</ul>
+		</div>
+		<div class="bm bw0" style="border-width: 0;">
+			<table id="datatable" class="ac_dt" cellpadding="0" cellspacing="0">
+				<thead class="fl bm">
+					<tr class="bm_h">
+						<th class="th_1">时&nbsp;间&nbsp; &uarr;&darr;</th>
+						<th class="th_2">类&nbsp;别&nbsp; &uarr;&darr;</th>
+						<th class="th_3">账单名称&nbsp; &uarr;&darr;</th>
+						<th class="th_4">金&nbsp;额&nbsp; &uarr;&darr;</th>
+						<th class="th_2">账&nbsp;户&nbsp; &uarr;&darr;</th>
+						<th>备&nbsp;注&nbsp; &uarr;&darr;</th>
+						<th class="th_1">操&nbsp;作&nbsp; &uarr;&darr;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="tr_sum">
+						<td colspan="7">2012.03.10</td>
+					</tr>
+					<tr>
+						<td class="td_left">2012.03.10</td>
+						<td class="td_left">支出</td>
+						<td class="td_left">早餐</td>
+						<td class="td_right">2.00</td>
+						<td class="td_left">现金</td>
+						<td class="td_left">-</td>
+						<td class="td_center"><a>删除</a><span class="pipe">|</span><a>修改</a></td>
+					</tr>
+					<tr class="notrans_td">
+						<td class="td_left">2012.03.20</td>
+						<td class="td_left">收入</td>
+						<td class="td_left">工资</td>
+						<td class="td_right">1200.00</td>
+						<td class="td_left">现金</td>
+						<td class="td_left">-</td>
+						<td class="td_center"><a>删除</a><span class="pipe">|</span><a>修改</a></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	
@@ -95,6 +133,7 @@
 <script type="text/javascript" src="{$_G[setting][jspath]}calendar.js?{VERHASH}"></script>
 <script type="text/javascript" src="{$basedir}js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="{$basedir}js/position-1.8.17.min.js"></script>
+<script type="text/javascript" src="{$basedir}js/dataTables.js"></script>
 <script type="text/javascript" src="{$basedir}js/richlist.js"></script>
 
 <!--{template common/footer}-->
