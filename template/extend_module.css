@@ -119,14 +119,10 @@
 	/* datatables */
 	.ac_dt {width:100%; border-collapse: separate; }
 		.ac_dt thead th { border-right: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; cursor: pointer; text-align: center; font-weight: 700;}
-		.ac_dt .th_1 { width: 90px; }
-			.ie6 .ac_dt .th_1 { width: 70px; }
-		.ac_dt .th_2 { width: 95px; }
-			.ie6 .ac_dt .th_2 { width: 75px; }
-		.ac_dt .th_3 { width: 150px; }
-			.ie6 .ac_dt .th_3 { width: 130px; }
-		.ac_dt .th_4 { width: 140px; }
-			.ie6 .ac_dt .th_4 { width: 120px; }
+		.ac_dt .th_1 { width: 12%; }
+		.ac_dt .th_2 { width: 13%; }
+		.ac_dt .th_3 { width: 18%; }
+		.ac_dt .th_4 { width: 17%; }
 		.ac_dt td { border-width: 0px 1px; border-color: {COMMONBG}; border-style: solid; line-height: 25px; }
 		.ac_dt .notrans_td td { background-color: {COMMONBG}; border-width: 0 1px; border-color:#FFF; border-style: solid; }
 		.tr_sum td { background-color: {SPECIALBG}; border-width: 1px; border-color:#FFF; border-style: solid; line-height: 30px; }
