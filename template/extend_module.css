@@ -1,9 +1,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-03-05
+ *    Last Updated: 2012-04-28
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever 21bang.net Inc
  */
 
 /** plugin::account **/
@@ -125,7 +125,7 @@
 		.ac_dt .th_4 { width: 17%; }
 		.ac_dt td { border-width: 0px 1px; border-color: {COMMONBG}; border-style: solid; line-height: 25px; }
 		.ac_dt .notrans_td td { background-color: {COMMONBG}; border-width: 0 1px; border-color:#FFF; border-style: solid; }
-		.tr_sum td { background-color: {SPECIALBG}; border-width: 1px; border-color:#FFF; border-style: solid; line-height: 30px; }
+		.tr_sum td { background-color: {SPECIALBG}; border-top: 1px; border-color:#FFF; border-style: solid; line-height: 30px; }
 		.td_left { padding-left: 15px; text-align: left; }
 		.td_center { padding-left: 15px; text-align: left; }
 		.td_right { padding-right: 17px; text-align: right; }

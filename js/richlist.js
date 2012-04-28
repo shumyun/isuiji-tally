@@ -1,9 +1,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-03-15
+ *    Last Updated: 2012-04-28
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever 21bang.net Inc
  */
 
 jQuery.noConflict();
@@ -31,14 +31,14 @@ jQuery(document).ready(function($) {
 	/*
 	 * 显示时间选项
 	 */
-	var display_year = $("#a_popmenu").attr("year");
-	var display_month = $("#tb_time1").attr("month");
+	var display_year = $("#a_popmenu").html();
+	var display_month = $("#tb_time1").html();
 	var pop_time1 = $('<div class="p_pop ac_li">\
 						<ul class="ac_ul"><li id="time1_m">最近一个月</li><li id="time1_last">上一个月</li><li id="time1_y">最近一年</li></ul>\
 						<div><strong>按月份查询：</strong><br />\
 							<div style="margin: 4px 0px;">\
-								<input id="time1_year" class="px" style="width:30px;" value="'+display_year+'"/>&nbsp;-&nbsp;\
-								<input id="time1_month" class="px" style="width:15px;" value="'+display_month+'"/><br /></div>\
+								<input id="time1_year" class="px" style="width:30px;" value="'+parseInt(display_year)+'"/>&nbsp;-&nbsp;\
+								<input id="time1_month" class="px" style="width:15px;" value="'+parseInt(display_month)+'"/><br /></div>\
 							<button class="pn pnc" style="margin: 2px 0px 6px 18px;"><strong>确定</strong></button>\
 						</div>\
 					  </div>')
@@ -50,29 +50,30 @@ jQuery(document).ready(function($) {
 		offset: "0 2"
 	}).hide();
 	$("#time1_m").click(function(){
-		$("#a_popmenu").html(display_year+"年");
+		$("#a_popmenu").html(display_year);
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
-		$("#tb_time1").html(display_month+"月份").attr("ac_tab", "undo").attr("title", "");
+		$("#tb_time1").html(display_month).attr("ac_tab", "undo").attr("title", "");
 	});
 	$("#time1_last").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
 		var tmp_m = 0;
-		if((tmp_m = display_month-1) == 0){
+		if((tmp_m = parseInt(display_month)-1) == 0){
 			var tmp = parseInt(display_year) - 1;
 			$("#a_popmenu").html(tmp+"年");
 			$("#tb_time1").html("12月份").attr("ac_tab", "use").attr("title", "关闭");
 		} else {
-			$("#a_popmenu").html(display_year+"年");
-			$("#tb_time1").html(tmp_m+"月份").attr("ac_tab", "use").attr("title", "关闭");
+			$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
+			$("#a_popmenu").html();
+			$("#tb_time1").html(display_year+tmp_m+"月份").attr("ac_tab", "use").attr("title", "关闭");
 		};
 	});
 	$("#time1_y").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
-		$("#a_popmenu").html("查询条件");
-		$("#tb_time1").html(display_year+"年全年").attr("ac_tab", "use").attr("title", "关闭");
+		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
+		$("#tb_time1").html(display_year+"全年").attr("ac_tab", "use").attr("title", "关闭");
 	});
 	$("#time1_year").click(function(){
 		hiden_time1 = false;
