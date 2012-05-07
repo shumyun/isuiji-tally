@@ -252,16 +252,20 @@
 	
 	/**
 	 * 默认数据
-	 * @SortColumns : 含2个数据的对象,包括{列数(从0开始计算)，该列的数据类型("date","string","numerical")
+	 * @SortColumns : 含2个数据的对象,包括{列数(从0开始计算)，该列的数据类型("date","string","numerical")}
 	 * @Searchwidget: 进行搜索的控件，一般为input,含有2个数据的对象,包括{搜索的列的列数，进行搜索的控件}
 	 * @CountRows   : 按照时间进行统计，对象包括3个数据
 	 *                {iOrderByTime: 时间所在列, iOrderByType: 统计时的类型, iOrderByTotal: 统计时的数据, trClass: 统计行的css类, tdCount: 合并的td个数}
+	 * @trClass     : 隔行的CSS类[单行的css, 双行的css]
+	 * @operateCols : 操作列的列数(从0开始计算)
 	 */
 	DataTable.defaults = {
 		"SortColumns" : null,
+		"TrClass"     : null,
+		"OperateCols" : null,
 		"SearchWidget": {},
 		"CountRows"   : {},
-		"trClass"     : null
+		"Ajax"        : {}
 	};
 	
 	$.fn.DataTable = DataTable;
@@ -275,8 +279,10 @@ jQuery(document).ready(function($) {
 		                 [2, "string"],
 		                 [3, "numerical"],
 		                 [4, "string"]],
+		"TrClass"     : [null, "notrans_td"],
+		"OperateCols" : 6,
 		"SearchWidget": {"SearchCol": 5, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
-		"trClass"     : "notrans_td"
+		"Ajax"        : {"url":"plugin.php?id=account:ajax&func=aj_richlist", "bProcessing": true}
 	});
 });

@@ -117,8 +117,8 @@
 	.ac_selall { padding: 3px 0px; cursor: pointer; }
 	
 	/* datatables */
-	.ac_dt {width:100%; border-collapse: separate; }
-		.ac_dt thead th { border-right: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; cursor: pointer; text-align: center; font-weight: 700;}
+	.ac_dt { width: 100%; border-collapse: separate; }
+		.ac_dt thead th { border-right: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; cursor: pointer; text-align: center; font-weight: 700; }
 		.ac_dt .th_1 { width: 12%; }
 		.ac_dt .th_2 { width: 13%; }
 		.ac_dt .th_3 { width: 18%; }

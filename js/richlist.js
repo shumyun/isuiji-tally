@@ -120,8 +120,8 @@ jQuery(document).ready(function($) {
 	}).click(function(){
 		if($(this).attr("ac_tab") == "use"){
 			$(this).attr("style", "");
-			$("#a_popmenu").html(display_year+"年");
-			$("#tb_time1").html(display_month+"月份").attr("ac_tab", "undo").attr("title", "");
+			$("#a_popmenu").html(display_year);
+			$("#tb_time1").html(display_month).attr("ac_tab", "undo").attr("title", "");
 		}
 	});
 	

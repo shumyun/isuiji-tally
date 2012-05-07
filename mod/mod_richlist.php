@@ -3,9 +3,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-03-13
+ *    Last Updated: 2012-04-28
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever 21bang.net Inc
  */
 
 if(!defined('IN_DISCUZ')) {
