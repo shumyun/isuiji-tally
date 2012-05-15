@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-04-28
+ *    Last Updated: 2012-05-15
  *    Author: shumyun
  *    Copyright (C) 2011 - forever 21bang.net Inc
  */
@@ -14,8 +14,18 @@
 			$.extend(true, DataTable.ext, {"oTable": othis});
 			DataTable.ext.optdata = _fnExtend( $.extend(true, {}, DataTable.defaults), odata );
 			
-			//整合表格数据
-			_fnInitData();
+			
+			
+			//判断数据来源
+			//if( $.isEmptyObject(DataTable.ext.optdata["Ajax"])) {
+			if( DataTable.ext.optdata["Ajax"] === null) {
+				//整合表格数据
+				_fnInitData();
+			} else {
+				$.post(DataTable.ext.optdata["Ajax"], function(data) {
+								_fnAjaxSaveData(data);
+							});
+			}
 			
 			return ;
 		}
@@ -87,7 +97,16 @@
 		}
 		
 		/**
-		 * 存储数据
+		 * 存储ajax数据
+		 *  @returns boolean
+		 */
+		function _fnAjaxSaveData(aj_data) {
+			alert("hello");
+			return true;
+		}
+		
+		/**
+		 * 存储table数据
 		 *  @returns boolean
 		 */
 		function _fnSaveData(){
@@ -217,14 +236,15 @@
 		}
 		
 		this.oApi = {
-			"fnInit"        : _fnInit,
-			"_fnLog"        : _fnLog,
-			"_fnExtend"     : _fnExtend,
-			"_fntransition" : _fntransition,
-			"_fnInitData"   : _fnInitData,
-			"_fnSaveData"   : _fnSaveData,
-			"_fnSortData"   : _fnSortData,
-			"fnDefaultOut"  : _fnDefaultOut
+			"fnInit"          : _fnInit,
+			"_fnLog"          : _fnLog,
+			"_fnExtend"       : _fnExtend,
+			"_fntransition"   : _fntransition,
+			"_fnInitData"     : _fnInitData,
+			"_fnSaveData"     : _fnSaveData,
+			"_fnAjaxSaveData" : _fnAjaxSaveData,
+			"_fnSortData"     : _fnSortData,
+			"fnDefaultOut"    : _fnDefaultOut
 		};
 		
 		/* 判断控件为table */
@@ -265,7 +285,7 @@
 		"OperateCols" : null,
 		"SearchWidget": {},
 		"CountRows"   : {},
-		"Ajax"        : {}
+		"Ajax"        : null
 	};
 	
 	$.fn.DataTable = DataTable;
@@ -283,6 +303,6 @@ jQuery(document).ready(function($) {
 		"OperateCols" : 6,
 		"SearchWidget": {"SearchCol": 5, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
-		"Ajax"        : {"url":"plugin.php?id=account:ajax&func=aj_richlist", "bProcessing": true}
+		"Ajax"				: "plugin.php?id=account:ajax&func=aj_richlist"
 	});
 });
