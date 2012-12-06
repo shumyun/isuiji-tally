@@ -3,9 +3,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-14
+ *    Last Updated: 2012-12-06
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -116,6 +116,10 @@ class class_account {
 				return false;
 		}
 		return true;
+	}
+	
+	public function run_ajaxsel($ac_uid, $condition) {
+		;
 	}
 }
 

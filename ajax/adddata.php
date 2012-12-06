@@ -3,9 +3,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-28
+ *    Last Updated: 2012-12-06
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -14,15 +14,20 @@ if(!defined('IN_DISCUZ')) {
 
 define('NOROBOT', TRUE);
 
-if(!$account->run_ajaxadd($_G['uid'], $_POST['curstatus'])) {
-	return;
-}
 
 $ac_response = array(
 		'state' => 'ok',
 		'curerr' => '');
 
-if( !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
+if(!isset($_POST['curstatus']) || !$account->run_ajaxadd($_G['uid'], $_POST['curstatus'])) {
+	$ac_response['state'] = 'err';
+	$ac_response['curerr'] = 'no_type';
+	//echo "未知类型增加";
+	echo json_encode($ac_response);
+	return;
+}
+
+if(!isset($_POST['richnum']) || !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'richnum';
 	//echo "请填写大于零的金额";
@@ -30,7 +35,7 @@ if( !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['ric
 	return;
 }
 
-if( !($timestamp = strtotime($_POST['richdate'])) ) {
+if(!isset($_POST['richdate']) || !($timestamp = strtotime($_POST['richdate'])) ) {
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'richdate';
 	//echo "请选择正确的日期";

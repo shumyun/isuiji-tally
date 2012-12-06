@@ -1,9 +1,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-05-15
+ *    Last Updated: 2012-12-06
  *    Author: shumyun
- *    Copyright (C) 2011 - forever 21bang.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 (function($, window, document, undefined) {
@@ -101,7 +101,7 @@
 		 *  @returns boolean
 		 */
 		function _fnAjaxSaveData(aj_data) {
-			alert("hello");
+			alert(aj_data);
 			return true;
 		}
 		
@@ -303,6 +303,6 @@ jQuery(document).ready(function($) {
 		"OperateCols" : 6,
 		"SearchWidget": {"SearchCol": 5, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
-		"Ajax"				: "plugin.php?id=account:ajax&func=aj_richlist"
+		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist"
 	});
 });

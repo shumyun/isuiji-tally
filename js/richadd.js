@@ -1,9 +1,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-20
+ *    Last Updated: 2012-12-06
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  *    未知错误使用已经到 3
  */
 jQuery.noConflict();
@@ -734,6 +734,9 @@ jQuery(document).ready(function($) {
 			  				break;
 			  			case "no_login":
 			  				showWindow('login', 'plugin.php?id=account:index');
+			  				break;
+			  			case "no_type":
+			  				alert("未知类型增加");
 			  				break;
 			  			default:
 							alert("页面错误1");
