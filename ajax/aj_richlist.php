@@ -21,7 +21,7 @@ if (!isset($_POST['eTime']) || !($eTime = strtotime($_POST['eTime'])))
 	$eTime = 0;
 
 if ($eTime < $bTime) {
-	echo '开始时间大于结束时间';
+	echo '开始时间应该大于结束时间';
 	return ;
 }
 

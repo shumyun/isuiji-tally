@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  *    account v0.1.0
@@ -23,6 +23,7 @@ class class_account {
 			'paytype'     => '',
 			'catetype'    => '',
 			'loandebt'    => '',
+			'seldata'     => '',
 			'totalamount' => 0);
 	
 	public function run_modrichadd($ac_uid) {
@@ -118,9 +119,14 @@ class class_account {
 		return true;
 	}
 	
-	public function run_ajaxsel($ac_uid, $condition) {
-		;
+	public function run_ajaxsel($ac_uid, $tables, $condition, $dur = "") {
+		$ac_seldata = DB::fetch("");
+		
+		$this->account_config['seldata'] = $ac_seldata;
+		
+		return true;
 	}
+
 }
 
-?>
+?>        
