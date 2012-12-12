@@ -3,9 +3,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-04-28
+ *    Last Updated: 2012-12-12
  *    Author: shumyun
- *    Copyright (C) 2011 - forever 21bang.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -127,5 +127,6 @@ $ac_ldiv .= '<a id="a_loandebt" class="ac_h selimg_empty selimg_0" a_ulid="ul_lo
 
 $richlist_y = date('Y', $_G['timestamp']);
 $richlist_m = date('n', $_G['timestamp']);
+$richlist_t = date('t', $_G['timestamp']);
 
 ?>

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-06
+ *    Last Updated: 2012-12-12
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -22,7 +22,7 @@
 				//整合表格数据
 				_fnInitData();
 			} else {
-				$.post(DataTable.ext.optdata["Ajax"], function(data) {
+				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajData"], function(data) {
 								_fnAjaxSaveData(data);
 							});
 			}
@@ -285,7 +285,8 @@
 		"OperateCols" : null,
 		"SearchWidget": {},
 		"CountRows"   : {},
-		"Ajax"        : null
+		"Ajax"        : null,
+		"ajData"			: null
 	};
 	
 	$.fn.DataTable = DataTable;
@@ -303,6 +304,7 @@ jQuery(document).ready(function($) {
 		"OperateCols" : 6,
 		"SearchWidget": {"SearchCol": 5, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
-		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist"
+		"Ajax"		  	: "plugin.php?id=account:ajax&func=aj_richlist",
+		"ajData"			: $("#tb_time1").attr("data")
 	});
 });
