@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-12
+ *    Last Updated: 2012-12-16
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -24,6 +24,8 @@
 			} else {
 				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajData"], function(data) {
 								_fnAjaxSaveData(data);
+								_fnSortData();
+								_fnDefaultOut();
 							});
 			}
 			
@@ -101,7 +103,45 @@
 		 *  @returns boolean
 		 */
 		function _fnAjaxSaveData(aj_data) {
-			alert(aj_data);
+			var oTable = $.parseJSON(aj_data);
+			//alert(otable.earn[0][0]);
+			var aDate = {};
+			for (var oname in oTable) {
+				var aData = oTable[oname];
+				var oType = {};
+				for (var i = 0; i < aData.length; i++) {
+					var oData = aData[i];
+					if((tmpTime = _fntransition(oData[1], "date")) === false)
+						return false;
+					if( !aDate.hasOwnProperty(tmpTime) ) {
+						aDate[tmpTime] = {"oType": {}, "adata": null, "iSumCols": 0};
+						aDate[tmpTime]["oType"][oname] = {"sum": 0, "count": 0};
+						aDate[tmpTime]["adata"] = new Array();
+						oType = aDate[tmpTime]["oType"];
+					} else {
+						oType = aDate[tmpTime]["oType"];
+						if( !oType.hasOwnProperty(oname)) {
+							oType = {oname: {"sum": 0, "count": 0}};
+							$.extend(true, aDate[tmpTime]["oType"], oType);
+						}
+					}
+					var oCol = $('<tr id="'+ oData[0]
+								+'"><td class="td_left">'+ oData[1]
+								+'</td><td class="td_left">'+ oData[2]
+								+'</td><td class="td_right">'+ oData[3]
+								+'</td><td class="td_left">'+ oname
+								+'</td><td class="td_left">'+ oData[4]
+								+'</td><td class="td_left">-</td>\
+								<td class="td_center"><a>删除</a><span class="pipe">|</span><a>修改</a></td></tr>');
+					if((tmpval = _fntransition(oData[3], "numerical")) === false)
+						return false;
+					oType[oname]["sum"] += tmpval;
+					oType[oname]["count"]++;
+					aDate[tmpTime]["adata"].push(oCol);
+					aDate[tmpTime]["iSumCols"]++;
+				}
+			}
+			DataTable.DataCols["aDate"] = aDate;
 			return true;
 		}
 		
@@ -158,24 +198,12 @@
 		 *  @returns boolean
 		 */
 		function _fnSortData(){
-				/*
-	  		for (var x in aSortColumns) {
-					var aSort = aSortColumns[x];
-					
-					if( $(this).children() || $(this).children().eq(aSort[0]) ) {
-						var tmp = $(this).children().eq(aSort[0]);
-						if(!(tmp = _fntransition(tmp.html().replace(/\./g, "/"), aSort[1]))) 
-							return false;
-							
-						var oCol = DataTable.DataCols["aSort"];
-						oCol["count"]++;
-						alert(DataTable.DataCols["aSort"][aSort[0]]["count"]);
-					} else {
-						_fnLog( null, 0, "找不到相应的节点存储。");
-						return false;
-					}
-				}
-				*/
+			var oDate = DataTable.DataCols["aDate"];
+			for(var date in oDate){
+				oDate[date]["adata"].sort(function SortDate(a, b) {
+					return b.attr("id") - a.attr("id");
+				});
+			}
 			return true;
 		}
 		
@@ -187,18 +215,22 @@
 			var aOutData = DataTable.DataCols["aDate"];
 			var othis = DataTable.ext.oTable;
 			othis = $("tbody", othis);
-	  	for (var x in aOutData) {
-	  		//var d = new Date(x);
-	  		var d=0;
+			$("#loading", othis).hide();
+			for (var x in aOutData) {
 				var aData = aOutData[x]["adata"];
-				
-	  		var oCol = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
-	  										<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">' + d + '</td></tr>');
+				var OutType = aOutData[x]["oType"];
+				var str = "";
+				for(var i in OutType){
+					str += "    "+i+":"+OutType[i].sum+"("+OutType[i].count+"条)";
+				}
+			
+				var oCol = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
+	  							<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">' + str + '</td></tr>');
 				othis.append(oCol);
 				for (var y=0; y<aData.length; y++) {
 					othis.append(aData[y]);
-					$(aData[y]).show();
-					if(y%2) $(aData[y]).addClass(DataTable.ext["optdata"]["trClass"]);
+					//$(aData[y]).show();
+					$(aData[y]).addClass(DataTable.ext["optdata"]["TrClass"][y%2]);
 				}
 			}
 			return true;
@@ -286,7 +318,7 @@
 		"SearchWidget": {},
 		"CountRows"   : {},
 		"Ajax"        : null,
-		"ajData"			: null
+		"ajData"	  : null
 	};
 	
 	$.fn.DataTable = DataTable;
@@ -304,7 +336,7 @@ jQuery(document).ready(function($) {
 		"OperateCols" : 6,
 		"SearchWidget": {"SearchCol": 5, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
-		"Ajax"		  	: "plugin.php?id=account:ajax&func=aj_richlist",
-		"ajData"			: $("#tb_time1").attr("data")
+		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist",
+		"ajData"	  : $("#tb_time1").attr("data")
 	});
 });
