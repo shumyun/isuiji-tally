@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-16
+ *    Last Updated: 2012-12-17
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -103,7 +103,17 @@
 		 *  @returns boolean
 		 */
 		function _fnAjaxSaveData(aj_data) {
-			var oTable = $.parseJSON(aj_data);
+			var oReceive = $.parseJSON(aj_data);
+			if(oReceive["state"] == "error") {
+				_fnLog( null, 0, oReceive["errinfo"]);
+				return ;
+			}
+			
+			var oTable = {};
+			if(!(oTable = oReceive["oTable"])) {
+				_fnLog( null, 0, "无数据显示");
+				return ;
+			}
 			//alert(otable.earn[0][0]);
 			var aDate = {};
 			for (var oname in oTable) {

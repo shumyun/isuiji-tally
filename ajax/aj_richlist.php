@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-16
+ *    Last Updated: 2012-12-17
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -21,18 +21,21 @@ if (!isset($_POST['eTime']) || !($eTime = strtotime($_POST['eTime'])))
 	$eTime = 0;
 
 if ($eTime < $bTime) {
-	echo '开始时间应该大于结束时间';
+	echo '{"state":"error", "errinfo":"开始时间应该大于结束时间"}';
 	return ;
 }
 
+$outjson = '{"state":"ok"';
+
 $query = DB::query("SELECT * FROM ".DB::table('account_earndata').
      " WHERE uid='$_G[uid]' AND datatime >= ".$bTime." AND datatime <= ".$eTime);
+$oTable = "";
 
 /**
  * 获取收入类型的数据
  */
 $datatmp = '';
-$data['earn'] = '[';
+$data['earn'] = '';
 while($daydata = DB::fetch($query)) {
 	if($datatmp)
 		$data['earn'] .= $datatmp.',';
@@ -44,11 +47,11 @@ while($daydata = DB::fetch($query)) {
 				($daydata['info'] ? '", "'.$daydata['info'] : '').'"]';
 }
 if($datatmp)
-	$data['earn'] .= $datatmp.']';
+	$data['earn'] .= $datatmp;
+if($data['earn'])
+	$oTable .= ( $oTable ? ', ':'').'"earn":['.$data['earn'].']';
 
-
-
-
-echo '{"earn":'.$data['earn'].'}';
+	$outjson .= ( $oTable ? ', "oTable": {'.$oTable.'}':'').'}';
+echo $outjson;
 
 ?>
