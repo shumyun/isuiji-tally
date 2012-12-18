@@ -127,10 +127,10 @@
 		.ac_dt .notrans_td td { background-color: {COMMONBG}; border-width: 0 1px; border-color:#FFF; border-style: solid; }
 		.tr_sum td { background-color: {SPECIALBG}; border-top: 1px; border-color:#FFF; border-style: solid; line-height: 30px; }
 		.td_left { padding-left: 15px; text-align: left; }
-		.td_center { padding-left: 15px; text-align: left; }
+		.td_center { padding-left: 0px; text-align: center; }
 		.td_right { padding-right: 17px; text-align: right; }
-		span .datenum { font-family: Georgia; padding-left: 1px; color: #0F675E; font-size: 16px; font-weight: bold; padding-left: 0 !important; padding-right: 2px;}
-	
+		.tr_sum td ul li span { font-family: Georgia; padding-left: 1px; }
+		.tr_sum .ac_datenum { color: #0F675E; font-size: 16px; font-weight: bold; padding-left: 0 !important; padding-right: 2px; }
 	/* 参考 .fl .bm_h */
 	.ac_thead {  } /* 提示：{TITLEBGCODE} 在module.css下调用会出现bug，即对单引号、双引号进行反编译 */
 /** end **/

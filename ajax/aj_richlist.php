@@ -49,7 +49,7 @@ while($daydata = DB::fetch($query)) {
 if($datatmp)
 	$data['earn'] .= $datatmp;
 if($data['earn'])
-	$oTable .= ( $oTable ? ', ':'').'"earn":['.$data['earn'].']';
+	$oTable .= ( $oTable ? ', ':'').'"收入":['.$data['earn'].']';
 
 	$outjson .= ( $oTable ? ', "oTable": {'.$oTable.'}':'').'}';
 echo $outjson;

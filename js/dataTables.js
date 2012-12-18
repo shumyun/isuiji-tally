@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-17
+ *    Last Updated: 2012-12-18
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -136,14 +136,14 @@
 						}
 					}
 					var oCol = $('<tr id="'+ oData[0]
-								+'"><td class="td_center"><a>删除</a><span class="pipe">|</span><a>修改</a></td>'
+								+'"><td class="td_left"><a>删除</a><span class="pipe">|</span><a>修改</a></td>'
 								+'<td class="td_left">'+ oData[2]
 								+'</td><td class="td_right">'+ oData[3]
 								+'</td><td class="td_right">'+ oData[4]
-								+'</td><td class="td_left">'+ oname
-								+'</td><td class="td_left">'+ oData[5]
+								+'</td><td class="td_center">'+ oname
+								+'</td><td class="td_center">'+ oData[5]
 								+'</td><td class="td_left">-</td></tr>');
-					if((tmpval = _fntransition(oData[3], "numerical")) === false)
+					if((tmpval = _fntransition(oData[4], "numerical")) === false)
 						return false;
 					oType[oname]["sum"] += tmpval;
 					oType[oname]["count"]++;
@@ -227,15 +227,22 @@
 			othis = $("tbody", othis);
 			$("#loading", othis).hide();
 			for (var x in aOutData) {
+				var tmpdate = new Date();
+				tmpdate.setTime(x);
+				var nMonth = parseInt(tmpdate.getMonth()) + 1;
 				var aData = aOutData[x]["adata"];
 				var OutType = aOutData[x]["oType"];
 				var str = "";
 				for(var i in OutType){
-					str += "    "+i+":"+OutType[i].sum+"("+OutType[i].count+"条)";
+					str += '<strong>'+i+':<font color="green">+'+OutType[i].sum+'</font>（'+OutType[i].count+'条记录）</strong>';
 				}
 			
 				var oCol = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
-	  							<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">' + str + '</td></tr>');
+	  							<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '"><ul><li style="padding-left: 5px; float: left;"><span class="ac_datenum">'
+	  							+tmpdate.getFullYear()+'</span>年<span class="ac_datenum">'
+	  							+nMonth+'</span>月<span class="ac_datenum">'
+	  							+tmpdate.getDate()+'</span>日</li><li style="padding-right: 15px; float: right;">'
+	  							+ str + '</li></ul></td></tr>');
 				othis.append(oCol);
 				for (var y=0; y<aData.length; y++) {
 					othis.append(aData[y]);
