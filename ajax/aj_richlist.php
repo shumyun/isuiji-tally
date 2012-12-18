@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-17
+ *    Last Updated: 2012-12-18
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -41,7 +41,7 @@ while($daydata = DB::fetch($query)) {
 		$data['earn'] .= $datatmp.',';
 	$datatmp = '["'.$daydata['recordtime'].'", "'.
 				date('Y/m/d', $daydata['datatime']).'", "'.
-				$daydata['seclv'].($daydata['onelv'] ? '<<'.$daydata['onelv'] : '').
+				$daydata['seclv'].'", "'.($daydata['onelv'] ? $daydata['onelv'] : '').
 				'", "'.$daydata['amount'].'", "'.
 				$daydata['category'].
 				($daydata['info'] ? '", "'.$daydata['info'] : '').'"]';

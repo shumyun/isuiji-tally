@@ -136,13 +136,13 @@
 						}
 					}
 					var oCol = $('<tr id="'+ oData[0]
-								+'"><td class="td_left">'+ oData[1]
-								+'</td><td class="td_left">'+ oData[2]
+								+'"><td class="td_center"><a>删除</a><span class="pipe">|</span><a>修改</a></td>'
+								+'<td class="td_left">'+ oData[2]
 								+'</td><td class="td_right">'+ oData[3]
+								+'</td><td class="td_right">'+ oData[4]
 								+'</td><td class="td_left">'+ oname
-								+'</td><td class="td_left">'+ oData[4]
-								+'</td><td class="td_left">-</td>\
-								<td class="td_center"><a>删除</a><span class="pipe">|</span><a>修改</a></td></tr>');
+								+'</td><td class="td_left">'+ oData[5]
+								+'</td><td class="td_left">-</td></tr>');
 					if((tmpval = _fntransition(oData[3], "numerical")) === false)
 						return false;
 					oType[oname]["sum"] += tmpval;
