@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-06
+ *    Last Updated: 2012-12-19
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -30,7 +30,7 @@ if(!isset($_POST['curstatus']) || !$account->run_ajaxadd($_G['uid'], $_POST['cur
 if(!isset($_POST['richnum']) || !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'richnum';
-	//echo "请填写大于零的金额";
+	//echo "请填写大于零且最多两位小数的金额";
 	echo json_encode($ac_response);
 	return;
 }

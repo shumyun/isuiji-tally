@@ -234,11 +234,13 @@
 				var OutType = aOutData[x]["oType"];
 				var str = "";
 				for(var i in OutType){
-					str += '<strong>'+i+':<font color="green">+'+OutType[i].sum+'</font>（'+OutType[i].count+'条记录）</strong>';
+					str += '<strong  style="padding-right: 25px;">'+i+':<font color="green">+'+OutType[i].sum.toFixed(2).toString()+'</font>（'+OutType[i].count+'条记录）</strong>';
+					str +='<strong  style="padding-right: 25px;">sss</strong>';
 				}
 			
 				var oCol = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
-	  							<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '"><ul><li style="padding-left: 5px; float: left;"><span class="ac_datenum">'
+	  							<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">\
+	  							<ul><li style="padding-left: 5px; float: left;"><span class="ac_datenum">'
 	  							+tmpdate.getFullYear()+'</span>年<span class="ac_datenum">'
 	  							+nMonth+'</span>月<span class="ac_datenum">'
 	  							+tmpdate.getDate()+'</span>日</li><li style="padding-right: 15px; float: right;">'

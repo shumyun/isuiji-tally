@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-06
+ *    Last Updated: 2012-12-19
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  *    未知错误使用已经到 3
@@ -718,7 +718,7 @@ jQuery(document).ready(function($) {
 			  				errTip("#richdate", "请选择正确的日期", 1, 2500);
 			  				break;
 			  			case "richnum":
-			  				errTip("#richnum", "请填写大于零的金额", 1, 2500);
+			  				errTip("#richnum", "请填写大于零且最多两位小数的金额", 1, 2500);
 			  				break;
 			  			case "richname":
 			  				errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
