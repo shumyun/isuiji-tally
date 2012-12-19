@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-18
+ *    Last Updated: 2012-12-19
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -26,14 +26,39 @@ if ($eTime < $bTime) {
 }
 
 $outjson = '{"state":"ok"';
-
-$query = DB::query("SELECT * FROM ".DB::table('account_earndata').
-     " WHERE uid='$_G[uid]' AND datatime >= ".$bTime." AND datatime <= ".$eTime);
 $oTable = "";
+
+
+/**
+ * 获取支出类型的数据
+ */
+$query = DB::query("SELECT * FROM ".DB::table('account_paydata').
+		" WHERE uid='$_G[uid]' AND datatime >= ".$bTime." AND datatime <= ".$eTime);
+
+$datatmp = '';
+$data['pay'] = '';
+while($daydata = DB::fetch($query)) {
+	if($datatmp)
+		$data['pay'] .= $datatmp.',';
+	$datatmp = '["'.$daydata['recordtime'].'", "'.
+			date('Y/m/d', $daydata['datatime']).'", "'.
+			$daydata['seclv'].'", "'.($daydata['onelv'] ? $daydata['onelv'] : '').
+			'", "'.$daydata['amount'].'", "'.
+			$daydata['category'].
+			($daydata['info'] ? '", "'.$daydata['info'] : '').'"]';
+}
+if($datatmp)
+	$data['pay'] .= $datatmp;
+if($data['pay'])
+	$oTable .= ( $oTable ? ', ':'').'"支出":['.$data['pay'].']';
+
 
 /**
  * 获取收入类型的数据
  */
+$query = DB::query("SELECT * FROM ".DB::table('account_earndata').
+     " WHERE uid='$_G[uid]' AND datatime >= ".$bTime." AND datatime <= ".$eTime);
+
 $datatmp = '';
 $data['earn'] = '';
 while($daydata = DB::fetch($query)) {
@@ -51,7 +76,8 @@ if($datatmp)
 if($data['earn'])
 	$oTable .= ( $oTable ? ', ':'').'"收入":['.$data['earn'].']';
 
-	$outjson .= ( $oTable ? ', "oTable": {'.$oTable.'}':'').'}';
+
+$outjson .= ( $oTable ? ', "oTable": {'.$oTable.'}':'').'}';
 echo $outjson;
 
 ?>
