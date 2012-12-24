@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-19
+ *    Last Updated: 2012-12-24
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -14,8 +14,6 @@
 			$.extend(true, DataTable.ext, {"oTable": othis});
 			DataTable.ext.optdata = _fnExtend( $.extend(true, {}, DataTable.defaults), odata );
 			
-			
-			
 			//判断数据来源
 			//if( $.isEmptyObject(DataTable.ext.optdata["Ajax"])) {
 			if( DataTable.ext.optdata["Ajax"] === null) {
@@ -24,7 +22,7 @@
 			} else {
 				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajData"], function(data) {
 								_fnAjaxSaveData(data);
-								_fnSortData();
+								_fnSetSort();
 								_fnDefaultOut();
 							});
 			}
@@ -80,6 +78,37 @@
 			}
 			return oOut;
 		}
+		 
+		/**
+		 * 将相应的数据类型转换成数字
+		 *  @param {object} oOut Object to extend
+		 *  @param {object} oExtender Object from which the properties will be applied to oOut
+		 *  @returns {object} oOut Reference, just for convenience - oOut === the return.
+		 *  @memberof DataTable#oApi
+		 *  @todo This doesn't take account of arrays inside the deep copied objects.
+		 */
+		function _fntransition(srcdata, srctype) {
+			switch(srctype) {
+				case "date":
+					var x = Date.parse(srcdata);
+					if ( isNaN(x) || x==="" ) {
+						_fnLog( null, 0, "存储的"+srctype+"数据有误");
+						return false;
+					}
+					return x;
+					
+				case "numerical":
+					return (srcdata=="-" || srcdata==="") ? 0 : srcdata*1;
+				
+				case "string":
+					if ( typeof srcdata != 'string' ) { srcdata = ''; }
+						return srcdata.toLowerCase();
+						
+				default:
+					_fnLog( null, 0, "存储的数据类型有误");
+					return false;
+			};
+		}
 		
 		/**
 		 * 整合原始datatable数据,包括存储、排序、合计
@@ -114,19 +143,29 @@
 				_fnLog( null, 0, "无数据显示");
 				return ;
 			}
-			//alert(otable.earn[0][0]);
+			
 			var aDate = {};
 			for (var oname in oTable) {
 				var aData = oTable[oname];
 				var oType = {};
+				var tmpdate = new Date();
 				for (var i = 0; i < aData.length; i++) {
 					var oData = aData[i];
 					if((tmpTime = _fntransition(oData[1], "date")) === false)
 						return false;
 					if( !aDate.hasOwnProperty(tmpTime) ) {
-						aDate[tmpTime] = {"oType": {}, "adata": null, "iSumCols": 0};
+						aDate[tmpTime] = {"oType": {}, "adata": null, "iSumCols": 0, "trWidget": null};
 						aDate[tmpTime]["oType"][oname] = {"sum": 0, "count": 0};
 						aDate[tmpTime]["adata"] = new Array();
+						tmpdate.setTime(tmpTime);
+						var nMonth = parseInt(tmpdate.getMonth()) + 1;
+						//每日合计显示
+						aDate[tmpTime]["trWidget"] = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
+	  													<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">\
+	  													<ul><li style="padding-left: 5px; float: left;"><span class="ac_datenum">'
+	  													+tmpdate.getFullYear()+'</span>年<span class="ac_datenum">'
+	  													+nMonth+'</span>月<span class="ac_datenum">'
+	  													+tmpdate.getDate()+'</span>日</li></ul></td></tr>');
 						oType = aDate[tmpTime]["oType"];
 					} else {
 						oType = aDate[tmpTime]["oType"];
@@ -137,8 +176,8 @@
 					}
 					var oCol = $('<tr id="'+ oData[0]
 								+'"><td class="td_left"><a>删除</a><span class="pipe">|</span><a>修改</a></td>'
-								+'<td class="td_right">'+ oData[2]
-								+'</td><td class="td_left">'+ oData[3]
+								+'<td class="td_rsecond">'+ oData[2]
+								+'</td><td class="td_lfirst">'+ oData[3]
 								+'</td><td class="td_right">'+ oData[4]
 								+'</td><td class="td_center">'+ oname
 								+'</td><td class="td_center">'+ oData[5]
@@ -202,19 +241,121 @@
 			DataTable.DataCols["aSort"] = aSort;
 			return true;
 		}
-		
+
 		/**
-		 * 数据排序
-		 *  @returns boolean
+		 * 排序初始化
+		 * @returns {Boolean}
 		 */
-		function _fnSortData(){
-			var oDate = DataTable.DataCols["aDate"];
-			for(var date in oDate){
-				oDate[date]["adata"].sort(function SortDate(a, b) {
-					return b.attr("id") - a.attr("id");
-				});
+		function _fnSetSort() {
+			if(!DataTable.ext.hasOwnProperty("oTable") || DataTable.ext["oTable"] === null) {
+				_fnLog( null, 0, "找不到相应的table控件。");
+				return false;
+			}
+			var othis = DataTable.ext.oTable;
+			var oSortCols = DataTable.ext.optdata["SortColumns"];
+			var aCols = oSortCols.Cols;
+			for(var i = 0; i<aCols.length; i++) {
+				var th = null;
+				if(th = $("thead > tr", othis).children('":eq('+aCols[i][0]+')"')) {
+					th.bind("click.DT", { index: aCols[i][0],type: aCols[i][1], fn: DataTable.ext.oApi.fnSort}, function(e){
+						e.data.fn(e.data.index, e.data.type);
+					}).css("cursor", "pointer");
+				}
 			}
 			return true;
+		}
+		
+		/**
+		 * 排序
+		 * @param index
+		 * @returns {Boolean}
+		 */
+		function _fnSort(index, type){
+			var aSort = DataTable.DataCols["aSort"];
+			if(aSort.doing === "n"){
+				aSort.doing = "y";
+				//var oSortCols = DataTable.ext.optdata["SortColumns"];
+				if( aSort.sortID === index ) {		//相同列的排序
+					;
+				} else {
+					;
+				}
+				switch(type) {
+					case "date":
+						break;
+					case "string":
+						break;
+					default:
+						aSort.doing ="n";
+						_fnLog( null, 0, "排序的类型未知。");
+						return false;
+				}
+				aSort.doing ="n";
+				return true;
+			}
+			return false;
+		}
+		
+		/**
+		 * 日期总排序
+		 * @param aNum 将日期排序的存储
+		 * @param sortby asc or desc
+		 * @returns boolean
+		 */
+		function _fnSortDate( aNum, sortby ) {
+			var aDate = DataTable.DataCols["aDate"];
+			for(var date in aDate) {
+				aNum.push(date);
+			}
+			switch( sortby ) {
+				case "asc":
+					aNum.sort(function(a, b) {
+						return b - a;
+					});
+					break;
+				case "desc":
+					aNum.sort(function(a, b) {
+						return a - b;
+					});
+					break;
+				default:
+					_fnLog( null, 0, "日期排序错误。");
+					return false;
+			}
+			if(!_fnSortDateElement(sortby))
+				return false;
+			return true;
+		}
+		
+		/**
+		 * 日期单元数据排序
+		 *  @param sortby asc or desc
+		 *  @returns boolean
+		 */
+		function _fnSortDateElement(sortby){
+			var aDate = DataTable.DataCols["aDate"];
+			for(var date in aDate){
+				switch( sortby ) {
+					case "asc":
+						aDate[date]["adata"].sort(function(a, b) {
+							return b.attr("id") - a.attr("id");
+						});
+						break;
+					case "desc":
+						aDate[date]["adata"].sort(function(a, b) {
+							return a.attr("id") - b.attr("id");
+						});
+						break;
+					default:
+						_fnLog( null, 0, "日期元素排序错误。");
+						return false;
+				}
+			}
+			return true;
+		}
+		
+		function _fnOut() {
+			;
 		}
 		
 		/**
@@ -226,10 +367,10 @@
 			var othis = DataTable.ext.oTable;
 			othis = $("tbody", othis);
 			$("#loading", othis).hide();
-			for (var x in aOutData) {
-				var tmpdate = new Date();
-				tmpdate.setTime(x);
-				var nMonth = parseInt(tmpdate.getMonth()) + 1;
+			var aNum = new Array();
+			_fnSortDate(aNum, "desc");
+			var x;
+			while ((x = aNum.pop()) !== undefined) {
 				var aData = aOutData[x]["adata"];
 				var OutType = aOutData[x]["oType"];
 				var str = "";
@@ -250,65 +391,33 @@
 					str += '（'+OutType[i].count+'条记录）</strong>';
 				}
 			
-				var oCol = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
-	  							<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">\
-	  							<ul><li style="padding-left: 5px; float: left;"><span class="ac_datenum">'
-	  							+tmpdate.getFullYear()+'</span>年<span class="ac_datenum">'
-	  							+nMonth+'</span>月<span class="ac_datenum">'
-	  							+tmpdate.getDate()+'</span>日</li><li style="float: right;">'
-	  							+ str + '</li></ul></td></tr>');
-				othis.append(oCol);
+				$("td>ul", aOutData[x]["trWidget"]).append($('<li style="float: right;">'+ str +'</li>'));
+				othis.append(aOutData[x]["trWidget"]);
 				for (var y=0; y<aData.length; y++) {
 					othis.append(aData[y]);
 					//$(aData[y]).show();
-					$(aData[y]).addClass(DataTable.ext["optdata"]["TrClass"][y%2]);
+					$(aData[y]).addClass(DataTable.DataCols.TrClass["cClass"][y%2]);
 				}
 			}
 			return true;
 		}
-		 
-		/**
-		 * 将相应的数据类型转换成数字
-		 *  @param {object} oOut Object to extend
-		 *  @param {object} oExtender Object from which the properties will be applied to oOut
-		 *  @returns {object} oOut Reference, just for convenience - oOut === the return.
-		 *  @memberof DataTable#oApi
-		 *  @todo This doesn't take account of arrays inside the deep copied objects.
-		 */
-		function _fntransition(srcdata, srctype) {
-			switch(srctype) {
-				case "date":
-					var x = Date.parse(srcdata);
-					if ( isNaN(x) || x==="" ) {
-						_fnLog( null, 0, "存储的"+srctype+"数据有误");
-						return false;
-					}
-					return x;
-					
-				case "numerical":
-					return (srcdata=="-" || srcdata==="") ? 0 : srcdata*1;
-				
-				case "string":
-					if ( typeof srcdata != 'string' ) { srcdata = ''; }
-						return srcdata.toLowerCase();
-						
-				default:
-					_fnLog( null, 0, "存储的数据类型有误");
-					return false;
-  		};
-		}
 		
 		this.oApi = {
-			"fnInit"          : _fnInit,
-			"_fnLog"          : _fnLog,
-			"_fnExtend"       : _fnExtend,
-			"_fntransition"   : _fntransition,
-			"_fnInitData"     : _fnInitData,
-			"_fnSaveData"     : _fnSaveData,
-			"_fnAjaxSaveData" : _fnAjaxSaveData,
-			"_fnSortData"     : _fnSortData,
-			"fnDefaultOut"    : _fnDefaultOut
+			"fnInit"                : _fnInit,
+			"_fnLog"                : _fnLog,
+			"_fnExtend"             : _fnExtend,
+			"_fntransition"         : _fntransition,
+			"_fnInitData"           : _fnInitData,
+			"_fnSaveData"           : _fnSaveData,
+			"_fnAjaxSaveData"       : _fnAjaxSaveData,
+			"_fnSetSort"            : _fnSetSort,
+			"fnSort"                : _fnSort,
+			"_fnSortDate"           : _fnSortDate,
+			"_fnSortDateElement"    : _fnSortDateElement,
+			"fnDefaultOut"          : _fnDefaultOut
 		};
+		
+		$.extend( DataTable.ext.oApi, this.oApi );
 		
 		/* 判断控件为table */
 		if ( this[0].nodeName.toLowerCase() != 'table' )
@@ -322,29 +431,37 @@
 	
 	DataTable.version = "0.1.0";
 	
+	/**
+	 * 
+	 * @TrClass     : cClass: 隔行的CSS类[单行的css, 双行的css]
+	 * 				  hClass: hover时CSS类
+	 */
 	DataTable.DataCols = {
 		"aDate"     : null,
-		"aSort"     : null,
+		"aSort"     : { doing: "n", sortID: null, sortby: null},
+		"TrClass"   : {"cClass": [null, "notrans_td"],"hClass": "notrans_td"},
 		"CountCols" : 0
 	};
 	
 	DataTable.ext = {
 		"sErrMode": "alert",
-		"optdata" : {}
+		"optdata" : {},
+		"oApi"    : {}
 	};
 	
 	/**
 	 * 默认数据
-	 * @SortColumns : 含2个数据的对象,包括{列数(从0开始计算)，该列的数据类型("date","string","numerical")}
+	 * @SortColumns : 含2个数据的对象,包括1、需要排列的列数：{列数(从0开始计算)，该列的数据类型("date","string","numerical")}
+	 * 									2、默认排列的列号
+	 * @OperateCols : 操作列的列数(从0开始计算)
 	 * @Searchwidget: 进行搜索的控件，一般为input,含有2个数据的对象,包括{搜索的列的列数，进行搜索的控件}
 	 * @CountRows   : 按照时间进行统计，对象包括3个数据
 	 *                {iOrderByTime: 时间所在列, iOrderByType: 统计时的类型, iOrderByTotal: 统计时的数据, trClass: 统计行的css类, tdCount: 合并的td个数}
-	 * @trClass     : 隔行的CSS类[单行的css, 双行的css]
-	 * @operateCols : 操作列的列数(从0开始计算)
+	 * @Ajax        : ajax的地址
+	 * @ajData      : ajax传送的数据
 	 */
 	DataTable.defaults = {
-		"SortColumns" : null,
-		"TrClass"     : null,
+		"SortColumns" : {"Cols":null, "defCol":null},
 		"OperateCols" : null,
 		"SearchWidget": {},
 		"CountRows"   : {},
@@ -358,13 +475,10 @@
 
 jQuery(document).ready(function($) {
 	$("#datatable").DataTable({
-		"SortColumns" : [[0, "date"],
-		                 [1, "string"],
-		                 [2, "string"],
-		                 [3, "numerical"],
-		                 [4, "string"]],
-		"TrClass"     : [null, "notrans_td"],
-		"OperateCols" : 6,
+		"SortColumns" : {"Cols":[[0, "date"],[1, "string"],[2, "string"],
+		                         [3, "numerical"],[4, "string"],[5, "string"]],
+		                 "defCol" : 0},
+		"OperateCols" : 0,
 		"SearchWidget": {"SearchCol": 5, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
 		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist",

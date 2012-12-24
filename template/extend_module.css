@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-18
+ *    Last Updated: 2012-12-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -118,7 +118,7 @@
 	
 	/* datatables */
 	.ac_dt { width: 100%; border-collapse: separate; }
-		.ac_dt thead th { border-right: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; cursor: pointer; text-align: center; font-weight: 700; }
+		.ac_dt thead th { border-right: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; text-align: center; font-weight: 700; }
 		.ac_dt .th_1 { width: 9%; }
 		.ac_dt .th_2 { width: 12%; }
 		.ac_dt .th_3 { width: 14%; }
@@ -129,6 +129,8 @@
 		.td_left { padding-left: 15px; text-align: left; }
 		.td_center { padding-left: 0px; text-align: center; }
 		.td_right { padding-right: 17px; text-align: right; }
+		.td_rsecond {padding-right: 5px; text-align: right;}
+		.td_lfirst { padding-left: 5px; text-align: left; }
 		.tr_sum td ul li span { font-family: Georgia; padding-left: 1px; }
 		.tr_sum .ac_datenum { color: #0F675E; font-size: 16px; font-weight: bold; padding-left: 0 !important; padding-right: 2px; }
 	/* 参考 .fl .bm_h */
