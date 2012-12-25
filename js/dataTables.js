@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-24
+ *    Last Updated: 2012-12-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -276,12 +276,17 @@
 				aSort.doing = "y";
 				//var oSortCols = DataTable.ext.optdata["SortColumns"];
 				if( aSort.sortID === index ) {		//相同列的排序
-					;
+					aSort.sortby = (aSort.sortby==="asc" ? "desc":"asc");
 				} else {
-					;
+					aSort.sortID = index;
+					aSort.sortby = "asc";
 				}
 				switch(type) {
 					case "date":
+						aNum = new Array();
+						if(_fnSortDate(aNum, aSort.sortby)) {
+							_fnOut(aNum);
+						}
 						break;
 					case "string":
 						break;
@@ -354,8 +359,22 @@
 			return true;
 		}
 		
-		function _fnOut() {
-			;
+		/**
+		 * 
+		 * @param type
+		 * @param aNum 只有date排序才使用的数据
+		 *  @returns boolean
+		 */
+		function _fnOut(type, aNum) {
+			var aOutData = DataTable.DataCols["aDate"];
+			var othis = DataTable.ext.oTable;
+			switch(type) {
+				case "date":
+					break;
+				default:
+					break;
+			}
+			return true;
 		}
 		
 		/**
@@ -363,8 +382,6 @@
 		 *  @returns boolean
 		 */
 		function _fnDefaultOut() {
-			var aOutData = DataTable.DataCols["aDate"];
-			var othis = DataTable.ext.oTable;
 			othis = $("tbody", othis);
 			$("#loading", othis).hide();
 			var aNum = new Array();
@@ -399,6 +416,9 @@
 					$(aData[y]).addClass(DataTable.DataCols.TrClass["cClass"][y%2]);
 				}
 			}
+			DataTable.DataCols["aSort"].doing = "n";
+			DataTable.DataCols["aSort"].sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
+			DataTable.DataCols["aSort"].sortby = "desc";
 			return true;
 		}
 		
@@ -433,12 +453,15 @@
 	
 	/**
 	 * 
+	 * @aSort       : { doing  < 'n' or 'y' 默认为 y ,防止无数据及排序 >
+	 * 					sortID <列数从零开始>
+	 * 					sortby <"asc" or "desc">    }
 	 * @TrClass     : cClass: 隔行的CSS类[单行的css, 双行的css]
 	 * 				  hClass: hover时CSS类
 	 */
 	DataTable.DataCols = {
 		"aDate"     : null,
-		"aSort"     : { doing: "n", sortID: null, sortby: null},
+		"aSort"     : { "doing": "y", "sortID": null, "sortby": null},
 		"TrClass"   : {"cClass": [null, "notrans_td"],"hClass": "notrans_td"},
 		"CountCols" : 0
 	};
