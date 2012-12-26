@@ -177,13 +177,21 @@
 						}
 					}
 					var oCol = $('<tr id="'+ oData[0]
-								+'"><td class="td_left"><a>删除</a><span class="pipe">|</span><a>修改</a></td>'
+								+'"><td class="td_left"></td>'
 								+'<td class="td_rsecond">'+ oData[2]
 								+'</td><td class="td_lfirst">'+ oData[3]
 								+'</td><td class="td_right">'+ oData[4]
 								+'</td><td class="td_center">'+ oname
 								+'</td><td class="td_center">'+ oData[5]
-								+'</td><td class="td_left">-</td></tr>');
+								+'</td><td class="td_left">-</td></tr>')
+								.hover(
+									function () {
+										$(this).children(":eq(0)").html('<a style="color:#f00">删除</a><span class="pipe">|</span><a style="color:#f00">修改</a>');
+									}, 
+									function () {
+										$(this).children(":eq(0)").html('');
+									}
+								);
 					if((tmpval = _fntransition(oData[4], "numerical")) === false)
 						return false;
 					oType[oname]["sum"] += tmpval;
@@ -400,14 +408,15 @@
 						othis.append(aOutData[tmpDate]["trWidget"]);
 						aOutData[tmpDate]["trWidget"].show();
 						for (var y=0; y<aData.length; y++) {
+							if( !(y%2) && $(aData[y]).hasClass(DataTable.DataCols.TrClass["cClass"][1]) )
+								$(aData[y]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
+							else
+								$(aData[y]).addClass(DataTable.DataCols.TrClass["cClass"][y%2]);
 							othis.append(aData[y]);
 							$(aData[y]).show();
-							$(aData[y]).addClass(DataTable.DataCols.TrClass["cClass"][y%2]);
 						}
+						$(aData[0]).addClass("tr_h");
 					}
-					DataTable.DataCols["aSort"].doing = "n";
-					DataTable.DataCols["aSort"].sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
-					DataTable.DataCols["aSort"].sortby = "desc";
 					break;
 					
 				default:
@@ -422,8 +431,15 @@
 		 */
 		function _fnDefaultOut() {
 			//$("#loading", othis).hide();
+			var aSort = DataTable.DataCols["aSort"];
+			aSort.doing = "y";
+
 			_fnSortDate("desc");
 			_fnOut("date");
+			
+			aSort.doing = "n";
+			aSort.sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
+			aSort.sortby = "desc";
 			return true;
 		}
 		
