@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-23
+ *    Last Updated: 2012-12-26
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -133,6 +133,7 @@
 		.td_lfirst { padding-left: 5px; text-align: left; }
 		.tr_sum td ul li span { font-family: Georgia; padding-left: 1px; }
 		.tr_sum .ac_datenum { color: #0F675E; font-size: 16px; font-weight: bold; padding-left: 0 !important; padding-right: 2px; }
+		.tr_sum .ac_datefloat { float: right; }
 	/* 参考 .fl .bm_h */
 	.ac_thead {  } /* 提示：{TITLEBGCODE} 在module.css下调用会出现bug，即对单引号、双引号进行反编译 */
 /** end **/

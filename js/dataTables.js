@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-25
+ *    Last Updated: 2012-12-26
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -144,7 +144,8 @@
 				return ;
 			}
 			
-			var aDate = {};
+			var aDate = {"sortday" : null};
+			aDate["sortday"] = new Array();
 			for (var oname in oTable) {
 				var aData = oTable[oname];
 				var oType = {};
@@ -157,6 +158,7 @@
 						aDate[tmpTime] = {"oType": {}, "adata": null, "iSumCols": 0, "trWidget": null};
 						aDate[tmpTime]["oType"][oname] = {"sum": 0, "count": 0};
 						aDate[tmpTime]["adata"] = new Array();
+						aDate["sortday"].push(tmpTime);
 						tmpdate.setTime(tmpTime);
 						var nMonth = parseInt(tmpdate.getMonth()) + 1;
 						//每日合计显示
@@ -267,7 +269,8 @@
 		
 		/**
 		 * 排序
-		 * @param index
+		 * @param index 排序的列号，从零开始
+		 * @param type  排序的类型
 		 * @returns {Boolean}
 		 */
 		function _fnSort(index, type){
@@ -283,9 +286,8 @@
 				}
 				switch(type) {
 					case "date":
-						aNum = new Array();
-						if(_fnSortDate(aNum, aSort.sortby)) {
-							_fnOut(aNum);
+						if(_fnSortDate(aSort.sortby)) {
+							_fnOut(type);
 						}
 						break;
 					case "string":
@@ -303,24 +305,20 @@
 		
 		/**
 		 * 日期总排序
-		 * @param aNum 将日期排序的存储
 		 * @param sortby asc or desc
 		 * @returns boolean
 		 */
-		function _fnSortDate( aNum, sortby ) {
-			var aDate = DataTable.DataCols["aDate"];
-			for(var date in aDate) {
-				aNum.push(date);
-			}
+		function _fnSortDate( sortby ) {
+			var aNum = DataTable.DataCols["aDate"]["sortday"];
 			switch( sortby ) {
 				case "asc":
 					aNum.sort(function(a, b) {
-						return b - a;
+						return a - b;
 					});
 					break;
 				case "desc":
 					aNum.sort(function(a, b) {
-						return a - b;
+						return b - a;
 					});
 					break;
 				default:
@@ -340,15 +338,17 @@
 		function _fnSortDateElement(sortby){
 			var aDate = DataTable.DataCols["aDate"];
 			for(var date in aDate){
+				if(date === "sortday")
+					continue;
 				switch( sortby ) {
 					case "asc":
 						aDate[date]["adata"].sort(function(a, b) {
-							return b.attr("id") - a.attr("id");
+							return a.attr("id") - b.attr("id");
 						});
 						break;
 					case "desc":
 						aDate[date]["adata"].sort(function(a, b) {
-							return a.attr("id") - b.attr("id");
+							return b.attr("id") - a.attr("id");
 						});
 						break;
 					default:
@@ -361,16 +361,55 @@
 		
 		/**
 		 * 
-		 * @param type
-		 * @param aNum 只有date排序才使用的数据
-		 *  @returns boolean
+		 * @param type  排序的类型
+		 * @returns boolean
 		 */
-		function _fnOut(type, aNum) {
+		function _fnOut(type) {
 			var aOutData = DataTable.DataCols["aDate"];
 			var othis = DataTable.ext.oTable;
+			othis = $("tbody", othis);
+			othis.children().hide();
 			switch(type) {
 				case "date":
+					for (var x = 0; x < aOutData["sortday"].length; x++) {
+						var tmpDate = aOutData["sortday"][x];
+						var aData = aOutData[tmpDate]["adata"];
+						var OutType = aOutData[tmpDate]["oType"];
+						var str = "";
+						
+						$("td>ul", aOutData[tmpDate]["trWidget"]).children().remove(".ac_datefloat");
+						
+						for (var i in OutType) {
+							str += '<strong style="padding-right: 15px;">'+i+'：';
+							switch(i) {
+								case '收入':
+									str += '<font color="green">+'+OutType[i].sum.toFixed(2).toString()+'</font>';
+									break;
+						
+								case '支出':
+									str += '<font color="red">-'+OutType[i].sum.toFixed(2).toString()+'</font>';
+									break;
+						
+								default:
+									break;
+							}
+							str += '（'+OutType[i].count+'条记录）</strong>';
+						}
+			
+						$("td>ul", aOutData[tmpDate]["trWidget"]).append($('<li class="ac_datefloat">'+ str +'</li>'));
+						othis.append(aOutData[tmpDate]["trWidget"]);
+						aOutData[tmpDate]["trWidget"].show();
+						for (var y=0; y<aData.length; y++) {
+							othis.append(aData[y]);
+							$(aData[y]).show();
+							$(aData[y]).addClass(DataTable.DataCols.TrClass["cClass"][y%2]);
+						}
+					}
+					DataTable.DataCols["aSort"].doing = "n";
+					DataTable.DataCols["aSort"].sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
+					DataTable.DataCols["aSort"].sortby = "desc";
 					break;
+					
 				default:
 					break;
 			}
@@ -382,43 +421,9 @@
 		 *  @returns boolean
 		 */
 		function _fnDefaultOut() {
-			othis = $("tbody", othis);
-			$("#loading", othis).hide();
-			var aNum = new Array();
-			_fnSortDate(aNum, "desc");
-			var x;
-			while ((x = aNum.pop()) !== undefined) {
-				var aData = aOutData[x]["adata"];
-				var OutType = aOutData[x]["oType"];
-				var str = "";
-				for (var i in OutType) {
-					str += '<strong style="padding-right: 15px;">'+i+'：';
-					switch(i) {
-					case '收入':
-						str += '<font color="green">+'+OutType[i].sum.toFixed(2).toString()+'</font>';
-						break;
-						
-					case '支出':
-						str += '<font color="red">-'+OutType[i].sum.toFixed(2).toString()+'</font>';
-						break;
-						
-					default:
-						break;
-					}
-					str += '（'+OutType[i].count+'条记录）</strong>';
-				}
-			
-				$("td>ul", aOutData[x]["trWidget"]).append($('<li style="float: right;">'+ str +'</li>'));
-				othis.append(aOutData[x]["trWidget"]);
-				for (var y=0; y<aData.length; y++) {
-					othis.append(aData[y]);
-					//$(aData[y]).show();
-					$(aData[y]).addClass(DataTable.DataCols.TrClass["cClass"][y%2]);
-				}
-			}
-			DataTable.DataCols["aSort"].doing = "n";
-			DataTable.DataCols["aSort"].sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
-			DataTable.DataCols["aSort"].sortby = "desc";
+			//$("#loading", othis).hide();
+			_fnSortDate("desc");
+			_fnOut("date");
 			return true;
 		}
 		
@@ -453,6 +458,11 @@
 	
 	/**
 	 * 
+	 * @aDate       : { "每天的时间": { "oType":    {"类型名字":{"sum":该类型的数据总和, "count":该类型的记录个数}},
+	 *                                  "adata":    当天数据,
+	 *                                  "iSumCols": 当天的记录个数,
+	 *                                  "trWidget": 当天的tr}
+	 *                  "sortday"   : 每天时间的排序 }
 	 * @aSort       : { doing  < 'n' or 'y' 默认为 y ,防止无数据及排序 >
 	 * 					sortID <列数从零开始>
 	 * 					sortby <"asc" or "desc">    }
@@ -461,8 +471,8 @@
 	 */
 	DataTable.DataCols = {
 		"aDate"     : null,
-		"aSort"     : { "doing": "y", "sortID": null, "sortby": null},
-		"TrClass"   : {"cClass": [null, "notrans_td"],"hClass": "notrans_td"},
+		"aSort"     : {"doing": "y", "sortID": null, "sortby": null},
+		"TrClass"   : {"cClass": [null, "notrans_td"], "hClass": "notrans_td"},
 		"CountCols" : 0
 	};
 	
