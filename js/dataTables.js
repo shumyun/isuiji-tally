@@ -301,7 +301,17 @@
 							aSort.sortby = sortby;
 						}
 						break;
+						
 					case "string":
+						if(_fnSortString(index, sortby)) {
+							_fnOut(type);
+							_fnSetTheadClass(index, sortby);
+							aSort.sortID = index;
+							aSort.sortby = sortby;
+						}
+						break;
+						
+					case "numerical":
 						break;
 					default:
 						aSort.doing ="n";
@@ -329,12 +339,12 @@
 				$("#sort", oldth).remove();
 				$("span", oldth).removeClass("ac_colblue");
 				$("span", newth).addClass("ac_colblue");
-				newth.append($('<span id="sort" style="font-size: 15px; color:#00F;">&nbsp;&uarr;</span>'));
+				newth.append($('<span id="sort" style="font-size: 15px; color:#00F;">&uarr;</span>'));
 			} else {
 				if(sortby === "asc"){
-					$("#sort", newth).html("&nbsp;&uarr;");
+					$("#sort", newth).html("&uarr;");
 				} else {
-					$("#sort", newth).html("&nbsp;&darr;");
+					$("#sort", newth).html("&darr;");
 				}
 			}
 			return true;
@@ -393,6 +403,33 @@
 						return false;
 				}
 			}
+			return true;
+		}
+		
+		/**
+		 * 字符排序
+		 * @param sortby asc or desc
+		 * @returns boolean
+		 */
+		function _fnSortString( sortby ) {
+			var aNum = DataTable.DataCols["aDate"]["sortday"];
+			switch( sortby ) {
+				case "asc":
+					aNum.sort(function(a, b) {
+						return a - b;
+					});
+					break;
+				case "desc":
+					aNum.sort(function(a, b) {
+						return b - a;
+					});
+					break;
+				default:
+					_fnLog( null, 0, "日期排序错误。");
+					return false;
+			}
+			if(!_fnSortDateElement(sortby))
+				return false;
 			return true;
 		}
 		
@@ -469,7 +506,7 @@
 			var othis = DataTable.ext.oTable;
 			th = $("thead > tr", othis).children('":eq('+DataTable.ext.optdata["SortColumns"]["defCol"]+')"');
 			$("span", th).addClass("ac_colblue");
-			th.append($('<span id="sort" style="font-size: 15px; color:#00F;">&nbsp;&darr;</span>'));
+			th.append($('<span id="sort" class="ac_sortby">&darr;</span>'));
 			aSort.doing = "n";
 			aSort.sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
 			aSort.sortby = "desc";
