@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-26
+ *    Last Updated: 2012-12-27
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -286,16 +286,19 @@
 			if(aSort.doing === "n"){
 				aSort.doing = "y";
 				//var oSortCols = DataTable.ext.optdata["SortColumns"];
+				var sortby;
 				if( aSort.sortID === index ) {		//相同列的排序
-					aSort.sortby = (aSort.sortby==="asc" ? "desc":"asc");
+					sortby = (aSort.sortby==="asc" ? "desc":"asc");
 				} else {
-					aSort.sortID = index;
-					aSort.sortby = "asc";
+					sortby = "asc";
 				}
 				switch(type) {
 					case "date":
 						if(_fnSortDate(aSort.sortby)) {
 							_fnOut(type);
+							_fnSetTheadClass(index, sortby);
+							aSort.sortID = index;
+							aSort.sortby = sortby;
 						}
 						break;
 					case "string":
@@ -309,6 +312,32 @@
 				return true;
 			}
 			return false;
+		}
+		
+		/**
+		 * 排序
+		 * @param index   排序的列号，从零开始
+		 * @param sortby  排序
+		 * @returns {Boolean}
+		 */
+		function _fnSetTheadClass(index, sortby) {
+			var aSort = DataTable.DataCols["aSort"];
+			var othis = DataTable.ext.oTable;
+			newth = $("thead > tr", othis).children('":eq('+index+')"');
+			if( aSort.sortID != index ){
+				oldth = $("thead > tr", othis).children('":eq('+aSort.sortID+')"');
+				$("#sort", oldth).remove();
+				$("span", oldth).removeClass("ac_colblue");
+				$("span", newth).addClass("ac_colblue");
+				newth.append($('<span id="sort" style="font-size: 15px; color:#00F;">&nbsp;&uarr;</span>'));
+			} else {
+				if(sortby === "asc"){
+					$("#sort", newth).html("&nbsp;&uarr;");
+				} else {
+					$("#sort", newth).html("&nbsp;&darr;");
+				}
+			}
+			return true;
 		}
 		
 		/**
