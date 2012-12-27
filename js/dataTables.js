@@ -101,8 +101,10 @@
 					return (srcdata=="-" || srcdata==="") ? 0 : srcdata*1;
 				
 				case "string":
-					if ( typeof srcdata != 'string' ) { srcdata = ''; }
-						return srcdata.toLowerCase();
+					if ( typeof srcdata != 'string' ) {
+						srcdata = (srcdata !== null && srcdata.toString) ? srcdata.toString() : '';
+					}
+					return srcdata.toLowerCase();
 						
 				default:
 					_fnLog( null, 0, "存储的数据类型有误");
@@ -144,8 +146,9 @@
 				return ;
 			}
 			
-			var aDate = {"sortday" : null};
+			var aDate = {"sortday" : null, "asort" : null };
 			aDate["sortday"] = new Array();
+			aDate["asort"] = new Array();
 			for (var oname in oTable) {
 				var aData = oTable[oname];
 				var oType = {};
@@ -198,6 +201,7 @@
 					oType[oname]["count"]++;
 					aDate[tmpTime]["adata"].push(oCol);
 					aDate[tmpTime]["iSumCols"]++;
+					aDate["asort"].push(oCol);
 				}
 			}
 			DataTable.DataCols["aDate"] = aDate;
@@ -290,7 +294,7 @@
 				if( aSort.sortID === index ) {		//相同列的排序
 					sortby = (aSort.sortby==="asc" ? "desc":"asc");
 				} else {
-					sortby = "asc";
+					sortby = "desc";
 				}
 				switch(type) {
 					case "date":
@@ -339,7 +343,7 @@
 				$("#sort", oldth).remove();
 				$("span", oldth).removeClass("ac_colblue");
 				$("span", newth).addClass("ac_colblue");
-				newth.append($('<span id="sort" style="font-size: 15px; color:#00F;">&uarr;</span>'));
+				newth.append($('<span id="sort" style="font-size: 15px; color:#00F;">&darr;</span>'));
 			} else {
 				if(sortby === "asc"){
 					$("#sort", newth).html("&uarr;");
@@ -385,7 +389,7 @@
 		function _fnSortDateElement(sortby){
 			var aDate = DataTable.DataCols["aDate"];
 			for(var date in aDate){
-				if(date === "sortday")
+				if(date === "sortday" || date === "asort")
 					continue;
 				switch( sortby ) {
 					case "asc":
@@ -408,28 +412,35 @@
 		
 		/**
 		 * 字符排序
+		 * @param index   排序的列号，从零开始
 		 * @param sortby asc or desc
 		 * @returns boolean
 		 */
-		function _fnSortString( sortby ) {
-			var aNum = DataTable.DataCols["aDate"]["sortday"];
+		function _fnSortString( index, sortby ) {
+			var aDate = DataTable.DataCols["aDate"];
 			switch( sortby ) {
 				case "asc":
-					aNum.sort(function(a, b) {
-						return a - b;
+					aDate["asort"].sort(function(a, b) {
+						x = _fntransition(a.children('":eq('+index+')"').html(), "string");
+						y = _fntransition(b.children('":eq('+index+')"').html(), "string");
+						xId = a.attr("id");
+						yId = b.attr("id");
+						return ((x < y) ? -1 : ((x > y) ? 1 : (xId - yId)));
 					});
 					break;
 				case "desc":
-					aNum.sort(function(a, b) {
-						return b - a;
+					aDate["asort"].sort(function(a, b) {
+						x = _fntransition(a.children('":eq('+index+')"').html(), "string");
+						y = _fntransition(b.children('":eq('+index+')"').html(), "string");
+						xId = a.attr("id");
+						yId = b.attr("id");
+						return ((x < y) ? 1 : ((x > y) ? -1 : (xId - yId)));
 					});
 					break;
 				default:
-					_fnLog( null, 0, "日期排序错误。");
+					_fnLog( null, 0, "第"+index+"列排序错误。");
 					return false;
 			}
-			if(!_fnSortDateElement(sortby))
-				return false;
 			return true;
 		}
 		
@@ -481,11 +492,19 @@
 							othis.append(aData[y]);
 							$(aData[y]).show();
 						}
-						$(aData[0]).addClass("tr_h");
 					}
 					break;
 					
 				default:
+					var aData = aOutData["asort"];
+					for (var x = 0; x < aData.length; x++) {
+						if( !(x%2) && $(aData[x]).hasClass(DataTable.DataCols.TrClass["cClass"][1]) )
+							$(aData[x]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
+						else
+							$(aData[x]).addClass(DataTable.DataCols.TrClass["cClass"][x%2]);
+						othis.append(aOutData[x]);
+						$(aData[x]).show();
+					}
 					break;
 			}
 			return true;
