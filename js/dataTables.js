@@ -294,7 +294,7 @@
 				}
 				switch(type) {
 					case "date":
-						if(_fnSortDate(aSort.sortby)) {
+						if(_fnSortDate(sortby)) {
 							_fnOut(type);
 							_fnSetTheadClass(index, sortby);
 							aSort.sortID = index;
@@ -465,7 +465,11 @@
 
 			_fnSortDate("desc");
 			_fnOut("date");
-			
+
+			var othis = DataTable.ext.oTable;
+			th = $("thead > tr", othis).children('":eq('+DataTable.ext.optdata["SortColumns"]["defCol"]+')"');
+			$("span", th).addClass("ac_colblue");
+			th.append($('<span id="sort" style="font-size: 15px; color:#00F;">&nbsp;&darr;</span>'));
 			aSort.doing = "n";
 			aSort.sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
 			aSort.sortby = "desc";
