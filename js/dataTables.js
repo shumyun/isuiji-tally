@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-27
+ *    Last Updated: 2012-12-29
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -421,8 +421,8 @@
 			switch( sortby ) {
 				case "asc":
 					aDate["asort"].sort(function(a, b) {
-						x = _fntransition(a.children('":eq('+index+')"').html(), "string");
-						y = _fntransition(b.children('":eq('+index+')"').html(), "string");
+						x = pinyin(_fntransition(a.children('":eq('+index+')"').html(), "string"), false, ",");
+						y = pinyin(_fntransition(b.children('":eq('+index+')"').html(), "string"), false, ",");
 						xId = a.attr("id");
 						yId = b.attr("id");
 						return ((x < y) ? -1 : ((x > y) ? 1 : (xId - yId)));
@@ -430,8 +430,8 @@
 					break;
 				case "desc":
 					aDate["asort"].sort(function(a, b) {
-						x = _fntransition(a.children('":eq('+index+')"').html(), "string");
-						y = _fntransition(b.children('":eq('+index+')"').html(), "string");
+						x =  pinyin(_fntransition(a.children('":eq('+index+')"').html(), "string"), false, ",");
+						y =  pinyin(_fntransition(b.children('":eq('+index+')"').html(), "string"), false, ",");
 						xId = a.attr("id");
 						yId = b.attr("id");
 						return ((x < y) ? 1 : ((x > y) ? -1 : (xId - yId)));
