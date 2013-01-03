@@ -17,10 +17,10 @@ jQuery(document).ready(function($) {
 	
 	var hiden_time1 = true, hiden_pop = true, cur_popbtn = null, cur_pop = null;
 	$(document).click(function(e){
-		if( !pop_time1.is(":hidden") && hiden_time1) {
+		if( !pop_time1.is(":hidden") && hiden_time1 ) {
 			$("#li_popmenu").click();
 		}
-		if( cur_popbtn && cur_pop && hiden_pop) {
+		if( cur_popbtn && cur_pop && hiden_pop ) {
 			$(cur_popbtn).attr("style", "display: none");
 			$(cur_pop).attr("style", "display: none");
 			cur_popbtn = cur_pop = null;

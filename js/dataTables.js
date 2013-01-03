@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-29
+ *    Last Updated: 2013-01-03
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -21,9 +21,10 @@
 				_fnInitData();
 			} else {
 				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajData"], function(data) {
-								_fnAjaxSaveData(data);
-								_fnSetSort();
-								_fnDefaultOut();
+								if( _fnAjaxSaveData(data) ){
+									_fnSetSort();
+									_fnDefaultOut();
+								};
 							});
 			}
 			
@@ -137,13 +138,13 @@
 			var oReceive = $.parseJSON(aj_data);
 			if(oReceive["state"] == "error") {
 				_fnLog( null, 0, oReceive["errinfo"]);
-				return ;
+				return false;
 			}
 			
 			var oTable = {};
 			if(!(oTable = oReceive["oTable"])) {
 				_fnLog( null, 0, "无数据显示");
-				return ;
+				return false;
 			}
 			
 			var aDate = {"sortday" : null, "asort" : null };
@@ -316,6 +317,12 @@
 						break;
 						
 					case "numerical":
+						if(_fnSortNumerical(index, sortby)) {
+							_fnOut(type);
+							_fnSetTheadClass(index, sortby);
+							aSort.sortID = index;
+							aSort.sortby = sortby;
+						}
 						break;
 					default:
 						aSort.doing ="n";
@@ -421,8 +428,8 @@
 			switch( sortby ) {
 				case "asc":
 					aDate["asort"].sort(function(a, b) {
-						x = pinyin(_fntransition(a.children('":eq('+index+')"').html(), "string"), false, ",");
-						y = pinyin(_fntransition(b.children('":eq('+index+')"').html(), "string"), false, ",");
+						x = pinyin(_fntransition(a.children('":eq('+index+')"').html(), "string"), true, ",");
+						y = pinyin(_fntransition(b.children('":eq('+index+')"').html(), "string"), true, ",");
 						xId = a.attr("id");
 						yId = b.attr("id");
 						return ((x < y) ? -1 : ((x > y) ? 1 : (xId - yId)));
@@ -430,8 +437,8 @@
 					break;
 				case "desc":
 					aDate["asort"].sort(function(a, b) {
-						x =  pinyin(_fntransition(a.children('":eq('+index+')"').html(), "string"), false, ",");
-						y =  pinyin(_fntransition(b.children('":eq('+index+')"').html(), "string"), false, ",");
+						x =  pinyin(_fntransition(a.children('":eq('+index+')"').html(), "string"), true, ",");
+						y =  pinyin(_fntransition(b.children('":eq('+index+')"').html(), "string"), true, ",");
 						xId = a.attr("id");
 						yId = b.attr("id");
 						return ((x < y) ? 1 : ((x > y) ? -1 : (xId - yId)));
@@ -443,7 +450,41 @@
 			}
 			return true;
 		}
+
 		
+		/**
+		 * 金额排序
+		 * @param index   排序的列号，从零开始
+		 * @param sortby asc or desc
+		 * @returns boolean
+		 */
+		function _fnSortNumerical( index, sortby ) {
+			var aDate = DataTable.DataCols["aDate"];
+			switch( sortby ) {
+				case "asc":
+					aDate["asort"].sort(function(a, b) {
+						x = _fntransition(a.children('":eq('+index+')"').html(), "numerical");
+						y = _fntransition(b.children('":eq('+index+')"').html(), "numerical");
+						xId = a.attr("id");
+						yId = b.attr("id");
+						return ((x - y) ? (x - y) : (xId - yId));
+					});
+					break;
+				case "desc":
+					aDate["asort"].sort(function(a, b) {
+						x =  _fntransition(a.children('":eq('+index+')"').html(), "numerical");
+						y =  _fntransition(b.children('":eq('+index+')"').html(), "numerical");
+						xId = a.attr("id");
+						yId = b.attr("id");
+						return ((y - x) ? (y - x) : (xId - yId));
+					});
+					break;
+				default:
+					_fnLog( null, 0, "第"+index+"列排序错误。");
+					return false;
+			}
+			return true;
+		}
 		/**
 		 * 
 		 * @param type  排序的类型
@@ -502,7 +543,7 @@
 							$(aData[x]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
 						else
 							$(aData[x]).addClass(DataTable.DataCols.TrClass["cClass"][x%2]);
-						othis.append(aOutData[x]);
+						othis.append(aData[x]);
 						$(aData[x]).show();
 					}
 					break;
@@ -544,6 +585,8 @@
 			"fnSort"                : _fnSort,
 			"_fnSortDate"           : _fnSortDate,
 			"_fnSortDateElement"    : _fnSortDateElement,
+			"_fnSortString"			: _fnSortString,
+			"_fnSortNumerical"		: _fnSortNumerical,
 			"fnDefaultOut"          : _fnDefaultOut
 		};
 		
