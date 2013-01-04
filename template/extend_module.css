@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-27
+ *    Last Updated: 2013-01-04
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -79,30 +79,28 @@
 	.ac_showm a:hover, .ac_hidem a:hover, .li_hidem a:hover, .ac_x a:hover { text-decoration: none; }
 	.ac_y { margin-top: 45px; }
 	.ie6 .ac_y, .ie6 .ac_y { margin-top: 55px; }
-		
+
 	/* 下拉菜单界面 */
 	/* 选择框图片 */
-	.selimg_empty { padding-left: 20px; background: url(../../source/plugin/account/js/images/checkbox_14x90.gif) no-repeat; }
+	.selimg_empty { height: 15px; padding-left: 20px; background: url(../../source/plugin/account/js/images/checkbox_14x90.gif) no-repeat; }
 		.selimg_0 { background-position: 0 0; }
 		.selimg_1 { background-position: 0 -15px; }
 		.selimg_2 { background-position: 0 -30px; }
 		.selimg_3 { background-position: 0 -45px; }
 		.selimg_4 { background-position: 0 -60px; }
 		.selimg_5 { background-position: 0 -75px; }
-		.ie7 .selimg_0, .ie8 .selimg_0, .ie9 .selimg_0 { background-position: 0 -1px; }
-		.ie7 .selimg_1, .ie8 .selimg_1, .ie9 .selimg_1 { background-position: 0 -16px; }
-		.ie7 .selimg_2, .ie8 .selimg_2, .ie9 .selimg_2 { background-position: 0 -31px; }
-		.ie7 .selimg_3, .ie8 .selimg_3, .ie9 .selimg_3 { background-position: 0 -46px; }
-		.ie7 .selimg_4, .ie8 .selimg_4, .ie9 .selimg_4 { background-position: 0 -61px; }
-		.ie7 .selimg_5, .ie8 .selimg_5, .ie9 .selimg_5 { background-position: 0 -76px; }
+
 	/* 顶级菜单图片 */
 	.selimg_arrow { padding-right: 20px; background: url(../../source/plugin/account/js/images/arrows_15x40.gif) no-repeat 100% 0; }
 	.selimg_harrow { background-position: 100% -20px; }
 	
 	/* 参考 .p_pop 写法 */
-	.ac_pop { padding: 4px; border: 1px solid; min-width: 60px; border-color: {DROPMENUBORDER}; {DROPMENUBGCODE}; box-shadow: 1px 2px 2px rgba(0,0,0,0.3); line-height: 23px; position: absolute; z-index: 100; display: none; }
+	.ac_pop { padding: 4px; border: 1px solid; min-width: 60px; border-color: {DROPMENUBORDER}; {DROPMENUBGCODE}; line-height: normal; box-shadow: 1px 2px 2px rgba(0,0,0,0.3); position: absolute; z-index: 100; display: none; }
 		.ie6 .p_pop, .ie6 .ac_pop { width: 100px; }
-		.ac_pop li, .ac_pop a { cursor: pointer; }
+		.ac_pop li { cursor: pointer; height: 20px; }
+		.ac_pop li a { float: left; margin-top: 3px; }
+		.ie6 .ac_pop li a, .ie7 .ac_pop li a { min-width: 50px; }
+		.ac_pop a { cursor: pointer; }
 		.ac_ahover { color: {NOTICETEXT}; }
 		.ac_ul { border-bottom: 1px solid {DROPMENUBORDER}; margin-bottom: 4px; padding-bottom: 5px; }
 		.ac_pop label { cursor: default; float: left; line-height: 22px; vertical-align: middle; }
