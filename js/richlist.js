@@ -1,9 +1,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-04-28
+ *    Last Updated: 2013-01-05
  *    Author: shumyun
- *    Copyright (C) 2011 - forever 21bang.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 jQuery.noConflict();
@@ -155,6 +155,14 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 	});
 	
+	$("#btn_pay").click(function(){
+		$("#sel_hidep").attr("style", "display: none");
+		$("#ac_popp").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+		
+		$("#tb_pay").attr("style", "display: block");
+	});
+	
 	/*
 	 * 收入菜单
 	 */
@@ -178,6 +186,14 @@ jQuery(document).ready(function($) {
 		$("#sel_hidee").attr("style", "display: none");
 		$("#ac_pope").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
+	});
+	
+	$("#btn_earn").click(function(){
+		$("#sel_hidee").attr("style", "display: none");
+		$("#ac_pope").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+		
+		$("#tb_earn").attr("style", "display: block");
 	});
 	
 	/*
