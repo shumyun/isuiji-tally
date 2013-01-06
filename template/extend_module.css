@@ -104,7 +104,7 @@
 		.ac_ahover { color: {NOTICETEXT}; }
 		.ac_ul { border-bottom: 1px solid {DROPMENUBORDER}; margin-bottom: 4px; padding-bottom: 5px; }
 		.ac_pop label { cursor: default; float: left; line-height: 22px; vertical-align: middle; }
-		.ac_pop input { float: left; width:65px; }
+		.ac_pop input { float: left; width: 65px; }
 		
 	.ac_li { position: absolute; border-top: none; line-height: 20px; }
 		.ac_li li { float:none; color: #666666; cursor: pointer; padding: 2px 0; list-style: disc inside none; display: list-item; }

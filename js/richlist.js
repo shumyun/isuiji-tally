@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-05
+ *    Last Updated: 2013-01-06
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -65,7 +65,7 @@ jQuery(document).ready(function($) {
 			$("#tb_time1").html("12月份").attr("ac_tab", "use").attr("title", "关闭");
 		} else {
 			$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
-			$("#a_popmenu").html();
+			//$("#a_popmenu").html();
 			$("#tb_time1").html(display_year+tmp_m+"月份").attr("ac_tab", "use").attr("title", "关闭");
 		};
 	});
@@ -127,8 +127,8 @@ jQuery(document).ready(function($) {
 	
 	/**
 	 * 返回一、二级菜单数据
-	 *
-	 *
+	 * @param  sID 一级菜单的id号，包括#
+	 * @return 
 	 */
 	function GetPopData(sID) {
 		var oData = { "IsAll": "n", "firstData": null };
@@ -161,7 +161,40 @@ jQuery(document).ready(function($) {
 		oData["firstData"] = fData;
 		return oData;
 	}
-	 
+	
+	/**
+	 * 获取title的数据
+	 * @param typeStr
+	 * @param oData
+	 */
+	function fnTitleData(typeStr, oData) {
+		var titStr = "";
+		if(oData["IsAll"] === "y") {
+			titStr += "所有的" + typeStr;
+			return titStr;
+		}
+		
+		var firstData = oData["firstData"];
+		var i = 0;
+		for(var firStr in firstData) {
+			if(firstData[firStr].hasOwnProperty("IsNoCld") && firstData[firStr]["IsNoCld"] === "y"){
+				titStr += (i%3 ? "  " : "\n")+firStr +"；";
+			} else if(firstData[firStr]["IsAll"] === "y") {
+				titStr += (i%3 ? "  " : "\n")+firStr +"；";
+			} else {
+				titStr += (i%3 ? "  " : "\n")+firStr+"(";
+				for (var j in firstData[firStr]["aData"])
+					titStr +=  " "+firstData[firStr]["aData"][j]+" ";
+				titStr += ")；";
+			}
+			i++;
+		}
+	
+		if(titStr)
+			titStr = typeStr+"："+titStr;
+		return titStr;
+	}
+	
 	/**
 	 * @popn_pos	弹出的一级菜单坐标
 	 * @popn_width	弹出的一级菜单宽度
@@ -198,8 +231,13 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 		
 		var pData = GetPopData("#ac_popp");
+		var pTitle = fnTitleData("支出类型", pData);
 		
-		$("#tb_pay").attr("style", "display: block");
+		if(pTitle){
+			$("#tb_pay").attr("title", pTitle).attr("style", "display: block");
+		} else {
+			$("#tb_pay").attr("style", "display: none");
+		}
 	});
 	
 	/*
@@ -231,8 +269,15 @@ jQuery(document).ready(function($) {
 		$("#sel_hidee").attr("style", "display: none");
 		$("#ac_pope").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
+
+		var eData = GetPopData("#ac_pope");
+		var eTitle = fnTitleData("收入类型", eData);
 		
-		$("#tb_earn").attr("style", "display: block");
+		if(eTitle){
+			$("#tb_earn").attr("title", eTitle).attr("style", "display: block");
+		} else {
+			$("#tb_earn").attr("style", "display: none");
+		}
 	});
 	
 	/*
@@ -260,6 +305,21 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 	});
 	
+	$("#btn_type").click(function(){
+		$("#sel_hidet").attr("style", "display: none");
+		$("#ac_popt").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+
+		var tData = GetPopData("#ac_popt");
+		var tTitle = fnTitleData("账单类别", tData);
+		
+		if(tTitle){
+			$("#tb_type").attr("title", tTitle).attr("style", "display: block");
+		} else {
+			$("#tb_type").attr("style", "display: none");
+		}
+	});
+	
 	/*
 	 * 账单归属菜单
 	 */
@@ -285,8 +345,23 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 	});
 	
+	$("#btn_belong").click(function(){
+		$("#sel_hideb").attr("style", "display: none");
+		$("#ac_popb").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+
+		var bData = GetPopData("#ac_popb");
+		var bTitle = fnTitleData("账单归属", bData);
+		
+		if(bTitle){
+			$("#tb_category").attr("title", bTitle).attr("style", "display: block");
+		} else {
+			$("#tb_category").attr("style", "display: none");
+		}
+	});
+	
 	/*
-	 * 账单归属菜单
+	 * 借贷归属菜单
 	 */
 	$("#sel_showl").click(function(){
 		if(cur_popbtn && cur_pop){
@@ -308,6 +383,21 @@ jQuery(document).ready(function($) {
 		$("#sel_hidel").attr("style", "display: none");
 		$("#ac_popl").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
+	});
+	
+	$("#btn_loandebt").click(function(){
+		$("#sel_hidel").attr("style", "display: none");
+		$("#ac_popl").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+
+		var lData = GetPopData("#ac_popl");
+		var lTitle = fnTitleData("借贷归属", lData);
+		
+		if(lTitle){
+			$("#tb_debt").attr("title", lTitle).attr("style", "display: block");
+		} else {
+			$("#tb_debt").attr("style", "display: none");
+		}
 	});
 	
 	/*
@@ -332,6 +422,60 @@ jQuery(document).ready(function($) {
 		$("#sel_htime2").attr("style", "display: none");
 		$("#ac_popt2").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
+	});
+
+	function dateFormat(date, separate) {
+		var month = parseInt(date.getMonth()) + 1;
+		return date.getFullYear() + separate + month + separate + date.getDate();
+	}
+	
+	/**
+	 * 解决在IE7和IE8下用new Date()加参数会无法转化，返回NAN的数据
+	 */
+	function parseISO8601(dateStringInRange) {
+		var isoExp = /^\s*(\d{4})-(\d\d)-(\d\d)\s*$/,
+		date = new Date(NaN), month,
+		parts = isoExp.exec(dateStringInRange);
+		
+		if(parts) {
+			month = +parts[2];
+			date.setFullYear(parts[1], month - 1, parts[3]);
+			if(month != date.getMonth() + 1) {
+				date.setTime(NaN);
+			}
+		}
+		return date;
+	}
+	
+	$("#btn_date").click(function(){
+		var bdate = null, edate = null;
+		if($("#bdate").val())
+			bdate = parseISO8601($("#bdate").val());
+		if($("#edate").val())
+			edate = parseISO8601($("#edate").val());
+
+		if(bdate && edate && (bdate > edate)){
+			alert("错误提示：开始时间不能大于结束时间！");
+			return;
+		}
+		
+		$("#sel_htime2").attr("style", "display: none");
+		$("#ac_popt2").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+		if(!bdate && !edate) return;
+		
+		var str; 
+		if(!bdate){
+			//str = "<strong>~</strong> — " + dateFormat(edate, ".");
+			alert(edate.toString());
+		} else if(!edate) {
+			str = dateFormat(bdate, ".") + " — <strong>~</strong>";
+		} else {
+			str = dateFormat(bdate, ".") + " — " + dateFormat(edate, ".");
+		}
+		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
+		$("#tb_time1").html(str).attr("ac_tab", "use").attr("title", "关闭");
+		
 	});
 	
 	/**
