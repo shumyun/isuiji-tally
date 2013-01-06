@@ -466,8 +466,7 @@ jQuery(document).ready(function($) {
 		
 		var str; 
 		if(!bdate){
-			//str = "<strong>~</strong> — " + dateFormat(edate, ".");
-			alert(edate.toString());
+			str = "<strong>~</strong> — " + dateFormat(edate, ".");
 		} else if(!edate) {
 			str = dateFormat(bdate, ".") + " — <strong>~</strong>";
 		} else {
@@ -475,7 +474,7 @@ jQuery(document).ready(function($) {
 		}
 		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
 		$("#tb_time1").html(str).attr("ac_tab", "use").attr("title", "关闭");
-		
+
 	});
 	
 	/**
