@@ -126,6 +126,43 @@ jQuery(document).ready(function($) {
 	});
 	
 	/**
+	 * 返回一、二级菜单数据
+	 *
+	 *
+	 */
+	function GetPopData(sID) {
+		var oData = { "IsAll": "n", "firstData": null };
+		var fData = new Array();
+		if($(sID +" > a").attr("a_clsid") === "2")
+			oData["IsAll"] = "y";
+		else {
+			$(sID + " > ul > li").each(function(){
+				var sFirst = $("a", this).html();
+				switch ($(this).attr("a_clsid")) {
+					case "2":
+						if($(this).attr("count") === "0")
+							fData[sFirst] = { "IsNoCld": "y" };
+						else
+							fData[sFirst] = { "IsAll": "y" };
+						break;
+					case "1":
+						secDiv = $(this).attr("div_id");
+						fData[sFirst] = { "IsAll": "n", "aData":null };
+						fData[sFirst]["aData"] = new Array();
+						$("#"+secDiv+"> ul > li").filter("[a_clsid='2']").each(function(){
+							fData[sFirst]["aData"].push($("a", this).html());
+						});
+						break;
+					default:
+						break;
+				}
+			});
+		}
+		oData["firstData"] = fData;
+		return oData;
+	}
+	 
+	/**
 	 * @popn_pos	弹出的一级菜单坐标
 	 * @popn_width	弹出的一级菜单宽度
 	 */
@@ -159,6 +196,8 @@ jQuery(document).ready(function($) {
 		$("#sel_hidep").attr("style", "display: none");
 		$("#ac_popp").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
+		
+		var pData = GetPopData("#ac_popp");
 		
 		$("#tb_pay").attr("style", "display: block");
 	});
