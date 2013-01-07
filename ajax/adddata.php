@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-19
+ *    Last Updated: 2013-01-07
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -130,7 +130,7 @@ switch ( $_POST['curstatus'] ) {
 				'uid' => $_G['uid'],
 				'amount' => $_POST['richnum'],
 				'icategory' => $account->account_config['catetype'][$_POST['richtype']],
-				'ocategory' => $account->account_config['catetype'][$_POST['loandebt']],
+				'ocategory' => $account->account_config['catetype'][$_POST['richtype_out']],
 				'info' => $_POST['message'],
 				'datatime' => $timestamp,
 				'recordtime' => $_G['timestamp']
