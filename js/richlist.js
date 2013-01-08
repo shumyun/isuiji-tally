@@ -231,6 +231,10 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 		
 		var pData = GetPopData("#ac_popp");
+		var oDatatype = {"FstAll":{"Col": 4, "Str": "支出"},
+							"SecAll":{"Col": 2, "Str": ""},
+							"ThrAll":{"Col": 1, "Str": ""}};		
+		$("#datatable").DataTable.ext.oApi.fnSetConditions(pData, oDatatype);
 		var pTitle = fnTitleData("支出类型", pData);
 		
 		if(pTitle){

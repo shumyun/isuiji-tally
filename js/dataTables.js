@@ -583,28 +583,71 @@
 			return true;
 		}
 		
-		
-		function _fnConditionToTable(Data, dataType) {
-			var nowCondition = _fnSetConditions(Data, dataType);
-			return true;
+		/**
+		 * 比较筛选条件后存储需要筛选的数据并返回
+		 * @param Col 比对的列数
+		 * @param Str 比对的数据
+		 * @returns 当原来存在的返回空，不存在的就返回该数据
+		 */
+		function _fnSaveConditions(Col, Str) {
+			var cond = DataTable.ext.oConditions;
+			var oNewConditions = null;
+			if(cond["Cols"] && cond["Cols"].hasOwnProperty(Col)){
+				var tmp = cond["Cols"][Col];
+				for(var i in tmp) {
+					if(tmp[i] === Str)
+						return oNewConditions;
+				}
+				tmp.push(Str);
+			} else {
+				if (!cond["Cols"])
+					cond["Cols"] = new Array();
+				cond["Cols"][Col] = new Array();
+				cond["Cols"][Col].push(Str);
+			}
+			return oNewConditions = {"Col": Col, "Str": Str};
 		}
 		
+		/**
+		 * 设置筛选参数
+		 * @param Data 筛选的数据
+		 * @param dataType 筛选的结构
+		 * @returns {Boolean}
+		 */
 		function _fnSetConditions(Data, dataType) {
-			var cond = DataTable.ext.oConditions;
+			var newConditions = new Array();
+			var otmp = null;
 			if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y") {
-				if (dataType.hasOwnProperty("FstAll")) {
-					;
+				if (!dataType.hasOwnProperty("FstAll") ||
+					!dataType["FstAll"]["Col"] || !dataType["FstAll"]["Str"]) 
+					return false;
+				if((otmp = _fnSaveConditions(dataType["FstAll"]["Col"], dataType["FstAll"]["Str"])) != null)
+					newConditions.push(otmp);
+			} else {
+				if (!dataType.hasOwnProperty("SecAll") || !dataType["SecAll"]["Col"] ||
+					!dataType.hasOwnProperty("ThrAll") || !dataType["ThrAll"]["Col"])
+					return false;
+				var aFstData = Data["firstData"];
+				var str = "";
+				for(var i in aFstData) {
+					if(aFstData[i].hasOwnProperty("IsNoCld") && aFstData[i]["IsNoCld"] === "y") {
+						str = dataType["ThrAll"]["Str"] ? dataType["ThrAll"]["Str"] : i;
+						if((otmp = _fnSaveConditions(dataType["ThrAll"]["Col"], str)) != null)
+							newConditions.push(otmp);
+					} else if(aFstData[i].hasOwnProperty("IsAll") && aFstData[i]["IsAll"] === "y") {
+						str = dataType["SecAll"]["Str"] ? dataType["SecAll"]["Str"] : i;
+						if((otmp = _fnSaveConditions(dataType["SecAll"]["Col"], str)) != null)
+							newConditions.push(otmp);
+					} else {
+						var aThrData = aFstData[i]["aData"];
+						for (var j in aThrData) {
+							if((otmp = _fnSaveConditions(dataType["ThrAll"]["Col"], j)) != null)
+								newConditions.push(otmp);
+						}
+					}
 				}
 			}
-			for(var i in dataType) {
-				switch (i) {
-					case "FstAll":
-						 // statements
-					break;
-					default:
-						// default statements
-				};
-			}
+			return true;
 		}
 		
 		this.oApi = {
@@ -621,7 +664,9 @@
 			"_fnSortDateElement"    : _fnSortDateElement,
 			"_fnSortString"			: _fnSortString,
 			"_fnSortNumerical"		: _fnSortNumerical,
-			"fnDefaultOut"          : _fnDefaultOut
+			"fnDefaultOut"          : _fnDefaultOut,
+			"_fnSaveConditions"		: _fnSaveConditions,
+			"fnSetConditions"		: _fnSetConditions
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );

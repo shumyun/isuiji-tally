@@ -96,11 +96,11 @@
 	
 	/* 参考 .p_pop 写法 */
 	.ac_pop { padding: 4px; border: 1px solid; min-width: 88px; border-color: {DROPMENUBORDER}; {DROPMENUBGCODE}; line-height: normal; box-shadow: 1px 2px 2px rgba(0,0,0,0.3); position: absolute; z-index: 100; display: none; }
-		.ie6 .p_pop, .ie6 .ac_pop .ie7 .p_pop, .ie7 .ac_pop { width: 100px; }
+		.ie6 .p_pop, .ie6 .ac_pop, .ie7 .p_pop, .ie7 .ac_pop { width: 100px; }
 		.ac_pop li { cursor: pointer; height: 20px; }
 		.ac_pop li a { display:block; float: left; margin-top: 3px; }
-		.ie6 .ac_pop li a, .ie7 .ac_pop li a { min-width: 78px; }
-		.ac_pop a { cursor: pointer; display:block; }
+		.ie6 .ac_pop li a, .ie7 .ac_pop li a { width: 78px; }
+		.ac_pop a { cursor: pointer; display: block; }
 		.ac_ahover { color: {NOTICETEXT}; }
 		.ac_ul { border-bottom: 1px solid {DROPMENUBORDER}; margin-bottom: 4px; padding-bottom: 5px; }
 		.ac_pop label { cursor: default; float: left; line-height: 22px; vertical-align: middle; }
