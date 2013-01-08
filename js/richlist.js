@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-06
+ *    Last Updated: 2013-01-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -321,7 +321,7 @@ jQuery(document).ready(function($) {
 	});
 	
 	/*
-	 * 账单归属菜单
+	 * 账户归属菜单
 	 */
 	$("#sel_showb").click(function(){
 		if(cur_popbtn && cur_pop){
@@ -351,7 +351,7 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 
 		var bData = GetPopData("#ac_popb");
-		var bTitle = fnTitleData("账单归属", bData);
+		var bTitle = fnTitleData("账户归属", bData);
 		
 		if(bTitle){
 			$("#tb_category").attr("title", bTitle).attr("style", "display: block");
@@ -361,7 +361,7 @@ jQuery(document).ready(function($) {
 	});
 	
 	/*
-	 * 借贷归属菜单
+	 * 借贷账户菜单
 	 */
 	$("#sel_showl").click(function(){
 		if(cur_popbtn && cur_pop){
@@ -391,7 +391,7 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 
 		var lData = GetPopData("#ac_popl");
-		var lTitle = fnTitleData("借贷归属", lData);
+		var lTitle = fnTitleData("借贷账户", lData);
 		
 		if(lTitle){
 			$("#tb_debt").attr("title", lTitle).attr("style", "display: block");

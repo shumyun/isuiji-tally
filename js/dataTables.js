@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-03
+ *    Last Updated: 2013-01-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -501,27 +501,37 @@
 						var tmpDate = aOutData["sortday"][x];
 						var aData = aOutData[tmpDate]["adata"];
 						var OutType = aOutData[tmpDate]["oType"];
-						var str = "";
+						var str = "", otherSum = 0, otherStr = "";
 						
 						$("td>ul", aOutData[tmpDate]["trWidget"]).children().remove(".ac_datefloat");
 						
 						for (var i in OutType) {
-							str += '<strong style="padding-right: 15px;">'+i+'：';
 							switch(i) {
 								case '收入':
+									str += '<strong style="padding-right: 15px;">'+i+'：';
 									str += '<font color="green">+'+OutType[i].sum.toFixed(2).toString()+'</font>';
+									str += '（'+OutType[i].count+'条记录）</strong>';
 									break;
 						
 								case '支出':
+									str += '<strong style="padding-right: 15px;">'+i+'：';
 									str += '<font color="red">-'+OutType[i].sum.toFixed(2).toString()+'</font>';
+									str += '（'+OutType[i].count+'条记录）</strong>';
 									break;
 						
 								default:
+									otherSum += OutType[i].count;
+									otherStr += '\n'+i+'：'+OutType[i].count+'条记录';
 									break;
 							}
-							str += '（'+OutType[i].count+'条记录）</strong>';
 						}
-			
+						
+						if(otherSum && otherStr) {
+							otherStr = '其中包括：'+otherStr;
+							str += '<strong style="padding-right: 15px; cursor: default;" title="'+otherStr+
+											'">其它：（'+otherSum+'条记录）</strong>';
+						}
+						
 						$("td>ul", aOutData[tmpDate]["trWidget"]).append($('<li class="ac_datefloat">'+ str +'</li>'));
 						othis.append(aOutData[tmpDate]["trWidget"]);
 						aOutData[tmpDate]["trWidget"].show();
@@ -566,11 +576,35 @@
 			var othis = DataTable.ext.oTable;
 			th = $("thead > tr", othis).children('":eq('+DataTable.ext.optdata["SortColumns"]["defCol"]+')"');
 			$("span", th).addClass("ac_colblue");
-			th.append($('<span id="sort" class="ac_sortby">&darr;</span>'));
+			th.append($('<span id="sort" class="ac_sortby ac_colblue">&darr;</span>'));
 			aSort.doing = "n";
 			aSort.sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
 			aSort.sortby = "desc";
 			return true;
+		}
+		
+		
+		function _fnConditionToTable(Data, dataType) {
+			var nowCondition = _fnSetConditions(Data, dataType);
+			return true;
+		}
+		
+		function _fnSetConditions(Data, dataType) {
+			var cond = DataTable.ext.oConditions;
+			if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y") {
+				if (dataType.hasOwnProperty("FstAll")) {
+					;
+				}
+			}
+			for(var i in dataType) {
+				switch (i) {
+					case "FstAll":
+						 // statements
+					break;
+					default:
+						// default statements
+				};
+			}
 		}
 		
 		this.oApi = {
@@ -627,7 +661,8 @@
 	DataTable.ext = {
 		"sErrMode": "alert",
 		"optdata" : {},
-		"oApi"    : {}
+		"oApi"    : {},
+		"oConditions": {"Cols": null, "andor": "and"}
 	};
 	
 	/**
