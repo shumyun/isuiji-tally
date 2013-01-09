@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-08
+ *    Last Updated: 2013-01-09
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -583,6 +583,19 @@
 			return true;
 		}
 		
+		
+		function _fnInitConditions() {
+			DataTable.ext.oConditions = { "Step": {"Fst": {"data": ["借贷", "借贷账户"], "andor":"and"},
+																							"Sec": {"data": ["支出", "转账", "收入"], "andor":"or"},
+																							"Thr": {"data": ["账户"], "andor":"and"}},
+																		"odata": {"借贷":null,
+																							"支出":null,
+																							"转账":null,
+																							"收入":null,
+																							"账户":null,
+																							"借贷账户":null}};
+		}
+		
 		/**
 		 * 比较筛选条件后存储需要筛选的数据并返回
 		 * @param Col 比对的列数
@@ -611,12 +624,22 @@
 		/**
 		 * 设置筛选参数
 		 * @param Data 筛选的数据
-		 * @param dataType 筛选的结构
+		 * @param dataType 筛选的结构 { condName: 筛选条件的名字,
+		 *															condAndOr: 筛选条件是并集or交集
+		 *															FstAll: 一级所有项{ Col: 要查询的列数
+		 *																			 						Str: 要查询的数据}
+		 *															SecAll: 二级所有项{ Col: 要查询的列数
+		 *																			 						Str: 要查询的数据（非必填项）}
+		 *															ThrAll: 底级数据数组
+		 *														}
 		 * @returns {Boolean}
 		 */
 		function _fnSetConditions(Data, dataType) {
 			var newConditions = new Array();
 			var otmp = null;
+			if(dataType["condName"] && !DataTable.ext.oConditions[dataType["condName"]]) {
+				DataTable.ext.oConditions[dataType["condName"]] = {"Cols"};
+			}
 			if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y") {
 				if (!dataType.hasOwnProperty("FstAll") ||
 					!dataType["FstAll"]["Col"] || !dataType["FstAll"]["Str"]) 
@@ -707,7 +730,7 @@
 		"sErrMode": "alert",
 		"optdata" : {},
 		"oApi"    : {},
-		"oConditions": {"Cols": null, "andor": "and"}
+		"oConditions": {}
 	};
 	
 	/**
