@@ -13,7 +13,7 @@
 			//初始化数据
 			$.extend(true, DataTable.ext, {"oTable": othis});
 			DataTable.ext.optdata = _fnExtend( $.extend(true, {}, DataTable.defaults), odata );
-			
+			_fnInitConditions();
 			//判断数据来源
 			//if( $.isEmptyObject(DataTable.ext.optdata["Ajax"])) {
 			if( DataTable.ext.optdata["Ajax"] === null) {
@@ -148,10 +148,12 @@
 			}
 			
 			var aDate = {"sortday" : null, "asort" : null };
+			var aSortData = new Array();
+			var ClassData = new Array();
 			aDate["sortday"] = new Array();
-			aDate["asort"] = new Array();
 			for (var oname in oTable) {
 				var aData = oTable[oname];
+				ClassData[oname] = new Array();
 				var oType = {};
 				var tmpdate = new Date();
 				for (var i = 0; i < aData.length; i++) {
@@ -202,10 +204,13 @@
 					oType[oname]["count"]++;
 					aDate[tmpTime]["adata"].push(oCol);
 					aDate[tmpTime]["iSumCols"]++;
-					aDate["asort"].push(oCol);
+					aSortData.push(oCol);
+					ClassData[oname].push(oCol);
 				}
 			}
 			DataTable.DataCols["aDate"] = aDate;
+			DataTable.DataCols["Data"] = ClassData;
+			DataTable.DataCols["aSort"]["sortData"] = aSortData;
 			return true;
 		}
 		
@@ -424,10 +429,10 @@
 		 * @returns boolean
 		 */
 		function _fnSortString( index, sortby ) {
-			var aDate = DataTable.DataCols["aDate"];
+			var aData = DataTable.DataCols["aSort"];
 			switch( sortby ) {
 				case "asc":
-					aDate["asort"].sort(function(a, b) {
+					aData["sortData"].sort(function(a, b) {
 						x = pinyin(_fntransition(a.children('":eq('+index+')"').html(), "string"), true, ",");
 						y = pinyin(_fntransition(b.children('":eq('+index+')"').html(), "string"), true, ",");
 						xId = a.attr("id");
@@ -436,7 +441,7 @@
 					});
 					break;
 				case "desc":
-					aDate["asort"].sort(function(a, b) {
+					aData["sortData"].sort(function(a, b) {
 						x =  pinyin(_fntransition(a.children('":eq('+index+')"').html(), "string"), true, ",");
 						y =  pinyin(_fntransition(b.children('":eq('+index+')"').html(), "string"), true, ",");
 						xId = a.attr("id");
@@ -459,10 +464,10 @@
 		 * @returns boolean
 		 */
 		function _fnSortNumerical( index, sortby ) {
-			var aDate = DataTable.DataCols["aDate"];
+			var aData = DataTable.DataCols["aSort"];
 			switch( sortby ) {
 				case "asc":
-					aDate["asort"].sort(function(a, b) {
+					aData["sortData"].sort(function(a, b) {
 						x = _fntransition(a.children('":eq('+index+')"').html(), "numerical");
 						y = _fntransition(b.children('":eq('+index+')"').html(), "numerical");
 						xId = a.attr("id");
@@ -471,7 +476,7 @@
 					});
 					break;
 				case "desc":
-					aDate["asort"].sort(function(a, b) {
+					aData["sortData"].sort(function(a, b) {
 						x =  _fntransition(a.children('":eq('+index+')"').html(), "numerical");
 						y =  _fntransition(b.children('":eq('+index+')"').html(), "numerical");
 						xId = a.attr("id");
@@ -491,12 +496,12 @@
 		 * @returns boolean
 		 */
 		function _fnOut(type) {
-			var aOutData = DataTable.DataCols["aDate"];
 			var othis = DataTable.ext.oTable;
 			othis = $("tbody", othis);
 			othis.children().hide();
 			switch(type) {
 				case "date":
+					var aOutData = DataTable.DataCols["aDate"];
 					for (var x = 0; x < aOutData["sortday"].length; x++) {
 						var tmpDate = aOutData["sortday"][x];
 						var aData = aOutData[tmpDate]["adata"];
@@ -547,14 +552,14 @@
 					break;
 					
 				default:
-					var aData = aOutData["asort"];
-					for (var x = 0; x < aData.length; x++) {
-						if( !(x%2) && $(aData[x]).hasClass(DataTable.DataCols.TrClass["cClass"][1]) )
-							$(aData[x]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
+					var aOutData = DataTable.DataCols["aSort"]["sortData"];
+					for (var x = 0; x < aOutData.length; x++) {
+						if( !(x%2) && $(aOutData[x]).hasClass(DataTable.DataCols.TrClass["cClass"][1]) )
+							$(aOutData[x]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
 						else
-							$(aData[x]).addClass(DataTable.DataCols.TrClass["cClass"][x%2]);
-						othis.append(aData[x]);
-						$(aData[x]).show();
+							$(aOutData[x]).addClass(DataTable.DataCols.TrClass["cClass"][x%2]);
+						othis.append(aOutData[x]);
+						$(aOutData[x]).show();
 					}
 					break;
 			}
@@ -584,16 +589,18 @@
 		}
 		
 		
+		/**
+		 * 初始化筛选条件
+		 * 说明： 账户和借贷账户没有存储该行的数据，因此这里存储的是数组[筛选的列号, 筛选的数据]
+		 */
 		function _fnInitConditions() {
-			DataTable.ext.oConditions = { "Step": {"Fst": {"data": ["借贷", "借贷账户"], "andor":"and"},
-																							"Sec": {"data": ["支出", "转账", "收入"], "andor":"or"},
-																							"Thr": {"data": ["账户"], "andor":"and"}},
-																		"odata": {"借贷":null,
-																							"支出":null,
-																							"转账":null,
-																							"收入":null,
-																							"账户":null,
-																							"借贷账户":null}};
+			DataTable.ext.oConditions = {
+				"Step" : {
+					"Fst": {"data": ["借贷", "借贷账户"], "andor":"and"},
+					"Sec": {"data": ["支出", "转账", "收入"], "haddata":["Fst"], "andor":"or"},
+					"Thr": {"data": ["账户"], "haddata":["Sec"], "andor":"and"}},
+				"odata": {"借贷": null, "支出": null, "转账": null,
+						  "收入": null, "账户": null, "借贷账户": null}};
 		}
 		
 		/**
@@ -623,29 +630,34 @@
 		
 		/**
 		 * 设置筛选参数
-		 * @param Data 筛选的数据
-		 * @param dataType 筛选的结构 { condName: 筛选条件的名字,
-		 *															condAndOr: 筛选条件是并集or交集
-		 *															FstAll: 一级所有项{ Col: 要查询的列数
-		 *																			 						Str: 要查询的数据}
-		 *															SecAll: 二级所有项{ Col: 要查询的列数
-		 *																			 						Str: 要查询的数据（非必填项）}
-		 *															ThrAll: 底级数据数组
-		 *														}
+		 * @param Data     : 筛选的数据
+		 * @param dataType : (筛选的结构)
+		 * 					{ condName: 筛选条件的名字,
+		 *					  FstCol: 查询的列号,
+		 *					  SecCol: 查询的列号 }
 		 * @returns {Boolean}
 		 */
 		function _fnSetConditions(Data, dataType) {
 			var newConditions = new Array();
 			var otmp = null;
-			if(dataType["condName"] && !DataTable.ext.oConditions[dataType["condName"]]) {
-				DataTable.ext.oConditions[dataType["condName"]] = {"Cols"};
-			}
+			var toData = DataTable.ext.oConditions.odata;
+			
+			if(!dataType["condName"] || !toData.hasOwnProperty(dataType["condName"]))
+				return false;
+			
+			var condName = dataType["condName"];
 			if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y") {
+				if(!DataTable.DataCols["Data"].hasOwnProperty(condName))
+					toData[condName] = null;
+				else
+					toData[condName] = DataTable.DataCols["Data"][condName];
+				/*
 				if (!dataType.hasOwnProperty("FstAll") ||
 					!dataType["FstAll"]["Col"] || !dataType["FstAll"]["Str"]) 
 					return false;
 				if((otmp = _fnSaveConditions(dataType["FstAll"]["Col"], dataType["FstAll"]["Str"])) != null)
 					newConditions.push(otmp);
+				*/
 			} else {
 				if (!dataType.hasOwnProperty("SecAll") || !dataType["SecAll"]["Col"] ||
 					!dataType.hasOwnProperty("ThrAll") || !dataType["ThrAll"]["Col"])
@@ -688,6 +700,7 @@
 			"_fnSortString"			: _fnSortString,
 			"_fnSortNumerical"		: _fnSortNumerical,
 			"fnDefaultOut"          : _fnDefaultOut,
+			"_fnInitConditions"     : _fnInitConditions,
 			"_fnSaveConditions"		: _fnSaveConditions,
 			"fnSetConditions"		: _fnSetConditions
 		};
@@ -708,21 +721,29 @@
 	
 	/**
 	 * 
-	 * @aDate       : { "每天的时间": { "oType":    {"类型名字":{"sum":该类型的数据总和, "count":该类型的记录个数}},
-	 *                                  "adata":    当天数据,
-	 *                                  "iSumCols": 当天的记录个数,
-	 *                                  "trWidget": 当天的tr}
-	 *                  "sortday"   : 每天时间的排序 }
-	 * @aSort       : { doing  < 'n' or 'y' 默认为 y ,防止无数据及排序 >
-	 * 					sortID <列数从零开始>
-	 * 					sortby <"asc" or "desc">    }
-	 * @TrClass     : cClass: 隔行的CSS类[单行的css, 双行的css]
-	 * 				  hClass: hover时CSS类
+	 * @aDate   : { "每天的时间": { "oType": {"类型名字":{"sum":该类型的数据总和, "count":该类型的记录个数}},
+	 *                			  "adata": 当天的行数据组,
+	 *               		   "iSumCols": 当天的记录个数,
+	 *                		   "trWidget": 当天的tr},
+	 *               "sortday": 每天时间的排序
+	 *            }
+	 * @Data    : { "类型名字": [该类型的行数据组] }
+	 * @aSort   : { doing  < 'n' or 'y' 默认为 y ,防止无数据及排序 >
+	 * 				sortID <列数从零开始>
+	 * 				sortby <"asc" or "desc"> 
+	 *              sortData <需要输出的数据>
+	 * 			  }
+	 * @TrClass : { cClass: 隔行的CSS类[单行的css, 双行的css]
+	 * 			    hClass: hover时CSS类
+	 * 			  }
+	 * @CountCols : 分页的数据
 	 */
 	DataTable.DataCols = {
-		"aDate"     : null,
-		"aSort"     : {"doing": "y", "sortID": null, "sortby": null},
+		"aDate"     : {},
+		"Data"      : {},
+		"aSort"     : {"doing": "y", "sortID": null, "sortby": null, "sortData": null},
 		"TrClass"   : {"cClass": [null, "notrans_td"], "hClass": "notrans_td"},
+		"aClassData": {},
 		"CountCols" : 0
 	};
 	
