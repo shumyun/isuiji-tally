@@ -22,7 +22,7 @@
 			} else {
 				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajData"], function(data) {
 								if( _fnAjaxSaveData(data) ){
-									_fnSetSort();
+									_fnInitTheadSort();
 									_fnDefaultOut();
 								};
 							});
@@ -266,7 +266,7 @@
 		 * 排序初始化
 		 * @returns {Boolean}
 		 */
-		function _fnSetSort() {
+		function _fnInitTheadSort() {
 			if(!DataTable.ext.hasOwnProperty("oTable") || DataTable.ext["oTable"] === null) {
 				_fnLog( null, 0, "找不到相应的table控件。");
 				return false;
@@ -277,7 +277,7 @@
 			for(var i = 0; i<aCols.length; i++) {
 				var th = null;
 				if(th = $("thead > tr", othis).children('":eq('+aCols[i][0]+')"')) {
-					th.bind("click.DT", { index: aCols[i][0],type: aCols[i][1], fn: DataTable.ext.oApi.fnSort}, function(e){
+					th.bind("click.DT", {index: aCols[i][0], type: aCols[i][1], fn: DataTable.ext.oApi.fnSort}, function(e){
 						e.data.fn(e.data.index, e.data.type);
 					}).css("cursor", "pointer");
 				}
@@ -588,7 +588,6 @@
 			return true;
 		}
 		
-		
 		/**
 		 * 初始化筛选条件
 		 * 说明： 账户和借贷账户没有存储该行的数据，因此这里存储的是数组[筛选的列号, 筛选的数据]
@@ -596,12 +595,12 @@
 		function _fnInitConditions() {
 			DataTable.ext.oConditions = {
 				"Step" : {
-					"Fst": {"data": ["借贷", "借贷账户"], "andor":"and"},
-					"Sec": {"data": ["支出", "转账", "收入"], "haddata":["Fst"], "andor":"or"},
-					"Thr": {"data": ["账户"], "haddata":["Sec"], "andor":"and"}},
-				"odata": {"借贷": {"data": null, "isUsed": 'n'}, "支出": {"data": null, "isUsed": 'n'},
-								  "转账": {"data": null, "isUsed": 'n'}, "收入": {"data": null, "isUsed": 'n'},
-								  "账户": {"data": null, "col":"", "isUsed": 'n'}, "借贷账户": {"data": null, "col":"", "isUsed": 'n'}}};
+					"Fst": {"adata": ["借贷", "借贷账户"], "haddata": null, "andor": "and"},
+					"Sec": {"adata": ["支出", "转账", "收入"], "haddata": ["Fst"], "andor": "or"},
+					"Thr": {"adata": ["账户"], "haddata": ["Sec"], "andor": "and"}},
+				"odata": {"借贷": {"data": null, "col":"", "isUsed": 'n'}, "支出": {"data": null, "col":"", "isUsed": 'n'},
+						  "转账": {"data": null, "col":"", "isUsed": 'n'}, "收入": {"data": null, "col":"", "isUsed": 'n'},
+						  "账户": {"data": null, "col":"", "isUsed": 'n'}, "借贷账户": {"data": null, "col":"", "isUsed": 'n'}}};
 		}
 		
 		/**
@@ -636,6 +635,61 @@
 			DataTable.ext.oConditions.odata[sName]["data"] = toData;
 			DataTable.ext.oConditions.odata[sName]["isUsed"] = 'y';
 			return true;
+		}
+		
+		/**
+		 * 每步的并交的处理
+		 * @param adata   该步骤要操作的对象合集名称
+		 * @param haddata 上步骤所得的对象数组
+		 * @param andor   并交集
+		 * @returns {Array} 返回这步骤的数据组
+		 */
+		function _fnCondStepSort(adata, haddata, andor) {
+			var odata = DataTable.ext.oConditions.odata;
+			var todata = new Array();
+			var tmpdata = new Array();
+			var afilter = new Array();
+			if(haddata) {
+				tmpdata = tmpdata.concat(haddata);
+			}
+			for(var i in adata) {
+				if(odata[adata[i]]["isUsed"] === 'y') {
+					if(odata[adata[i]]["data"])
+						tmpdata = tmpdata.concat(odata[adata[i]]["data"]);
+					else if(odata[adata[i]]["col"])
+						afilter.push({"str": adata[i], "col": odata[adata[i]]["col"]});
+				}
+			}
+			if(andor === "and") {
+				for(var i in afilter) {
+					for (var j in tmpdata) {
+						if(tmpdata[j].children(":eq("+afilter[i]["col"]+")").html() === afilter[i]["str"])
+							todata.push(tmpdata[j]);
+					}
+					tmpdata = todata;
+				}
+			}
+			return todata = tmpdata;
+		}
+		
+		function _fnSortConditions() {
+			var step = DataTable.ext.oConditions.Step;
+			var tmpdata = null;
+			tmpdata = _fnCondStepSort(step.Fst["adata"], tmpdata, step.Fst["andor"]);
+			tmpdata = _fnCondStepSort(step.Sec["adata"], tmpdata, step.Sec["andor"]);
+			tmpdata = _fnCondStepSort(step.Thr["adata"], tmpdata, step.Thr["andor"]);
+			
+			//还差存储到日期数组里
+			var aSort = DataTable.DataCols["aSort"];
+			aSort["sortData"] = tmpdata;
+			aSort["sortby"] = (DataTable.DataCols["aSort"]["sortby"]==="asc" ? "desc":"asc");
+			var Cols = DataTable.ext.optdata.SortColumns.Cols;
+			for(var i in Cols){
+				if(Cols[i][0] === aSort.sortID) {
+					_fnSort(aSort.sortID, Cols[i][1]);
+					break;
+				}
+			}
 		}
 		
 		/**
@@ -691,6 +745,7 @@
 					}
 				}
 			}
+			_fnSortConditions();
 			return true;
 		}
 		
@@ -702,7 +757,7 @@
 			"_fnInitData"           : _fnInitData,
 			"_fnSaveData"           : _fnSaveData,
 			"_fnAjaxSaveData"       : _fnAjaxSaveData,
-			"_fnSetSort"            : _fnSetSort,
+			"_fnInitTheadSort"      : _fnInitTheadSort,
 			"fnSort"                : _fnSort,
 			"_fnSortDate"           : _fnSortDate,
 			"_fnSortDateElement"    : _fnSortDateElement,
@@ -711,6 +766,8 @@
 			"fnDefaultOut"          : _fnDefaultOut,
 			"_fnInitConditions"     : _fnInitConditions,
 			"_fnSaveConditions"		: _fnSaveConditions,
+			"_fnCondStepSort"       : _fnCondStepSort,
+			"_fnSortConditions"     : _fnSortConditions,
 			"fnSetConditions"		: _fnSetConditions
 		};
 		
