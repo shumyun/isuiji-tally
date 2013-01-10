@@ -21,17 +21,17 @@
 					<strong>明细查询条件:&nbsp;&nbsp;&nbsp;</strong>
 					<span id="sel_showp" class="ac_sel ac_showm"><a>支出名称</a></span><span class="pipe">|</span>
 					<span id="sel_showe" class="ac_sel ac_showm"><a>收入名称</a></span><span class="pipe">|</span>
-					<span id="sel_showt" class="ac_sel ac_showm"><a>账单类别</a></span><span class="pipe">|</span>
 					<span id="sel_showb" class="ac_sel ac_showm"><a>账户归属</a></span><span class="pipe">|</span>
 					<span id="sel_showl" class="ac_sel ac_showm"><a>借贷账户</a></span><span class="pipe">|</span>
+					<span id="sel_showt" class="ac_sel ac_showm"><a>账单类别</a></span><span class="pipe">|</span>
 					<span id="sel_stime2" class="ac_sel ac_showm"><a>时间范围</a></span><span class="pipe">|</span>
 					<span id="sel_clr" class="ac_selclr"><a>条件清除</a></span><span class="pipe">|</span>
 					<span id="sel_all" class="ac_selall"><a>全部数据</a></span>
 					<div id="sel_hidep" class="ac_sel ac_hidem"><a>支出名称</a></div>
 					<div id="sel_hidee" class="ac_sel ac_hidem"><a>收入名称</a></div>
-					<div id="sel_hidet" class="ac_sel ac_hidem"><a>账单类别</a></div>
 					<div id="sel_hideb" class="ac_sel ac_hidem"><a>账户归属</a></div>
 					<div id="sel_hidel" class="ac_sel ac_hidem"><a>借贷账户</a></div>
+					<div id="sel_hidet" class="ac_sel ac_hidem"><a>账单类别</a></div>
 					<div id="sel_htime2" class="ac_sel ac_hidem"><a>时间范围</a></div>
 					{$ac_pdiv}{$ac_ediv}
 					<div id="ac_popt" ac_pop="type" class="ac_pop">
@@ -68,9 +68,9 @@
 				<li><a ac_tab="undo" id="tb_time1" data="bTime={$richlist_y}-{$richlist_m}-1&eTime={$richlist_y}-{$richlist_m}-{$richlist_t}">{$richlist_m}月份</a></li>
 				<li><a ac_tab="use" id="tb_pay" style="display: none;">支出条件</a></li>
 				<li><a ac_tab="use" id="tb_earn" style="display: none;">收入条件</a></li>
-				<li><a ac_tab="use" id="tb_type" style="display: none;">类别条件</a></li>
 				<li><a ac_tab="use" id="tb_category"style="display: none;">账户归属条件</a></li>
 				<li><a ac_tab="use" id="tb_debt" style="display: none;">借贷账户条件</a></li>
+				<li><a ac_tab="use" id="tb_type" style="display: none;">类别条件</a></li>
 				<li class="y"><label style="padding-right: 0;">备注搜索：</label><input id="s_input" class="px" style="width: 100px;"></li>
 			</ul>
 		</div>
@@ -82,8 +82,8 @@
 						<th class="th_3"><span>账单名称</span></th>
 						<th class="th_3_left"><span style="color:#8C8C8C;">顶</span>/借贷账户</th>
 						<th class="th_2"><span>金&nbsp;额</span></th>
-						<th class="th_1"><span>类&nbsp;别</span></th>
 						<th class="th_2"><span>账&nbsp;户</span></th>
+						<th class="th_1"><span>类&nbsp;别</span></th>
 						<th>备&nbsp;注</th>
 					</tr>
 				</thead>

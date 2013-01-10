@@ -187,8 +187,8 @@
 								+'<td class="td_rsecond">'+ oData[2]
 								+'</td><td class="td_lfirst">'+ oData[3]
 								+'</td><td class="td_right">'+ oData[4]
-								+'</td><td class="td_center">'+ oname
 								+'</td><td class="td_center">'+ oData[5]
+								+'</td><td class="td_center">'+ oname
 								+'</td><td class="td_left">-</td></tr>')
 								.hover(
 									function () {
@@ -646,38 +646,34 @@
 				return false;
 			
 			var condName = dataType["condName"];
-			if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y") {
-				if(!DataTable.DataCols["Data"].hasOwnProperty(condName))
+			if(!DataTable.DataCols["Data"].hasOwnProperty(condName)) {
+				if(condName === "类型") {
+					for(var i in Data) {
+						;
+					}
 					toData[condName] = null;
-				else
-					toData[condName] = DataTable.DataCols["Data"][condName];
-				/*
-				if (!dataType.hasOwnProperty("FstAll") ||
-					!dataType["FstAll"]["Col"] || !dataType["FstAll"]["Str"]) 
-					return false;
-				if((otmp = _fnSaveConditions(dataType["FstAll"]["Col"], dataType["FstAll"]["Str"])) != null)
-					newConditions.push(otmp);
-				*/
+				} else {
+					;
+				}
 			} else {
-				if (!dataType.hasOwnProperty("SecAll") || !dataType["SecAll"]["Col"] ||
-					!dataType.hasOwnProperty("ThrAll") || !dataType["ThrAll"]["Col"])
-					return false;
-				var aFstData = Data["firstData"];
-				var str = "";
-				for(var i in aFstData) {
-					if(aFstData[i].hasOwnProperty("IsNoCld") && aFstData[i]["IsNoCld"] === "y") {
-						str = dataType["ThrAll"]["Str"] ? dataType["ThrAll"]["Str"] : i;
-						if((otmp = _fnSaveConditions(dataType["ThrAll"]["Col"], str)) != null)
-							newConditions.push(otmp);
-					} else if(aFstData[i].hasOwnProperty("IsAll") && aFstData[i]["IsAll"] === "y") {
-						str = dataType["SecAll"]["Str"] ? dataType["SecAll"]["Str"] : i;
-						if((otmp = _fnSaveConditions(dataType["SecAll"]["Col"], str)) != null)
-							newConditions.push(otmp);
-					} else {
-						var aThrData = aFstData[i]["aData"];
-						for (var j in aThrData) {
-							if((otmp = _fnSaveConditions(dataType["ThrAll"]["Col"], j)) != null)
-								newConditions.push(otmp);
+				if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y")
+					toData[condName] = DataTable.DataCols["Data"][condName];
+				else {
+					var aFstData = Data["firstData"];
+					var str = "";
+					for(var i in aFstData) {
+						if(aFstData[i].hasOwnProperty("IsNoCld") && aFstData[i]["IsNoCld"] === "y") {
+							if(!_fnSaveConditions(DataTable.DataCols["Data"][condName], "", dataType["FstCol"], i, dataType["SecCol"]))
+								return false;
+						} else if(aFstData[i].hasOwnProperty("IsAll") && aFstData[i]["IsAll"] === "y") {
+							if(!_fnSaveConditions(DataTable.DataCols["Data"][condName], i, dataType["FstCol"]))
+								return false;
+						} else {
+							var aThrData = aFstData[i]["aData"];
+							for (var j in aThrData) {
+								if(!_fnSaveConditions(DataTable.DataCols["Data"][condName], i, dataType["FstCol"], j, dataType["SecCol"]))
+									return false;
+							}
 						}
 					}
 				}
