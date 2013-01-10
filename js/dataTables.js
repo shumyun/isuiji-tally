@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-09
+ *    Last Updated: 2013-01-10
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -599,33 +599,43 @@
 					"Fst": {"data": ["借贷", "借贷账户"], "andor":"and"},
 					"Sec": {"data": ["支出", "转账", "收入"], "haddata":["Fst"], "andor":"or"},
 					"Thr": {"data": ["账户"], "haddata":["Sec"], "andor":"and"}},
-				"odata": {"借贷": null, "支出": null, "转账": null,
-						  "收入": null, "账户": null, "借贷账户": null}};
+				"odata": {"借贷": {"data": null, "isUsed": 'n'}, "支出": {"data": null, "isUsed": 'n'},
+								  "转账": {"data": null, "isUsed": 'n'}, "收入": {"data": null, "isUsed": 'n'},
+								  "账户": {"data": null, "col":"", "isUsed": 'n'}, "借贷账户": {"data": null, "col":"", "isUsed": 'n'}}};
 		}
 		
 		/**
-		 * 比较筛选条件后存储需要筛选的数据并返回
-		 * @param Col 比对的列数
-		 * @param Str 比对的数据
-		 * @returns 当原来存在的返回空，不存在的就返回该数据
+		 * 筛选后存储需要显示的数据并返回
+		 * @param sName   要比对的数据名
+		 * @param sFirst  首先筛选的条件
+		 * @param fCol    首先筛选的列号
+		 * @param aSecond 二次筛选的条件(数组)
+		 * @param sCol    二次筛选的列号
+		 * @returns {Boolean}
 		 */
-		function _fnSaveConditions(Col, Str) {
-			var cond = DataTable.ext.oConditions;
-			var oNewConditions = null;
-			if(cond["Cols"] && cond["Cols"].hasOwnProperty(Col)){
-				var tmp = cond["Cols"][Col];
-				for(var i in tmp) {
-					if(tmp[i] === Str)
-						return oNewConditions;
-				}
-				tmp.push(Str);
-			} else {
-				if (!cond["Cols"])
-					cond["Cols"] = new Array();
-				cond["Cols"][Col] = new Array();
-				cond["Cols"][Col].push(Str);
+		function _fnSaveConditions(sName, sFirst, fCol, aSecond, sCol) {
+			var beData = DataTable.DataCols["Data"][sName];
+			var toData = new Array();
+			var tmpData = new Array();
+			if(typeof(sFirst) == "undefined" || typeof(fCol) == "undefined")
+				return false;
+			for(var i in beData) {
+				if(beData[i].children(":eq("+fCol+")").html() === sFirst)
+					tmpData.push(beData[i]);
 			}
-			return oNewConditions = {"Col": Col, "Str": Str};
+			if(typeof(aSecond) != "undefined" && typeof(sCol) != "undefined")
+			{
+				for(var i in aSecond) {
+					for(var j in tmpData) {
+						if(tmpData[j].children(":eq("+sCol+")").html() === aSecond[i])
+							toData.push(tmpData[j]);
+					}
+				}
+			} else
+				toData = tmpData;
+			DataTable.ext.oConditions.odata[sName]["data"] = toData;
+			DataTable.ext.oConditions.odata[sName]["isUsed"] = 'y';
+			return true;
 		}
 		
 		/**
@@ -638,8 +648,6 @@
 		 * @returns {Boolean}
 		 */
 		function _fnSetConditions(Data, dataType) {
-			var newConditions = new Array();
-			var otmp = null;
 			var toData = DataTable.ext.oConditions.odata;
 			
 			if(!dataType["condName"] || !toData.hasOwnProperty(dataType["condName"]))
@@ -647,33 +655,38 @@
 			
 			var condName = dataType["condName"];
 			if(!DataTable.DataCols["Data"].hasOwnProperty(condName)) {
-				if(condName === "类型") {
+				if(toData.hasOwnProperty(condName)) {
+					if(!dataType["FstCol"])
+						return false;
+					toData[condName]["data"] = Data;
+					toData[condName]["col"] = dataType["FstCol"];
+					toData[condName]["isUsed"] = 'y';
+				} else if (condName === "类型") {
 					for(var i in Data) {
-						;
+						if(toData[i]["IsUsed"] === 'n' && DataTable.DataCols["Data"].hasOwnProperty(i)) {
+							toData[i]["data"] = DataTable.DataCols["Data"][i];
+							toData[condName]["isUsed"] = 'y';
+						}
 					}
-					toData[condName] = null;
-				} else {
-					;
-				}
+				} else {return false;}
 			} else {
-				if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y")
-					toData[condName] = DataTable.DataCols["Data"][condName];
-				else {
+				if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y") {
+					toData[condName]["data"] = DataTable.DataCols["Data"][condName];
+					toData[condName]["isUsed"] = 'y';
+				} else {
 					var aFstData = Data["firstData"];
 					var str = "";
 					for(var i in aFstData) {
 						if(aFstData[i].hasOwnProperty("IsNoCld") && aFstData[i]["IsNoCld"] === "y") {
-							if(!_fnSaveConditions(DataTable.DataCols["Data"][condName], "", dataType["FstCol"], i, dataType["SecCol"]))
+							if(!_fnSaveConditions(condName, i, dataType["SecCol"]))
 								return false;
 						} else if(aFstData[i].hasOwnProperty("IsAll") && aFstData[i]["IsAll"] === "y") {
-							if(!_fnSaveConditions(DataTable.DataCols["Data"][condName], i, dataType["FstCol"]))
+							if(!_fnSaveConditions(condName, i, dataType["FstCol"]))
 								return false;
 						} else {
 							var aThrData = aFstData[i]["aData"];
-							for (var j in aThrData) {
-								if(!_fnSaveConditions(DataTable.DataCols["Data"][condName], i, dataType["FstCol"], j, dataType["SecCol"]))
-									return false;
-							}
+							if(!_fnSaveConditions(condName, i, dataType["FstCol"], aThrData, dataType["SecCol"]))
+								return false;
 						}
 					}
 				}
