@@ -65,12 +65,12 @@
 			<h1 class="mt">account_tab</h1>
 			<ul class="tb cl">
 				<li id="li_popmenu" class="ac_showm"><a id="a_popmenu" style="padding-right: 0; border: none; background: transparent;">{$richlist_y}年</a></li>
-				<li><a ac_tab="undo" id="tb_time1" data="bTime={$richlist_y}-{$richlist_m}-1&eTime={$richlist_y}-{$richlist_m}-{$richlist_t}">{$richlist_m}月份</a></li>
-				<li><a ac_tab="use" id="tb_pay" style="display: none;">支出条件</a></li>
-				<li><a ac_tab="use" id="tb_earn" style="display: none;">收入条件</a></li>
-				<li><a ac_tab="use" id="tb_category"style="display: none;">账户归属条件</a></li>
-				<li><a ac_tab="use" id="tb_debt" style="display: none;">借贷账户条件</a></li>
-				<li><a ac_tab="use" id="tb_type" style="display: none;">类别条件</a></li>
+				<li><a tab_time="undo" id="tb_time1" data="bTime={$richlist_y}-{$richlist_m}-1&eTime={$richlist_y}-{$richlist_m}-{$richlist_t}">{$richlist_m}月份</a></li>
+				<li><a ac_tab="use" id="tb_pay" name="支出" style="display: none;">支出条件</a></li>
+				<li><a ac_tab="use" id="tb_earn" name="收入" style="display: none;">收入条件</a></li>
+				<li><a ac_tab="use" id="tb_category" name="账户" style="display: none;">账户归属条件</a></li>
+				<li><a ac_tab="use" id="tb_debt" name="借贷账户" style="display: none;">借贷账户条件</a></li>
+				<li><a ac_tab="use" id="tb_type" name="类型" style="display: none;">类别条件</a></li>
 				<li class="y"><label style="padding-right: 0;">备注搜索：</label><input id="s_input" class="px" style="width: 100px;"></li>
 			</ul>
 		</div>

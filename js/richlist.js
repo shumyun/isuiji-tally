@@ -53,7 +53,7 @@ jQuery(document).ready(function($) {
 		$("#a_popmenu").html(display_year);
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
-		$("#tb_time1").html(display_month).attr("ac_tab", "undo").attr("title", "");
+		$("#tb_time1").html(display_month).attr("tab_time", "undo").attr("title", "");
 	});
 	$("#time1_last").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
@@ -62,7 +62,7 @@ jQuery(document).ready(function($) {
 		if((tmp_m = parseInt(display_month)-1) == 0){
 			var tmp = parseInt(display_year) - 1;
 			$("#a_popmenu").html(tmp+"年");
-			$("#tb_time1").html("12月份").attr("ac_tab", "use").attr("title", "关闭");
+			$("#tb_time1").html("12月份").attr("tab_time", "use").attr("title", "关闭");
 		} else {
 			$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
 			//$("#a_popmenu").html();
@@ -73,7 +73,7 @@ jQuery(document).ready(function($) {
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
 		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
-		$("#tb_time1").html(display_year+"全年").attr("ac_tab", "use").attr("title", "关闭");
+		$("#tb_time1").html(display_year+"全年").attr("tab_time", "use").attr("title", "关闭");
 	});
 	$("#time1_year").click(function(){
 		hiden_time1 = false;
@@ -105,23 +105,24 @@ jQuery(document).ready(function($) {
 			}
 		});
 		$(this).click(function(){
+			$("#datatable").DataTable.ext.oApi.fnDelConditions($(this).attr("name"));
 			$(this).hide();
 		});
 	});
 	
 	$("#tb_time1").hover(function(){
-		if($(this).attr("ac_tab") == "use"){
+		if($(this).attr("tab_time") == "use"){
 			$(this).attr("style", "padding: 0 17px 0 3px; background: url(static/image/common/data_invalid.gif) no-repeat 98% 50%; font-weight: 700; cursor: pointer;");
 		}
 	}, function(){
-		if(!$(this).is(":hidden") && $(this).attr("ac_tab") == "use"){
+		if(!$(this).is(":hidden") && $(this).attr("tab_time") == "use"){
 			$(this).attr("style", "");
 		}
 	}).click(function(){
-		if($(this).attr("ac_tab") == "use"){
+		if($(this).attr("tab_time") == "use"){
 			$(this).attr("style", "");
 			$("#a_popmenu").html(display_year);
-			$("#tb_time1").html(display_month).attr("ac_tab", "undo").attr("title", "");
+			$("#tb_time1").html(display_month).attr("tab_time", "undo").attr("title", "");
 		}
 	});
 	
@@ -147,7 +148,7 @@ jQuery(document).ready(function($) {
 						break;
 					case "1":
 						secDiv = $(this).attr("div_id");
-						fData[sFirst] = { "IsAll": "n", "aData":null };
+						fData[sFirst] = { "IsAll": "n", "aData": null };
 						fData[sFirst]["aData"] = new Array();
 						$("#"+secDiv+"> ul > li").filter("[a_clsid='2']").each(function(){
 							fData[sFirst]["aData"].push($("a", this).html());
@@ -176,23 +177,63 @@ jQuery(document).ready(function($) {
 		
 		var firstData = oData["firstData"];
 		var i = 0;
-		for(var firStr in firstData) {
-			if(firstData[firStr].hasOwnProperty("IsNoCld") && firstData[firStr]["IsNoCld"] === "y"){
-				titStr += (i%3 ? "  " : "\n")+firStr +"；";
-			} else if(firstData[firStr]["IsAll"] === "y") {
-				titStr += (i%3 ? "  " : "\n")+firStr +"；";
+		for(var fstStr in firstData) {
+			if(firstData[fstStr].hasOwnProperty("IsNoCld") && firstData[fstStr]["IsNoCld"] === "y"){
+				titStr += (i%3 ? "  " : "\n")+fstStr +"；";
+			} else if(firstData[fstStr]["IsAll"] === "y") {
+				titStr += (i%3 ? "  " : "\n")+fstStr +"；";
 			} else {
-				titStr += (i%3 ? "  " : "\n")+firStr+"(";
-				for (var j in firstData[firStr]["aData"])
-					titStr +=  " "+firstData[firStr]["aData"][j]+" ";
+				titStr += (i%3 ? "  " : "\n")+fstStr+"(";
+				for (var j in firstData[fstStr]["aData"])
+					titStr += " "+firstData[fstStr]["aData"][j]+" ";
 				titStr += ")；";
 			}
 			i++;
 		}
 	
 		if(titStr)
-			titStr = "条件包含有："+titStr;
+			titStr = "条件："+titStr;
 		return titStr;
+	}
+	
+	/**
+	 * 获取需要筛选的账单类别的数据
+	 * @param oData 需要解析的数据
+	 * @returns aData: 账单类别的数组
+	 */
+	function fnArrayOfType(oData) {
+		aData = new Array();
+		if(oData["IsAll"] === "y") {
+			return aData.concat("支出", "收入", "转账", "借入", "借出", "还债", "收债");
+		}
+		var firstData = oData["firstData"];
+		for(var fstStr in firstData) {
+			if(firstData[fstStr].hasOwnProperty("IsNoCld") && firstData[fstStr]["IsNoCld"] === "y"){
+				aData.push(fstStr.slice(0,2));
+			} else if(firstData[fstStr]["IsAll"] === "y") {
+				aData = aData.concat("借入", "借出", "还债", "收债");
+			} else {
+				aData = aData.concat(firstData[fstStr]["aData"]);
+			}
+		}
+		return aData;
+	}
+
+	/**
+	 * 获取需要筛选的账户的数据
+	 * @param oData 需要解析的数据
+	 * @returns aData: 账户的数组
+	 */
+	function fnArrayOfAccount(oData) {
+		aData = new Array();
+		if(oData["IsAll"] === "y") {
+			return "all";
+		}
+		var firstData = oData["firstData"];
+		for(var fstStr in firstData) {
+			aData.push(fstStr);
+		}
+		return aData;
 	}
 	
 	/**
@@ -274,11 +315,14 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 
 		var eData = GetPopData("#ac_pope");
-		var eTitle = fnTitleData("收入类型", eData);
 		
+		var eTitle = fnTitleData("收入类型", eData);
 		if(eTitle){
+			var oDatatype = {"condName": "收入", "FstCol": 2, "SecCol": 1};
+			$("#datatable").DataTable.ext.oApi.fnSetConditions(eData, oDatatype);
 			$("#tb_earn").attr("title", eTitle).attr("style", "display: block");
 		} else {
+			$("#datatable").DataTable.ext.oApi.fnDelConditions("收入");
 			$("#tb_earn").attr("style", "display: none");
 		}
 	});
@@ -315,10 +359,13 @@ jQuery(document).ready(function($) {
 
 		var tData = GetPopData("#ac_popt");
 		var tTitle = fnTitleData("账单类别", tData);
-		
 		if(tTitle){
+			var oDatatype = {"condName": "类型", "FstCol": null, "SecCol": null};
+			tData = fnArrayOfType(tData);
+			$("#datatable").DataTable.ext.oApi.fnSetConditions(tData, oDatatype);
 			$("#tb_type").attr("title", tTitle).attr("style", "display: block");
 		} else {
+			$("#datatable").DataTable.ext.oApi.fnDelConditions("类型");
 			$("#tb_type").attr("style", "display: none");
 		}
 	});
@@ -354,11 +401,15 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 
 		var bData = GetPopData("#ac_popb");
-		var bTitle = fnTitleData("账户归属", bData);
 		
+		var bTitle = fnTitleData("账户归属", bData);
 		if(bTitle){
+			var oDatatype = {"condName": "账户", "FstCol": 4, "SecCol": null};
+			bData = fnArrayOfAccount(bData);
+			$("#datatable").DataTable.ext.oApi.fnSetConditions(bData, oDatatype);
 			$("#tb_category").attr("title", bTitle).attr("style", "display: block");
 		} else {
+			$("#datatable").DataTable.ext.oApi.fnDelConditions("账户");
 			$("#tb_category").attr("style", "display: none");
 		}
 	});
@@ -394,11 +445,15 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 
 		var lData = GetPopData("#ac_popl");
-		var lTitle = fnTitleData("借贷账户", lData);
 		
+		var lTitle = fnTitleData("借贷账户", lData);
 		if(lTitle){
+			var oDatatype = {"condName": "借贷账户", "FstCol": 2, "SecCol": null};
+			lData = fnArrayOfAccount(lData);
+			$("#datatable").DataTable.ext.oApi.fnSetConditions(lData, oDatatype);
 			$("#tb_debt").attr("title", lTitle).attr("style", "display: block");
 		} else {
+			$("#datatable").DataTable.ext.oApi.fnDelConditions("借贷账户");
 			$("#tb_debt").attr("style", "display: none");
 		}
 	});
