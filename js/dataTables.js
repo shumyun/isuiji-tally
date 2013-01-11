@@ -183,7 +183,7 @@
 						}
 					}
 					var oCol = $('<tr id="'+ oData[0]
-								+'"><td class="td_left"></td>'
+								+'"><td date="'+ oData[1] +'" class="td_left"></td>'
 								+'<td class="td_rsecond">'+ oData[2]
 								+'</td><td class="td_lfirst">'+ oData[3]
 								+'</td><td class="td_right">'+ oData[4]
@@ -261,6 +261,34 @@
 			DataTable.DataCols["aSort"] = aSort;
 			return true;
 		}
+		
+		function _fnSetDataDate(aData) {
+			//清空date数据
+			aDate = DataTable.DataCols["aDate"];
+			for(var i in aDate) {
+				aDate[i]["iSumCols"] = 0;
+				aDate[i]["adata"]    = null;
+				aDate[i]["adata"]    = new Array();
+				$("ul >li" ,aDate[i]["trWidget"]).children(".ac_datefloat").remove();
+				for(var j in aDate[i]["oType"]) {
+					aDate[i]["oType"][j]["sum"]   = 0;
+					aDate[i]["oType"][j]["count"] = 0;
+				}
+			}
+			
+			var idate, stype, imoney;
+			for(var i in aData) {
+				idate = _fntransition(aData[i].children(":eq(0)").attr("date"), "date");
+				imoney = _fntransition(aData[i].children(":eq(3)").attr("date"), "numerical");
+				stype = aData[i].children(":eq(5)").html();
+				aDate[idate]["adata"].push(aData[i]);
+				aDate[idate]["iSumCols"]++;
+				aDate[idate]["oType"][stype]["sum"] += imoney;
+				aDate[idate]["oType"][stype]["count"] ++;
+			}
+			
+			return true;
+		}
 
 		/**
 		 * 排序初始化
@@ -280,6 +308,32 @@
 					th.bind("click.DT", {index: aCols[i][0], type: aCols[i][1], fn: DataTable.ext.oApi.fnSort}, function(e){
 						e.data.fn(e.data.index, e.data.type);
 					}).css("cursor", "pointer");
+				}
+			}
+			return true;
+		}
+		
+		/**
+		 * 排序
+		 * @param index   排序的列号，从零开始
+		 * @param sortby  排序
+		 * @returns {Boolean}
+		 */
+		function _fnSetTheadClass(index, sortby) {
+			var aSort = DataTable.DataCols["aSort"];
+			var othis = DataTable.ext.oTable;
+			newth = $("thead > tr", othis).children('":eq('+index+')"');
+			if( aSort.sortID != index ){
+				oldth = $("thead > tr", othis).children('":eq('+aSort.sortID+')"');
+				$("#sort", oldth).remove();
+				$("span", oldth).removeClass("ac_colblue");
+				$("span", newth).addClass("ac_colblue");
+				newth.append($('<span id="sort" style="font-size: 15px; color:#00F;">&darr;</span>'));
+			} else {
+				if(sortby === "asc"){
+					$("#sort", newth).html("&uarr;");
+				} else {
+					$("#sort", newth).html("&darr;");
 				}
 			}
 			return true;
@@ -338,32 +392,6 @@
 				return true;
 			}
 			return false;
-		}
-		
-		/**
-		 * 排序
-		 * @param index   排序的列号，从零开始
-		 * @param sortby  排序
-		 * @returns {Boolean}
-		 */
-		function _fnSetTheadClass(index, sortby) {
-			var aSort = DataTable.DataCols["aSort"];
-			var othis = DataTable.ext.oTable;
-			newth = $("thead > tr", othis).children('":eq('+index+')"');
-			if( aSort.sortID != index ){
-				oldth = $("thead > tr", othis).children('":eq('+aSort.sortID+')"');
-				$("#sort", oldth).remove();
-				$("span", oldth).removeClass("ac_colblue");
-				$("span", newth).addClass("ac_colblue");
-				newth.append($('<span id="sort" style="font-size: 15px; color:#00F;">&darr;</span>'));
-			} else {
-				if(sortby === "asc"){
-					$("#sort", newth).html("&uarr;");
-				} else {
-					$("#sort", newth).html("&darr;");
-				}
-			}
-			return true;
 		}
 		
 		/**
@@ -679,9 +707,9 @@
 			tmpdata = _fnCondStepSort(step.Sec["adata"], tmpdata, step.Sec["andor"]);
 			tmpdata = _fnCondStepSort(step.Thr["adata"], tmpdata, step.Thr["andor"]);
 			
-			//还差存储到日期数组里
 			var aSort = DataTable.DataCols["aSort"];
 			aSort["sortData"] = tmpdata;
+			_fnSetDataDate(tmpdata);
 			aSort["sortby"] = (DataTable.DataCols["aSort"]["sortby"]==="asc" ? "desc":"asc");
 			var Cols = DataTable.ext.optdata.SortColumns.Cols;
 			for(var i in Cols){
@@ -755,14 +783,17 @@
 			"_fnExtend"             : _fnExtend,
 			"_fntransition"         : _fntransition,
 			"_fnInitData"           : _fnInitData,
-			"_fnSaveData"           : _fnSaveData,
 			"_fnAjaxSaveData"       : _fnAjaxSaveData,
+			"_fnSaveData"           : _fnSaveData,
+			"_fnSetDataDate"        : _fnSetDataDate,
 			"_fnInitTheadSort"      : _fnInitTheadSort,
+			"_fnSetTheadClass"      : _fnSetTheadClass,
 			"fnSort"                : _fnSort,
 			"_fnSortDate"           : _fnSortDate,
 			"_fnSortDateElement"    : _fnSortDateElement,
 			"_fnSortString"			: _fnSortString,
 			"_fnSortNumerical"		: _fnSortNumerical,
+			"_fnOut"                : _fnOut,
 			"fnDefaultOut"          : _fnDefaultOut,
 			"_fnInitConditions"     : _fnInitConditions,
 			"_fnSaveConditions"		: _fnSaveConditions,
