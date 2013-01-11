@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-10
+ *    Last Updated: 2013-01-11
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -191,7 +191,7 @@ jQuery(document).ready(function($) {
 		}
 	
 		if(titStr)
-			titStr = typeStr+"："+titStr;
+			titStr = "条件包含有："+titStr;
 		return titStr;
 	}
 	
@@ -231,14 +231,15 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 		
 		var pData = GetPopData("#ac_popp");
-		var oDatatype = {"condName": "支出", "FstCol": 2, "SecCol": 1};		
-		$("#datatable").DataTable.ext.oApi.fnSetConditions(pData, oDatatype);
-		var pTitle = fnTitleData("支出类型", pData);
 		
+		var pTitle = fnTitleData("支出类型", pData);
 		if(pTitle){
+			var oDatatype = {"condName": "支出", "FstCol": 2, "SecCol": 1};
+			$("#datatable").DataTable.ext.oApi.fnSetConditions(pData, oDatatype);
 			$("#tb_pay").attr("title", pTitle).attr("style", "display: block");
 		} else {
 			$("#tb_pay").attr("style", "display: none");
+			$("#datatable").DataTable.ext.oApi.fnDelConditions("支出");
 		}
 	});
 	

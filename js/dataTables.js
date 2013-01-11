@@ -532,7 +532,7 @@
 		/**
 		 * 
 		 * @param type  排序的类型
-		 * @returns boolean
+		 * @returns {boolean}
 		 */
 		function _fnOut(type) {
 			var othis = DataTable.ext.oTable;
@@ -607,7 +607,7 @@
 		
 		/**
 		 * 数据输出
-		 *  @returns boolean
+		 * @returns {boolean}
 		 */
 		function _fnDefaultOut() {
 			//$("#loading", othis).hide();
@@ -639,7 +639,8 @@
 					"Thr": {"adata": ["账户"], "haddata": ["Sec"], "andor": "and"}},
 				"odata": {"借贷": {"data": null, "col":"", "isUsed": 'n'}, "支出": {"data": null, "col":"", "isUsed": 'n'},
 						  "转账": {"data": null, "col":"", "isUsed": 'n'}, "收入": {"data": null, "col":"", "isUsed": 'n'},
-						  "账户": {"data": null, "col":"", "isUsed": 'n'}, "借贷账户": {"data": null, "col":"", "isUsed": 'n'}}};
+						  "账户": {"data": null, "col":"", "isUsed": 'n'}, "借贷账户": {"data": null, "col":"", "isUsed": 'n'}},
+				"iCount": 0};
 		}
 		
 		/**
@@ -672,7 +673,10 @@
 			} else
 				toData = tmpData;
 			DataTable.ext.oConditions.odata[sName]["data"] = DataTable.ext.oConditions.odata[sName]["data"].concat(toData);
-			DataTable.ext.oConditions.odata[sName]["isUsed"] = 'y';
+			if(DataTable.ext.oConditions.odata[sName]["isUsed"] === 'n') {
+				DataTable.ext.oConditions.odata[sName]["isUsed"] = 'y';
+				DataTable.ext.oConditions.iCount ++;
+			}
 			return true;
 		}
 		
@@ -700,6 +704,12 @@
 				}
 			}
 			if(andor === "and") {
+				if(DataTable.ext.oConditions.iCount === 0 && (tmpdata==false)) {
+					var alldata = DataTable.DataCols["Data"];
+					for(var i in alldata) {
+						tmpdata = tmpdata.concat(alldata[i]);
+					}
+				}
 				for(var i in afilter) {
 					for (var j in tmpdata) {
 						if(tmpdata[j].children(":eq("+afilter[i]["col"]+")").html() === afilter[i]["str"])
@@ -721,7 +731,7 @@
 			var aSort = DataTable.DataCols["aSort"];
 			aSort["sortData"] = tmpdata;
 			_fnSetDataDate(tmpdata);
-			aSort["sortby"] = (DataTable.DataCols["aSort"]["sortby"]==="asc" ? "desc":"asc");
+			aSort["sortby"] = (aSort["sortby"]==="asc" ? "desc":"asc");
 			var Cols = DataTable.ext.optdata.SortColumns.Cols;
 			for(var i in Cols){
 				if(Cols[i][0] === aSort.sortID) {
@@ -759,19 +769,21 @@
 						if(toData[i]["IsUsed"] === 'n' && DataTable.DataCols["Data"].hasOwnProperty(i)) {
 							toData[i]["data"] = DataTable.DataCols["Data"][i];
 							toData[condName]["isUsed"] = 'y';
+							toData["iCount"]++;
 						}
 					}
 				} else {return false;}
 			} else {
 				if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y") {
 					toData[condName]["data"] = DataTable.DataCols["Data"][condName];
-					toData[condName]["isUsed"] = 'y';
+					if(toData[condName]["isUsed"] === 'n') {
+						toData[condName]["isUsed"] = 'y';
+						toData.iCount++;
+					}
 				} else {
 					var aFstData = Data["firstData"];
 					var str = "";
-					toData[condName]["data"] = null;
-					toData[condName]["data"] = new Array();
-					toData[condName]["isUsed"] = 'n';
+					toData[condName]["data"] = [];
 					for(var i in aFstData) {
 						if(aFstData[i].hasOwnProperty("IsNoCld") && aFstData[i]["IsNoCld"] === "y") {
 							if(!_fnSaveConditions(condName, i, dataType["SecCol"]))
@@ -788,6 +800,63 @@
 				}
 			}
 			_fnSortConditions();
+			return true;
+		}
+		
+		
+		function _fnDelConditions(sType){
+			var oData = DataTable.ext.oConditions.odata;
+			if(!oData.hasOwnProperty(sType) && sType != "类型" && sType != "all")
+				return false;
+			if(sType === "类型") {
+				for(var i in oData) {
+					if(oData[i]["isUsed"] === 'y' && oData[i]["col"] === "") {
+						oData[i]["isUsed"] = 'n';
+						oData[i]["data"]  = [];
+						oData.iCount--;
+					}
+				}
+			} else if(sType === "all") {
+				for(var i in oData) {
+					oData[i]["col"] = '';
+					oData[i]["isUsed"] = 'n';
+					oData[i]["data"]  = [];
+				}
+				oData.iCount = 0;
+			} else {
+				if(oData[sType]["isUsed"] === 'y') {
+					oData[sType]["isUsed"] = 'n';
+					oData[sType]["data"]  = [];
+					if(oData[sType]["col"] === "")
+						oData.iCount--;
+				}
+			}
+			
+			for(var i in oData) {
+				if(oData[i]["isUsed"] === 'y') {	//存在条件
+					_fnSortConditions();
+					return true;
+				}
+			}
+			
+			//显示所有数据
+			var alldata = DataTable.DataCols["Data"];
+			var tmpdata = [];
+			for(var i in alldata) {
+				tmpdata = tmpdata.concat(alldata[i]);
+			}
+			var aSort = DataTable.DataCols["aSort"];
+			aSort["sortData"] = tmpdata;
+			_fnSetDataDate(tmpdata);
+			aSort["sortby"] = (aSort["sortby"]==="asc" ? "desc":"asc");
+			var Cols = DataTable.ext.optdata.SortColumns.Cols;
+			for(var i in Cols){
+				if(Cols[i][0] === aSort.sortID) {
+					_fnSort(aSort.sortID, Cols[i][1]);
+					break;
+				}
+			}
+			
 			return true;
 		}
 		
@@ -810,10 +879,11 @@
 			"_fnOut"                : _fnOut,
 			"fnDefaultOut"          : _fnDefaultOut,
 			"_fnInitConditions"     : _fnInitConditions,
-			"_fnSaveConditions"		: _fnSaveConditions,
+			"_fnSaveConditions"     : _fnSaveConditions,
 			"_fnCondStepSort"       : _fnCondStepSort,
 			"_fnSortConditions"     : _fnSortConditions,
-			"fnSetConditions"		: _fnSetConditions
+			"fnSetConditions"       : _fnSetConditions,
+			"fnDelConditions"       : _fnDelConditions
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );
