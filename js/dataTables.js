@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-10
+ *    Last Updated: 2013-01-11
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -265,11 +265,15 @@
 		function _fnSetDataDate(aData) {
 			//清空date数据
 			aDate = DataTable.DataCols["aDate"];
+			aDate["sortday"] = null;
+			aDate["sortday"] = new Array();
 			for(var i in aDate) {
+				if(i === "sortday" || i === "asort")
+					continue;
 				aDate[i]["iSumCols"] = 0;
 				aDate[i]["adata"]    = null;
 				aDate[i]["adata"]    = new Array();
-				$("ul >li" ,aDate[i]["trWidget"]).children(".ac_datefloat").remove();
+				//$("ul >li" ,aDate[i]["trWidget"]).children(".ac_datefloat").remove();
 				for(var j in aDate[i]["oType"]) {
 					aDate[i]["oType"][j]["sum"]   = 0;
 					aDate[i]["oType"][j]["count"] = 0;
@@ -279,12 +283,19 @@
 			var idate, stype, imoney;
 			for(var i in aData) {
 				idate = _fntransition(aData[i].children(":eq(0)").attr("date"), "date");
-				imoney = _fntransition(aData[i].children(":eq(3)").attr("date"), "numerical");
+				imoney = _fntransition(aData[i].children(":eq(3)").html(), "numerical");
 				stype = aData[i].children(":eq(5)").html();
 				aDate[idate]["adata"].push(aData[i]);
 				aDate[idate]["iSumCols"]++;
 				aDate[idate]["oType"][stype]["sum"] += imoney;
 				aDate[idate]["oType"][stype]["count"] ++;
+			}
+			
+			for(var i in aDate) {
+				if(i === "sortday" || i === "asort")
+					continue;
+				if(aDate[i]["iSumCols"])
+					aDate["sortday"].push(i);
 			}
 			
 			return true;
@@ -660,7 +671,7 @@
 				}
 			} else
 				toData = tmpData;
-			DataTable.ext.oConditions.odata[sName]["data"] = toData;
+			DataTable.ext.oConditions.odata[sName]["data"] = DataTable.ext.oConditions.odata[sName]["data"].concat(toData);
 			DataTable.ext.oConditions.odata[sName]["isUsed"] = 'y';
 			return true;
 		}
@@ -736,7 +747,7 @@
 				return false;
 			
 			var condName = dataType["condName"];
-			if(!DataTable.DataCols["Data"].hasOwnProperty(condName)) {
+			if(!DataTable.DataCols["Data"].hasOwnProperty(condName)) {	//这里指的是账户类的数据
 				if(toData.hasOwnProperty(condName)) {
 					if(!dataType["FstCol"])
 						return false;
@@ -758,6 +769,9 @@
 				} else {
 					var aFstData = Data["firstData"];
 					var str = "";
+					toData[condName]["data"] = null;
+					toData[condName]["data"] = new Array();
+					toData[condName]["isUsed"] = 'n';
 					for(var i in aFstData) {
 						if(aFstData[i].hasOwnProperty("IsNoCld") && aFstData[i]["IsNoCld"] === "y") {
 							if(!_fnSaveConditions(condName, i, dataType["SecCol"]))
@@ -791,8 +805,8 @@
 			"fnSort"                : _fnSort,
 			"_fnSortDate"           : _fnSortDate,
 			"_fnSortDateElement"    : _fnSortDateElement,
-			"_fnSortString"			: _fnSortString,
-			"_fnSortNumerical"		: _fnSortNumerical,
+			"_fnSortString"         : _fnSortString,
+			"_fnSortNumerical"      : _fnSortNumerical,
 			"_fnOut"                : _fnOut,
 			"fnDefaultOut"          : _fnDefaultOut,
 			"_fnInitConditions"     : _fnInitConditions,
