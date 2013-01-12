@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-11
+ *    Last Updated: 2013-01-12
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -192,16 +192,16 @@
 								+'</td><td class="td_left">-</td></tr>')
 								.hover(
 									function () {
-										if($(this).children(":eq(0)").html()) {
+										if($(this).children(":eq(0)").html() == "") {
 											$('<a style="color:#f00">删除</a><span class="pipe">|</span><a style="color:#f00">修改</a>')
 											.appendTo($(this).children(":eq(0)"));
 										} else {
-											$('<a style="color:#f00">删除</a>&nbsp;&nbsp;<a style="color:#f00">修改</a>')
+											$('<span>&nbsp;<a style="color:#f00">删除</a>&nbsp;<a style="color:#f00">修改</a></span>')
 											.appendTo($(this).children(":eq(0)"));
 										}
 									}, 
 									function () {
-										$(this).children(":eq(0)").remove("a span");
+										$(this).children(":eq(0)").children("span, a").remove();
 									}
 								);
 					if((tmpval = _fntransition(oData[4], "numerical")) === false)
@@ -590,6 +590,7 @@
 								$(aData[y]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
 							else
 								$(aData[y]).addClass(DataTable.DataCols.TrClass["cClass"][y%2]);
+							aData[y].children(":eq(0)").html("");
 							othis.append(aData[y]);
 							$(aData[y]).show();
 						}
@@ -603,6 +604,7 @@
 							$(aOutData[x]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
 						else
 							$(aOutData[x]).addClass(DataTable.DataCols.TrClass["cClass"][x%2]);
+						aOutData[x].children(":eq(0)").html(aOutData[x].children(":eq(0)").attr("date").slice(2));
 						othis.append(aOutData[x]);
 						$(aOutData[x]).show();
 					}
