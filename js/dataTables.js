@@ -192,10 +192,16 @@
 								+'</td><td class="td_left">-</td></tr>')
 								.hover(
 									function () {
-										$(this).children(":eq(0)").html('<a style="color:#f00">删除</a><span class="pipe">|</span><a style="color:#f00">修改</a>');
+										if($(this).children(":eq(0)").html()) {
+											$('<a style="color:#f00">删除</a><span class="pipe">|</span><a style="color:#f00">修改</a>')
+											.appendTo($(this).children(":eq(0)"));
+										} else {
+											$('<a style="color:#f00">删除</a>&nbsp;&nbsp;<a style="color:#f00">修改</a>')
+											.appendTo($(this).children(":eq(0)"));
+										}
 									}, 
 									function () {
-										$(this).children(":eq(0)").html('');
+										$(this).children(":eq(0)").remove("a span");
 									}
 								);
 					if((tmpval = _fntransition(oData[4], "numerical")) === false)
