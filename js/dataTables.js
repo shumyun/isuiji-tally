@@ -138,7 +138,7 @@
 
 			$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajParam"],
 				function(data) {
-					if( _fnAjaxSaveData(data) ){
+					if( _fnAjaxSaveData(data) ) {
 						_fnInitTheadSort();
 						_fnDefaultOut();
 					};
@@ -665,44 +665,44 @@
 					"Sec": {"adata": ["借贷账户"], "haddata": ["Fst"], "andor": "and"},
 					"Thr": {"adata": ["支出", "转账", "收入"], "haddata": ["Sec"], "andor": "or"},
 					"For": {"adata": ["账户"], "haddata": ["Thr"], "andor": "and"}},
-				"odata": {"收入": {"data": null, "col":"", "isUsed": 'n'}, "支出": {"data": null, "col":"", "isUsed": 'n'},
-						  "借入": {"data": null, "col":"", "isUsed": 'n'}, "借出": {"data": null, "col":"", "isUsed": 'n'},
-						  "还债": {"data": null, "col":"", "isUsed": 'n'}, "收债": {"data": null, "col":"", "isUsed": 'n'},
-						  "转账": {"data": null, "col":"", "isUsed": 'n'},
-						  "账户": {"data": null, "col":"", "isUsed": 'n'}, "借贷账户": {"data": null, "col":"", "isUsed": 'n'}},
+				"odata": {"收入": {"data": null, "cond":"", "isUsed": 'n'}, "支出": {"data": null, "cond":"", "isUsed": 'n'},
+						  "借入": {"data": null, "cond":"", "isUsed": 'n'}, "借出": {"data": null, "cond":"", "isUsed": 'n'},
+						  "还债": {"data": null, "cond":"", "isUsed": 'n'}, "收债": {"data": null, "cond":"", "isUsed": 'n'},
+						  "转账": {"data": null, "cond":"", "isUsed": 'n'},
+						  "账户": {"data": null, "cond":"", "isUsed": 'n'}, "借贷账户": {"data": null, "cond":"", "isUsed": 'n'}},
 				"iCount": 0};
 		}
 		
 		/**
 		 * 筛选后存储需要显示的数据并返回
 		 * @param sName   要比对的数据名
-		 * @param sFirst  首先筛选的条件
-		 * @param fCol    首先筛选的列号
-		 * @param aSecond 二次筛选的条件(数组)
-		 * @param sCol    二次筛选的列号
 		 * @returns {Boolean}
 		 */
-		function _fnSaveConditions(sName, sFirst, fCol, aSecond, sCol) {
+		function _fnSaveConditions(sName) {
 			var beData = DataTable.DataCols["Data"][sName];
+			var aConditions = DataTable.ext.oConditions.odata[sName]["cond"];
+			DataTable.ext.oConditions.odata[sName]["data"] = [];
 			var toData = new Array();
 			var tmpData = new Array();
-			if(typeof(sFirst) == "undefined" || typeof(fCol) == "undefined")
-				return false;
-			for(var i in beData) {
-				if(beData[i].children(":eq("+fCol+")").html() === sFirst)
-					tmpData.push(beData[i]);
+			for(var i in aConditions.one) {
+				for(var j in beData) {
+					if(beData[j].children(":eq("+aConditions.one[i][1]+")").html() === aConditions.one[i][0])
+						toData.push(beData[j]);
+				}
 			}
-			if(typeof(aSecond) != "undefined" && typeof(sCol) != "undefined")
-			{
-				for(var i in aSecond) {
-					for(var j in tmpData) {
-						if(tmpData[j].children(":eq("+sCol+")").html() === aSecond[i])
-							toData.push(tmpData[j]);
+			for(var i in aConditions.two) {
+				for(var j in beData) {
+					if(beData[j].children(":eq("+aConditions.two[i][1]+")").html() === aConditions.two[i][0])
+						tmpData.push(beData[j]);
+				}
+				for(var j in aConditions.two[i][2]) {
+					for(var z in tmpData) {
+						if(tmpData[z].children(":eq("+aConditions.two[i][3]+")").html() === aConditions.two[i][2][j])
+							toData.push(tmpData[z]);
 					}
 				}
-			} else
-				toData = tmpData;
-			DataTable.ext.oConditions.odata[sName]["data"] = DataTable.ext.oConditions.odata[sName]["data"].concat(toData);
+			}
+			DataTable.ext.oConditions.odata[sName]["data"] = toData;
 			if(DataTable.ext.oConditions.odata[sName]["isUsed"] === 'n')
 				DataTable.ext.oConditions.iCount++;
 			DataTable.ext.oConditions.odata[sName]["isUsed"] = 'y';	//有可能是'a'条件
@@ -720,22 +720,16 @@
 			var odata = DataTable.ext.oConditions.odata;
 			var todata = new Array();
 			var tmpdata = new Array();
-			var afilter = new Array();
+			var afilter = [];
 			if(haddata) {
 				tmpdata = tmpdata.concat(haddata);
 			}
 			for(var i in adata) {
 				if(odata[adata[i]]["isUsed"] != 'n') {	//'y'和'a'两种条件
-					if(odata[adata[i]]["col"]) {
-						var account = odata[adata[i]]["data"];
-						if(account != "all") {
-							for(var j in account) {
-								var tmp = {"str": account[j], "col": odata[adata[i]]["col"]};
-								afilter.push(tmp);
-							}
-						}
-					} else 
+					if(odata[adata[i]]["data"])
 						tmpdata = tmpdata.concat(odata[adata[i]]["data"]);
+					else
+						afilter = odata[adata[i]]["cond"];
 				}
 			}
 			if(andor === "and") {
@@ -802,8 +796,11 @@
 				if(toData.hasOwnProperty(condName)) {	//账户的数据
 					if(!dataType["FstCol"])
 						return false;
-					toData[condName]["data"] = Data;
-					toData[condName]["col"] = dataType["FstCol"];
+					toData[condName]["cond"] = [];
+					for(var i in Data) {
+						var tmp = {"str": Data[i], "col": dataType["FstCol"]};
+						toData[condName]["cond"].push(tmp);
+					}
 					toData[condName]["isUsed"] = 'y';
 				} else if (condName === "类型") {
 					for(var i in Data) {
@@ -824,19 +821,19 @@
 					var aFstData = Data["firstData"];
 					var str = "";
 					toData[condName]["data"] = [];
+					toData[condName]["cond"] = {"one": [], "two": []};
 					for(var i in aFstData) {
-						if(aFstData[i].hasOwnProperty("IsNoCld") && aFstData[i]["IsNoCld"] === "y") {
-							if(!_fnSaveConditions(condName, i, dataType["SecCol"]))
-								return false;
-						} else if(aFstData[i].hasOwnProperty("IsAll") && aFstData[i]["IsAll"] === "y") {
-							if(!_fnSaveConditions(condName, i, dataType["FstCol"]))
-								return false;
-						} else {
+						if(aFstData[i].hasOwnProperty("IsNoCld") && aFstData[i]["IsNoCld"] === "y")
+							toData[condName]["cond"]["one"].push([i, dataType["SecCol"]]);
+						else if(aFstData[i].hasOwnProperty("IsAll") && aFstData[i]["IsAll"] === "y")
+							toData[condName]["cond"]["one"].push([i, dataType["FstCol"]]);
+						else {
 							var aThrData = aFstData[i]["aData"];
-							if(!_fnSaveConditions(condName, i, dataType["FstCol"], aThrData, dataType["SecCol"]))
-								return false;
+							toData[condName]["cond"]["two"].push([i, dataType["FstCol"], aThrData, dataType["SecCol"]]);
 						}
 					}
+					if(!_fnSaveConditions(condName))
+						return false;
 				}
 			}
 			_fnSortConditions();
@@ -862,7 +859,7 @@
 				}
 			} else if(sType === "all") {
 				for(var i in oData) {
-					oData[i]["col"] = '';
+					oData[i]["cond"] = [];
 					oData[i]["isUsed"] = 'n';
 					oData[i]["data"]  = [];
 				}
@@ -870,9 +867,11 @@
 			} else {
 				if(oData[sType]["isUsed"] === 'y') {
 					oData[sType]["isUsed"] = 'n';
-					oData[sType]["data"]  = [];
-					if(oData[sType]["col"] === "")
+					oData[sType]["cond"]  = [];
+					if(oData[sType]["data"]) {
+						oData[sType]["data"]  = [];
 						DataTable.ext.oConditions.iCount--;
+					}
 				}
 			}
 			
