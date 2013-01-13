@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-12
+ *    Last Updated: 2013-01-13
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -20,12 +20,13 @@
 				//整合表格数据
 				_fnInitData();
 			} else {
-				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajData"], function(data) {
-								if( _fnAjaxSaveData(data) ){
-									_fnInitTheadSort();
-									_fnDefaultOut();
-								};
-							});
+				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajParam"],
+					function(data) {
+						if( _fnAjaxSaveData(data) ){
+							_fnInitTheadSort();
+							_fnDefaultOut();
+						};
+				});
 			}
 			
 			return ;
@@ -130,12 +131,27 @@
 			return true;
 		}
 		
+		function _fnAjaxSetParam(sParam){
+			if(DataTable.ext.optdata["ajParam"] === sParam)
+				return true;
+			DataTable.ext.optdata["ajParam"] = sParam;
+
+			$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajParam"],
+				function(data) {
+					if( _fnAjaxSaveData(data) ){
+						_fnInitTheadSort();
+						_fnDefaultOut();
+					};
+				});
+			return true;
+		}
+		
 		/**
 		 * 存储ajax数据
 		 *  @returns boolean
 		 */
-		function _fnAjaxSaveData(aj_data) {
-			var oReceive = $.parseJSON(aj_data);
+		function _fnAjaxSaveData(ajaxdata) {
+			var oReceive = $.parseJSON(ajaxdata);
 			if(oReceive["state"] == "error") {
 				_fnLog( null, 0, oReceive["errinfo"]);
 				return false;
@@ -894,6 +910,7 @@
 			"_fnExtend"             : _fnExtend,
 			"_fntransition"         : _fntransition,
 			"_fnInitData"           : _fnInitData,
+			"fnAjaxSetParam"        : _fnAjaxSetParam,
 			"_fnAjaxSaveData"       : _fnAjaxSaveData,
 			"_fnSaveData"           : _fnSaveData,
 			"_fnSetDataDate"        : _fnSetDataDate,
@@ -972,7 +989,7 @@
 	 * @CountRows   : 按照时间进行统计，对象包括3个数据
 	 *                {iOrderByTime: 时间所在列, iOrderByType: 统计时的类型, iOrderByTotal: 统计时的数据, trClass: 统计行的css类, tdCount: 合并的td个数}
 	 * @Ajax        : ajax的地址
-	 * @ajData      : ajax传送的数据
+	 * @ajParam      : ajax传送的参数
 	 */
 	DataTable.defaults = {
 		"SortColumns" : {"Cols":null, "defCol":null},
@@ -980,7 +997,7 @@
 		"SearchWidget": {},
 		"CountRows"   : {},
 		"Ajax"        : null,
-		"ajData"	  : null
+		"ajParam"	  : null
 	};
 	
 	$.fn.DataTable = DataTable;
@@ -996,6 +1013,6 @@ jQuery(document).ready(function($) {
 		"SearchWidget": {"SearchCol": 5, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
 		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist",
-		"ajData"	  : $("#tb_time1").attr("data")
+		"ajParam"	  : $("#tb_time1").attr("data")
 	});
 });
