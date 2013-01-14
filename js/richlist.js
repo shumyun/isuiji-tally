@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-12
+ *    Last Updated: 2013-01-14
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -54,26 +54,44 @@ jQuery(document).ready(function($) {
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
 		$("#tb_time1").html(display_month).attr("tab_time", "undo").attr("title", "");
+		var ajaxparam = "bTime=" + parseInt(display_year) + "-" + parseInt(display_month) + "-1&eTime=-";
+		if(ajaxparam != $("#tb_time1").attr("data")) {
+			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
+			$("#tb_time1").attr("data", ajaxparam);
+		}
 	});
 	$("#time1_last").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
-		var tmp_m = 0;
+		var tmp_m = 0, ajaxparam;
 		if((tmp_m = parseInt(display_month)-1) == 0){
 			var tmp = parseInt(display_year) - 1;
 			$("#a_popmenu").html(tmp+"年");
 			$("#tb_time1").html("12月份").attr("tab_time", "use").attr("title", "关闭");
+			ajaxparam = "bTime=" + tmp + "-12-1&eTime=" + tmp + "-12-31";
 		} else {
 			$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
 			//$("#a_popmenu").html();
-			$("#tb_time1").html(display_year+tmp_m+"月份").attr("ac_tab", "use").attr("title", "关闭");
+			$("#tb_time1").html(+tmp_m+"月份").attr("ac_tab", "use").attr("title", "关闭");
+			var tmp_y = parseInt(display_year);
+			var day = new Date(tmp_y,tmp_m,0);
+			ajaxparam = "bTime="+tmp_y+"-"+tmp_m+"-1&eTime="+tmp_y+"-"+tmp_m+"-"+day.getDate();
 		};
+		if(ajaxparam != $("#tb_time1").attr("data")) {
+			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
+			$("#tb_time1").attr("data", ajaxparam);
+		}
 	});
 	$("#time1_y").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
 		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
 		$("#tb_time1").html(display_year+"全年").attr("tab_time", "use").attr("title", "关闭");
+		var ajaxparam = "bTime="+parseInt(display_year)+"-1-1&eTime="+parseInt(display_year)+"-12-31";
+		if(ajaxparam != $("#tb_time1").attr("data")) {
+			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
+			$("#tb_time1").attr("data", ajaxparam);
+		}
 	});
 	$("#time1_year").click(function(){
 		hiden_time1 = false;
@@ -122,7 +140,10 @@ jQuery(document).ready(function($) {
 		if($(this).attr("tab_time") == "use"){
 			$(this).attr("style", "");
 			$("#a_popmenu").html(display_year);
-			$("#tb_time1").html(display_month).attr("tab_time", "undo").attr("title", "");
+			$(this).html(display_month).attr("tab_time", "undo").attr("title", "");
+			var ajaxparam = "bTime=" + parseInt(display_year) + "-" + parseInt(display_month) + "-1&eTime=-";
+			if(ajaxparam != $(this).attr("data"))
+				$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
 		}
 	});
 	
@@ -522,17 +543,22 @@ jQuery(document).ready(function($) {
 		cur_popbtn = cur_pop = null;
 		if(!bdate && !edate) return;
 		
-		var str; 
+		var str, ajaxparam; 
 		if(!bdate){
 			str = "<strong>~</strong> — " + dateFormat(edate, ".");
+			ajaxparam = "bTime=-&eTime=" + dateFormat(edate, "-");
 		} else if(!edate) {
 			str = dateFormat(bdate, ".") + " — <strong>~</strong>";
+			ajaxparam = "bTime=" + dateFormat(bdate, "-") + "&eTime=-";
 		} else {
 			str = dateFormat(bdate, ".") + " — " + dateFormat(edate, ".");
+			ajaxparam = "bTime=" + dateFormat(bdate, "-") + "&eTime=" + dateFormat(edate, "-");
 		}
 		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
-		$("#tb_time1").html(str).attr("ac_tab", "use").attr("title", "关闭");
-
+		if(ajaxparam != $("#tb_time1").attr("data")) {
+			$("#tb_time1").html(str).attr("tab_time", "use").attr("title", "关闭").attr("data", ajaxparam);
+			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
+		}
 	});
 	
 	/**

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-13
+ *    Last Updated: 2013-01-14
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -139,8 +139,8 @@
 			$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajParam"],
 				function(data) {
 					if( _fnAjaxSaveData(data) ) {
-						_fnInitTheadSort();
-						_fnDefaultOut();
+						_fnAgainSaveCond();
+						_fnAgainOut();
 					};
 				});
 			return true;
@@ -176,13 +176,13 @@
 					var oData = aData[i];
 					if((tmpTime = _fntransition(oData[1], "date")) === false)
 						return false;
+					tmpdate.setTime(tmpTime);
+					var nMonth = parseInt(tmpdate.getMonth()) + 1;
 					if( !aDate.hasOwnProperty(tmpTime) ) {
 						aDate[tmpTime] = {"oType": {}, "adata": null, "iSumCols": 0, "trWidget": null};
 						aDate[tmpTime]["oType"][oname] = {"sum": 0, "count": 0};
 						aDate[tmpTime]["adata"] = new Array();
 						aDate["sortday"].push(tmpTime);
-						tmpdate.setTime(tmpTime);
-						var nMonth = parseInt(tmpdate.getMonth()) + 1;
 						//每日合计显示
 						aDate[tmpTime]["trWidget"] = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
 	  													<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">\
@@ -208,18 +208,24 @@
 								+'</td><td class="td_left">-</td></tr>')
 								.hover(
 									function () {
-										if($(this).children(":eq(0)").html() == "") {
-											$('<a style="color:#f00">删除</a><span class="pipe">|</span><a style="color:#f00">修改</a>')
-											.appendTo($(this).children(":eq(0)"));
-										} else {
-											$('<span>&nbsp;<a style="color:#f00">删除</a>&nbsp;<a style="color:#f00">修改</a></span>')
-											.appendTo($(this).children(":eq(0)"));
-										}
-									}, 
+										$(this).children(":eq(0)")
+										.html($('<a style="color:#f00">删除</a><span class="pipe">|</span><a style="color:#f00">修改</a>'));
+										//.appendTo();
+									},
 									function () {
-										$(this).children(":eq(0)").children("span, a").remove();
+										if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
+											var date=new Date($(this).children(":eq(0)").attr("date"));
+											var month = parseInt(date.getMonth()) + 1;
+											var idate = parseInt(date.getDate());
+											$(this).children(":eq(0)")
+													.html(date.getFullYear()+"."
+															+(month<10 ? ("0"+month):month)+"."
+															+(idate<10 ? ("0"+idate):idate));
+										} else
+											$(this).children(":eq(0)").html("");
 									}
 								);
+					oCol.children(":eq(0)").attr("title", tmpdate.getFullYear()+"年"+nMonth+"月"+tmpdate.getDate()+"日");
 					if((tmpval = _fntransition(oData[4], "numerical")) === false)
 						return false;
 					oType[oname]["sum"] += tmpval;
@@ -611,6 +617,7 @@
 							$(aData[y]).show();
 						}
 					}
+					DataTable.DataCols["aSort"]["OutType"] = "DateData";
 					break;
 					
 				default:
@@ -620,11 +627,36 @@
 							$(aOutData[x]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
 						else
 							$(aOutData[x]).addClass(DataTable.DataCols.TrClass["cClass"][x%2]);
-						aOutData[x].children(":eq(0)").html(aOutData[x].children(":eq(0)").attr("date").slice(2));
+						var date=new Date(aOutData[x].children(":eq(0)").attr("date"));
+						var month = parseInt(date.getMonth()) + 1;
+						var idate = parseInt(date.getDate());
+						aOutData[x].children(":eq(0)")
+									.html(date.getFullYear()+"."
+											+(month<10 ? ("0"+month):month)+"."
+											+(idate<10 ? ("0"+idate):idate));
 						othis.append(aOutData[x]);
 						$(aOutData[x]).show();
 					}
+					DataTable.DataCols["aSort"]["OutType"] = "SortData";
 					break;
+			}
+			return true;
+		}
+		
+		
+		/**
+		 * 新数据按旧排序显示
+		 * @returns {Boolean}
+		 */
+		function _fnAgainOut() {
+			var aSort = DataTable.DataCols["aSort"];
+			aSort["sortby"] = (aSort["sortby"]==="asc" ? "desc":"asc");
+			var Cols = DataTable.ext.optdata.SortColumns.Cols;
+			for(var i in Cols){
+				if(Cols[i][0] === aSort.sortID) {
+					_fnSort(aSort.sortID, Cols[i][1]);
+					break;
+				}
 			}
 			return true;
 		}
@@ -669,7 +701,7 @@
 						  "借入": {"data": null, "cond":"", "isUsed": 'n'}, "借出": {"data": null, "cond":"", "isUsed": 'n'},
 						  "还债": {"data": null, "cond":"", "isUsed": 'n'}, "收债": {"data": null, "cond":"", "isUsed": 'n'},
 						  "转账": {"data": null, "cond":"", "isUsed": 'n'},
-						  "账户": {"data": null, "cond":"", "isUsed": 'n'}, "借贷账户": {"data": null, "cond":"", "isUsed": 'n'}},
+						  "账户": {"cond":"", "isUsed": 'n'}, "借贷账户": {"cond":"", "isUsed": 'n'}},
 				"iCount": 0};
 		}
 		
@@ -679,33 +711,64 @@
 		 * @returns {Boolean}
 		 */
 		function _fnSaveConditions(sName) {
-			var beData = DataTable.DataCols["Data"][sName];
-			var aConditions = DataTable.ext.oConditions.odata[sName]["cond"];
-			DataTable.ext.oConditions.odata[sName]["data"] = [];
+			
 			var toData = new Array();
-			var tmpData = new Array();
-			for(var i in aConditions.one) {
-				for(var j in beData) {
-					if(beData[j].children(":eq("+aConditions.one[i][1]+")").html() === aConditions.one[i][0])
-						toData.push(beData[j]);
+			
+			if(DataTable.DataCols["Data"].hasOwnProperty(sName)) {
+				var beData = DataTable.DataCols["Data"][sName];
+				var aConditions = DataTable.ext.oConditions.odata[sName]["cond"];
+				DataTable.ext.oConditions.odata[sName]["data"] = [];
+				var tmpData = new Array();
+				for(var i in aConditions.one) {
+					for(var j in beData) {
+						if(beData[j].children(":eq("+aConditions.one[i][1]+")").html() === aConditions.one[i][0])
+							toData.push(beData[j]);
+					}
 				}
-			}
-			for(var i in aConditions.two) {
-				for(var j in beData) {
-					if(beData[j].children(":eq("+aConditions.two[i][1]+")").html() === aConditions.two[i][0])
-						tmpData.push(beData[j]);
-				}
-				for(var j in aConditions.two[i][2]) {
-					for(var z in tmpData) {
-						if(tmpData[z].children(":eq("+aConditions.two[i][3]+")").html() === aConditions.two[i][2][j])
-							toData.push(tmpData[z]);
+				for(var i in aConditions.two) {
+					for(var j in beData) {
+						if(beData[j].children(":eq("+aConditions.two[i][1]+")").html() === aConditions.two[i][0])
+							tmpData.push(beData[j]);
+					}
+					for(var j in aConditions.two[i][2]) {
+						for(var z in tmpData) {
+							if(tmpData[z].children(":eq("+aConditions.two[i][3]+")").html() === aConditions.two[i][2][j])
+								toData.push(tmpData[z]);
+						}
 					}
 				}
 			}
+			
 			DataTable.ext.oConditions.odata[sName]["data"] = toData;
 			if(DataTable.ext.oConditions.odata[sName]["isUsed"] === 'n')
 				DataTable.ext.oConditions.iCount++;
 			DataTable.ext.oConditions.odata[sName]["isUsed"] = 'y';	//有可能是'a'条件
+			return true;
+		}
+		
+		/**
+		 * 获取新数据后，按旧条件选择数据
+		 * @returns {Boolean}
+		 */
+		function _fnAgainSaveCond(){
+			var odata = DataTable.ext.oConditions.odata;
+			for(var i in odata) {
+				if(odata[i]["isUsed"] == 'a' && DataTable.DataCols["Data"].hasOwnProperty(i))
+					odata[i]["data"] = DataTable.DataCols["Data"][i];
+				else if(odata[i]["isUsed"] == 'y') {
+					if(odata[i].hasOwnProperty("data")) {
+						if(DataTable.DataCols["Data"].hasOwnProperty(i)) {
+							if(odata[i]["cond"] == false)
+								odata[i]["data"] = DataTable.DataCols["Data"][i];
+							else {
+								if(!_fnSaveConditions(i))
+									return false;
+							}
+						}
+					}
+				}
+			}
+			_fnSortConditions();
 			return true;
 		}
 		
@@ -728,7 +791,7 @@
 				if(odata[adata[i]]["isUsed"] != 'n') {	//'y'和'a'两种条件
 					if(odata[adata[i]]["data"])
 						tmpdata = tmpdata.concat(odata[adata[i]]["data"]);
-					else
+					else if(typeof DataTable.DataCols["Data"][i] == "undefined")
 						afilter = odata[adata[i]]["cond"];
 				}
 			}
@@ -765,14 +828,7 @@
 			var aSort = DataTable.DataCols["aSort"];
 			aSort["sortData"] = tmpdata;
 			_fnSetDataDate(tmpdata);
-			aSort["sortby"] = (aSort["sortby"]==="asc" ? "desc":"asc");
-			var Cols = DataTable.ext.optdata.SortColumns.Cols;
-			for(var i in Cols){
-				if(Cols[i][0] === aSort.sortID) {
-					_fnSort(aSort.sortID, Cols[i][1]);
-					break;
-				}
-			}
+			_fnAgainOut();
 		}
 		
 		/**
@@ -792,31 +848,32 @@
 				return false;
 			
 			var condName = dataType["condName"];
-			if(!DataTable.DataCols["Data"].hasOwnProperty(condName)) {	//账户和类别的数据
-				if(toData.hasOwnProperty(condName)) {	//账户的数据
-					if(!dataType["FstCol"])
-						return false;
-					toData[condName]["cond"] = [];
-					for(var i in Data) {
-						var tmp = {"str": Data[i], "col": dataType["FstCol"]};
-						toData[condName]["cond"].push(tmp);
-					}
-					toData[condName]["isUsed"] = 'y';
-				} else if (condName === "类型") {
-					for(var i in Data) {
-						if(toData[Data[i]]["isUsed"] === 'n' && DataTable.DataCols["Data"].hasOwnProperty(Data[i])) {
+			if(condName === "类型") {
+				for(var i in Data) {
+					if(toData[Data[i]]["isUsed"] === 'n') {
+						if(DataTable.DataCols["Data"].hasOwnProperty(Data[i]))
 							toData[Data[i]]["data"] = DataTable.DataCols["Data"][Data[i]];
-							toData[Data[i]]["isUsed"] = 'a';
-							DataTable.ext.oConditions.iCount++;
-						}
+						toData[Data[i]]["isUsed"] = 'a';
+						DataTable.ext.oConditions.iCount++;
 					}
-				} else {return false;}
+				}
+			} else if (!toData[condName].hasOwnProperty("data")) {
+				if(!dataType["FstCol"])
+					return false;
+				toData[condName]["cond"] = [];
+				for(var i in Data) {
+					var tmp = {"str": Data[i], "col": dataType["FstCol"]};
+					toData[condName]["cond"].push(tmp);
+				}
+				toData[condName]["isUsed"] = 'y';
 			} else {
 				if(Data.hasOwnProperty("IsAll") && Data["IsAll"] === "y") {
-					toData[condName]["data"] = DataTable.DataCols["Data"][condName];
+					if(DataTable.DataCols["Data"].hasOwnProperty(condName))
+						toData[condName]["data"] = DataTable.DataCols["Data"][condName];
 					if(toData[condName]["isUsed"] === 'n')
 						DataTable.ext.oConditions.iCount++;
 					toData[condName]["isUsed"] = 'y';	//有可能会是'a'的条件
+					toData[condName]["cond"] = [];
 				} else {
 					var aFstData = Data["firstData"];
 					var str = "";
@@ -861,14 +918,15 @@
 				for(var i in oData) {
 					oData[i]["cond"] = [];
 					oData[i]["isUsed"] = 'n';
-					oData[i]["data"]  = [];
+					if(oData[i].hasOwnProperty("data"))
+						oData[i]["data"]  = [];
 				}
 				oData.iCount = 0;
 			} else {
 				if(oData[sType]["isUsed"] === 'y') {
 					oData[sType]["isUsed"] = 'n';
 					oData[sType]["cond"]  = [];
-					if(oData[sType]["data"]) {
+					if(oData[sType].hasOwnProperty("data") && oData[sType]["data"]) {
 						oData[sType]["data"]  = [];
 						DataTable.ext.oConditions.iCount--;
 					}
@@ -891,14 +949,8 @@
 			var aSort = DataTable.DataCols["aSort"];
 			aSort["sortData"] = tmpdata;
 			_fnSetDataDate(tmpdata);
-			aSort["sortby"] = (aSort["sortby"]==="asc" ? "desc":"asc");
-			var Cols = DataTable.ext.optdata.SortColumns.Cols;
-			for(var i in Cols){
-				if(Cols[i][0] === aSort.sortID) {
-					_fnSort(aSort.sortID, Cols[i][1]);
-					break;
-				}
-			}
+			
+			_fnAgainOut();
 			
 			return true;
 		}
@@ -921,9 +973,11 @@
 			"_fnSortString"         : _fnSortString,
 			"_fnSortNumerical"      : _fnSortNumerical,
 			"_fnOut"                : _fnOut,
+			"_fnAgainOut"           : _fnAgainOut,
 			"fnDefaultOut"          : _fnDefaultOut,
 			"_fnInitConditions"     : _fnInitConditions,
 			"_fnSaveConditions"     : _fnSaveConditions,
+			"_fnAgainSaveCond"      : _fnAgainSaveCond,
 			"_fnCondStepSort"       : _fnCondStepSort,
 			"_fnSortConditions"     : _fnSortConditions,
 			"fnSetConditions"       : _fnSetConditions,
@@ -955,7 +1009,8 @@
 	 * @Data    : { "类型名字": [该类型的行数据组] }
 	 * @aSort   : { doing  < 'n' or 'y' 默认为 y ,防止无数据及排序 >
 	 * 				sortID <列数从零开始>
-	 * 				sortby <"asc" or "desc"> 
+	 * 				sortby <"asc" or "desc">
+	 *				OutType <"SortData" or "DateData">
 	 *              sortData <需要输出的数据>
 	 * 			  }
 	 * @TrClass : { cClass: 隔行的CSS类[单行的css, 双行的css]
@@ -966,7 +1021,7 @@
 	DataTable.DataCols = {
 		"aDate"     : {},
 		"Data"      : {},
-		"aSort"     : {"doing": "y", "sortID": null, "sortby": null, "sortData": null},
+		"aSort"     : {"doing": "y", "sortID": null, "sortby": null, "OutType":null, "sortData": null},
 		"TrClass"   : {"cClass": [null, "notrans_td"], "hClass": "notrans_td"},
 		"aClassData": {},
 		"CountCols" : 0

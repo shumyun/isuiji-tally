@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-07
+ *    Last Updated: 2013-01-14
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -14,15 +14,29 @@ if(!defined('IN_DISCUZ')) {
 
 define('NOROBOT', TRUE);
 
-if (!isset($_POST['bTime']) || !($bTime = strtotime($_POST['bTime'])))
-	$bTime = 0;
-
-if (!isset($_POST['eTime']) || !($eTime = strtotime($_POST['eTime'])))
-	$eTime = 0;
-
-if ($eTime < $bTime) {
-	echo '{"state":"error", "errinfo":"开始时间应该大于结束时间"}';
+if (!isset($_POST['bTime']) || ($_POST['bTime']!='-' && !($bTime = strtotime($_POST['bTime'])))) {
+	echo '{"state":"error", "errinfo":"开始时间错误"}';
 	return ;
+}
+
+if (!isset($_POST['eTime']) || ($_POST['eTime']!='-' && !($eTime = strtotime($_POST['eTime'])))) {
+	echo '{"state":"error", "errinfo":"结束时间错误"}';
+	return ;
+}
+
+if ($_POST['bTime']=='-' && $_POST['eTime']=='-') {
+	echo '{"state":"error", "errinfo":"时间错误"}';
+	return ;
+} else if ($_POST['bTime']=='-') {
+	$sTime = "datatime <= ".$eTime;
+} else if ($_POST['eTime']=='-') {
+	$sTime = "datatime >= ".$bTime;
+} else {
+	if ($eTime < $bTime) {
+		echo '{"state":"error", "errinfo":"开始时间应该大于结束时间"}';
+		return ;
+	}
+	$sTime = "datatime >= ".$bTime." AND datatime <= ".$eTime;
 }
 
 $outjson = '{"state":"ok"';
@@ -33,7 +47,7 @@ $oTable = "";
  * 获取支出类型的数据
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_paydata').
-		" WHERE uid='$_G[uid]' AND datatime >= ".$bTime." AND datatime <= ".$eTime);
+		" WHERE uid='$_G[uid]' AND ".$sTime);
 
 $datatmp = '';
 $data['pay'] = '';
@@ -55,7 +69,7 @@ if($data['pay'])
  * 获取收入类型的数据
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_earndata').
-     " WHERE uid='$_G[uid]' AND datatime >= ".$bTime." AND datatime <= ".$eTime);
+     " WHERE uid='$_G[uid]' AND ".$sTime);
 
 $datatmp = '';
 $data['earn'] = '';
@@ -77,7 +91,7 @@ if($data['earn'])
  * 获取转账类型的数据
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_transfer').
-		" WHERE uid='$_G[uid]' AND datatime >= ".$bTime." AND datatime <= ".$eTime);
+		" WHERE uid='$_G[uid]' AND ".$sTime);
 
 $datatmp = '';
 $data['transfer'] = '';
@@ -99,7 +113,7 @@ if($data['transfer'])
  * 获取借贷类型的数据
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_loandebt').
-		" WHERE uid='$_G[uid]' AND datatime >= ".$bTime." AND datatime <= ".$eTime);
+		" WHERE uid='$_G[uid]' AND ".$sTime);
 
 $datastr = array('', '', '', '', '');
 $datatmp = '';
