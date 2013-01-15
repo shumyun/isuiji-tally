@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-14
+ *    Last Updated: 2013-01-15
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -13,12 +13,13 @@
 			//初始化数据
 			$.extend(true, DataTable.ext, {"oTable": othis});
 			DataTable.ext.optdata = _fnExtend( $.extend(true, {}, DataTable.defaults), odata );
+			
 			_fnInitConditions();
-			//判断数据来源
-			//if( $.isEmptyObject(DataTable.ext.optdata["Ajax"])) {
+			
+			_InitPages();
+			
 			if( DataTable.ext.optdata["Ajax"] === null) {
-				//整合表格数据
-				_fnInitData();
+				return ;
 			} else {
 				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajParam"],
 					function(data) {
@@ -200,12 +201,12 @@
 					}
 					var oCol = $('<tr id="'+ oData[0]
 								+'"><td date="'+ oData[1] +'" class="td_left"></td>'
-								+'<td class="td_rsecond">'+ oData[2]
-								+'</td><td class="td_lfirst">'+ oData[3]
-								+'</td><td class="td_right">'+ oData[4]
-								+'</td><td class="td_center">'+ oData[5]
-								+'</td><td class="td_center">'+ oname
-								+'</td><td class="td_left">-</td></tr>')
+								+'<td class="td_rsecond td_linehide" title="'+oData[2]+'">'+ oData[2]
+								+'</td><td class="td_lfirst td_linehide" title="'+oData[3]+'">'+ oData[3]
+								+'</td><td class="td_right" title="'+oData[4]+'">'+ oData[4]
+								+'</td><td class="td_center td_linehide" title="'+oData[5]+'">'+ oData[5]
+								+'</td><td class="td_center td_linehide" title="'+oname+'">'+ oname
+								+'</td><td class="td_left td_linehide" title="'+'-'+'">-</td></tr>')
 								.hover(
 									function () {
 										$(this).children(":eq(0)")
@@ -955,6 +956,16 @@
 			return true;
 		}
 		
+		function _InitPages() {
+			if(!DataTable.ext.optdata.pagedivId)
+				return true;
+			divId = DataTable.ext.optdata.pagedivId;
+			$("#"+divId).hide();
+			DataTable.ext.oPages["idayPages"] = 0;
+			DataTable.ext.oPages["iPages"] = 0;
+			return true;
+		}
+		
 		this.oApi = {
 			"fnInit"                : _fnInit,
 			"_fnLog"                : _fnLog,
@@ -981,7 +992,8 @@
 			"_fnCondStepSort"       : _fnCondStepSort,
 			"_fnSortConditions"     : _fnSortConditions,
 			"fnSetConditions"       : _fnSetConditions,
-			"fnDelConditions"       : _fnDelConditions
+			"fnDelConditions"       : _fnDelConditions,
+			"_InitPages"            : _InitPages
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );
@@ -1016,7 +1028,7 @@
 	 * @TrClass : { cClass: 隔行的CSS类[单行的css, 双行的css]
 	 * 			    hClass: hover时CSS类
 	 * 			  }
-	 * @CountCols : 分页的数据
+	 * @PageCols : 每页的数据量
 	 */
 	DataTable.DataCols = {
 		"aDate"     : {},
@@ -1024,14 +1036,15 @@
 		"aSort"     : {"doing": "y", "sortID": null, "sortby": null, "OutType":null, "sortData": null},
 		"TrClass"   : {"cClass": [null, "notrans_td"], "hClass": "notrans_td"},
 		"aClassData": {},
-		"CountCols" : 0
+		"PageCols"  : 0
 	};
 	
 	DataTable.ext = {
-		"sErrMode": "alert",
-		"optdata" : {},
-		"oApi"    : {},
-		"oConditions": {}
+		"sErrMode"    : "alert",
+		"optdata"     : {},
+		"oApi"        : {},
+		"oConditions" : {},
+		"oPages"      : {}
 	};
 	
 	/**
@@ -1043,7 +1056,8 @@
 	 * @CountRows   : 按照时间进行统计，对象包括3个数据
 	 *                {iOrderByTime: 时间所在列, iOrderByType: 统计时的类型, iOrderByTotal: 统计时的数据, trClass: 统计行的css类, tdCount: 合并的td个数}
 	 * @Ajax        : ajax的地址
-	 * @ajParam      : ajax传送的参数
+	 * @ajParam     : ajax传送的参数
+	 * @pagedivId   : pageDIV的ID号
 	 */
 	DataTable.defaults = {
 		"SortColumns" : {"Cols":null, "defCol":null},
@@ -1051,7 +1065,8 @@
 		"SearchWidget": {},
 		"CountRows"   : {},
 		"Ajax"        : null,
-		"ajParam"	  : null
+		"ajParam"	  : null,
+		"pagedivId"   : null
 	};
 	
 	$.fn.DataTable = DataTable;
@@ -1067,6 +1082,7 @@ jQuery(document).ready(function($) {
 		"SearchWidget": {"SearchCol": 5, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
 		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist",
-		"ajParam"	  : $("#tb_time1").attr("data")
+		"ajParam"	  : $("#tb_time1").attr("data"),
+		"pagedivId"   : "tb_page"
 	});
 });
