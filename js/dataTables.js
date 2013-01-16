@@ -16,7 +16,7 @@
 			
 			_fnInitConditions();
 			
-			_InitPages();
+			_fnInitPages();
 			
 			if( DataTable.ext.optdata["Ajax"] === null) {
 				return ;
@@ -559,81 +559,17 @@
 		 * @returns {boolean}
 		 */
 		function _fnOut(type) {
-			var othis = DataTable.ext.oTable;
-			othis = $("tbody", othis);
-			othis.children().hide();
 			switch(type) {
 				case "date":
-					var aOutData = DataTable.DataCols["aDate"];
-					for (var x = 0; x < aOutData["sortday"].length; x++) {
-						var tmpDate = aOutData["sortday"][x];
-						var aData = aOutData[tmpDate]["adata"];
-						var OutType = aOutData[tmpDate]["oType"];
-						var str = "", otherSum = 0, otherStr = "";
-						
-						$("td>ul", aOutData[tmpDate]["trWidget"]).children().remove(".ac_datefloat");
-						
-						for (var i in OutType) {
-							switch(i) {
-								case '收入':
-									str += '<strong style="padding-right: 15px;">'+i+'：';
-									str += '<font color="green">+'+OutType[i].sum.toFixed(2).toString()+'</font>';
-									str += '（'+OutType[i].count+'条记录）</strong>';
-									break;
-						
-								case '支出':
-									str += '<strong style="padding-right: 15px;">'+i+'：';
-									str += '<font color="red">-'+OutType[i].sum.toFixed(2).toString()+'</font>';
-									str += '（'+OutType[i].count+'条记录）</strong>';
-									break;
-						
-								default:
-									otherSum += OutType[i].count;
-									otherStr += '\n'+i+'：'+OutType[i].count+'条记录';
-									break;
-							}
-						}
-						
-						if(otherSum && otherStr) {
-							otherStr = '其中包括：'+otherStr;
-							str += '<strong style="padding-right: 15px; cursor: default;" title="'+otherStr+
-											'">其它：（'+otherSum+'条记录）</strong>';
-						}
-						
-						$("td>ul", aOutData[tmpDate]["trWidget"]).append($('<li class="ac_datefloat">'+ str +'</li>'));
-						othis.append(aOutData[tmpDate]["trWidget"]);
-						aOutData[tmpDate]["trWidget"].show();
-						for (var y=0; y<aData.length; y++) {
-							if( !(y%2) && $(aData[y]).hasClass(DataTable.DataCols.TrClass["cClass"][1]) )
-								$(aData[y]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
-							else
-								$(aData[y]).addClass(DataTable.DataCols.TrClass["cClass"][y%2]);
-							aData[y].children(":eq(0)").html("");
-							othis.append(aData[y]);
-							$(aData[y]).show();
-						}
-					}
-					DataTable.DataCols["aSort"]["OutType"] = "DateData";
+					_fnSetPagesNum("idayPages");
+					_fnPagesOut(1);
+					_fnSetPagesDiv("idayPages");
 					break;
 					
 				default:
-					var aOutData = DataTable.DataCols["aSort"]["sortData"];
-					for (var x = 0; x < aOutData.length; x++) {
-						if( !(x%2) && $(aOutData[x]).hasClass(DataTable.DataCols.TrClass["cClass"][1]) )
-							$(aOutData[x]).removeClass(DataTable.DataCols.TrClass["cClass"][1]);
-						else
-							$(aOutData[x]).addClass(DataTable.DataCols.TrClass["cClass"][x%2]);
-						var date=new Date(aOutData[x].children(":eq(0)").attr("date"));
-						var month = parseInt(date.getMonth()) + 1;
-						var idate = parseInt(date.getDate());
-						aOutData[x].children(":eq(0)")
-									.html(date.getFullYear()+"."
-											+(month<10 ? ("0"+month):month)+"."
-											+(idate<10 ? ("0"+idate):idate));
-						othis.append(aOutData[x]);
-						$(aOutData[x]).show();
-					}
-					DataTable.DataCols["aSort"]["OutType"] = "SortData";
+					_fnSetPagesNum("iPages");
+					_fnPagesOut(1);
+					_fnSetPagesDiv("iPages");
 					break;
 			}
 			return true;
@@ -961,51 +897,6 @@
 			return true;
 		}
 		
-		function _fnSetPagesDiv(PagesType) {
-			oPages = DataTable.ext.oPages;
-			divId = DataTable.ext.optdata.pagedivId;
-			if(DataTable.DataCols == 0 || !divId)
-				return true;
-			$("#"+divId).hide().children().remove();
-			if(DataTable.DataCols.oPages.hasOwnProperty(PagesType)) {
-				iNum = DataTable.DataCols.oPages[PagesType];
-				if (iNum>=2 && iNum<=5) {
-					$('<a class="prev" style="display: none;">上一页</a>').appendTo("#"+divId).chilck(function(){
-						alert($("#"+divId).children("strong").index());
-					});
-					
-					$('<strong>1</strong>').appendTo("#"+divId);
-					
-					for (var i = 2; i <= iNum; i++) {
-						$('<a>'+i+'</a>').appendTo("#"+divId);
-					}
-					
-					$('<label><input name="custompage" class="px" type="text" value="1" title="输入页码，按回车快速跳转" size="2" /><span title="共 '
-							+iNum+' 页"> / '+iNum+' 页</span></label>').appendTo("#"+divId);
-					
-					$('<a class="nxt">下一页</a>').appendTo("#"+divId);
-				} else if ( iNum > 5 ) {
-					$('<a class="prev" style="display: none;">上一页</a>').appendTo("#"+divId).chilck(function(){
-						alert($("#"+divId).children("strong").index());
-					});
-					
-					$('<strong>1</strong>').appendTo("#"+divId);
-					
-					for (var i = 2; i <= 5; i++) {
-						$('<a>'+i+'</a>').appendTo("#"+divId);
-					}
-					
-					$('<a class="last">...'+iNum+'</a>').appendTo("#"+divId);
-					
-					$('<label><input name="custompage" class="px" type="text" value="1" title="输入页码，按回车快速跳转" size="2" /><span title="共 '
-							+iNum+' 页"> / '+iNum+' 页</span></label>').appendTo("#"+divId);
-					
-					$('<a class="nxt">下一页</a>').appendTo("#"+divId);
-				}
-			}
-			$("#"+divId).show();
-		}
-		
 		function _fnSetPagesNum(PagesType) {
 			var oPages = DataTable.ext.oPages;
 			var divId = DataTable.ext.optdata.pagedivId;
@@ -1042,6 +933,46 @@
 			return true;
 		}
 		
+		function _fnSetPagesDiv(PagesType) {
+			oPages = DataTable.ext.oPages;
+			divId = DataTable.ext.optdata.pagedivId;
+			if(DataTable.DataCols == 0 || !divId)
+				return true;
+			$("#"+divId).hide().children().remove();
+			if(oPages.hasOwnProperty(PagesType)) {
+				iNum = oPages[PagesType];
+				if (iNum>=2) {
+					$('<a class="prev">上一页</a>').appendTo("#"+divId).click(function(){
+						alert($("#"+divId).children("strong").index());
+					}).hide();
+
+					$('<a class="first">'+1+'...</a>').appendTo("#"+divId).hide();
+					
+					$('<strong>1</strong>').appendTo("#"+divId);
+					
+					for (var i = 2; i <= iNum; i++) {
+						$('<a>'+i+'</a>').appendTo("#"+divId).click(function(){
+							_fnPagesOut($(this).html());
+							var tmpStrong = $("#"+divId).children("strong");
+							$(this).after('<strong>'+$(this).html()+'</strong>');
+							$(this).insertAfter(tmpStrong).html(tmpStrong.html());
+							tmpStrong.remove();
+						});
+					}
+
+					$('<a class="last">...'+iNum+'</a>').appendTo("#"+divId).hide();
+					
+					$('<label><input name="custompage" class="px" type="text" value="1" title="输入页码，按回车快速跳转" size="2" /><span title="共 '
+							+iNum+' 页"> / '+iNum+' 页</span></label>').appendTo("#"+divId);
+					
+					$('<a class="nxt">下一页</a>').appendTo("#"+divId).hide();
+					
+				}
+			}
+			$("#"+divId).show();
+			return true;
+		}
+		
 		function _fnPagesOut(iNum) {
 			var othis = DataTable.ext.oTable;
 			var oPages = DataTable.ext.oPages;
@@ -1049,8 +980,8 @@
 			othis = $("tbody", othis);
 			othis.children().hide();
 			var x = imax = 0;
-			switch(type) {
-				case "date":
+			switch(oPages.curType) {
+				case "idayPages":
 					var aOutData = DataTable.DataCols["aDate"];
 					if(iPageCols) {
 						x = oPages.adays[iNum-1];
@@ -1168,7 +1099,9 @@
 			"fnSetConditions"       : _fnSetConditions,
 			"fnDelConditions"       : _fnDelConditions,
 			"_fnInitPages"          : _fnInitPages,
-			"_fnSetPagesNum"        : _fnSetPagesNum
+			"_fnSetPagesNum"        : _fnSetPagesNum,
+			"_fnSetPagesDiv"        : _fnSetPagesDiv,
+			"_fnPagesOut"           : _fnPagesOut
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );
@@ -1210,7 +1143,7 @@
 		"aSort"     : {"doing": "y", "sortID": null, "sortby": null, "OutType":null, "sortData": null},
 		"TrClass"   : {"cClass": [null, "notrans_td"], "hClass": "notrans_td"},
 		"aClassData": {},
-		"PageCols"  : 0
+		"PageCols"  : 2
 	};
 	
 	DataTable.ext = {
