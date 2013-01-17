@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-16
+ *    Last Updated: 2013-01-17
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -893,7 +893,7 @@
 			divId = DataTable.ext.optdata.pagedivId;
 			$("#"+divId).hide().children().remove();
 			
-			DataTable.ext.oPages = {"curType": null, "idayPages": 0, "adays":[], "iPages": 0 };
+			DataTable.ext.oPages = {"curType": null, "iPagesCount": 5, "iStart": 0, "iEnd": 0, "idayPages": 0, "adays":[], "iPages": 0 };
 			return true;
 		}
 		
@@ -941,36 +941,65 @@
 			$("#"+divId).hide().children().remove();
 			if(oPages.hasOwnProperty(PagesType)) {
 				iNum = oPages[PagesType];
-				if (iNum>=2) {
-					$('<a class="prev">上一页</a>').appendTo("#"+divId).click(function(){
-						alert($("#"+divId).children("strong").index());
-					}).hide();
+				if(iNum<2)
+					return false;
+				$('<a class="prev">上一页</a>').appendTo("#"+divId).click(function(){
+					_fnPagesOut($("#"+divId).children("strong").html()-1);
+				});
 
-					$('<a class="first">'+1+'...</a>').appendTo("#"+divId).hide();
+				$('<a class="first">'+1+'...</a>').appendTo("#"+divId).click(function(){
+					_fnPagesOut(1);
+				});
 					
-					$('<strong>1</strong>').appendTo("#"+divId);
-					
-					for (var i = 2; i <= iNum; i++) {
-						$('<a>'+i+'</a>').appendTo("#"+divId).click(function(){
-							_fnPagesOut($(this).html());
-							var tmpStrong = $("#"+divId).children("strong");
-							$(this).after('<strong>'+$(this).html()+'</strong>');
-							$(this).insertAfter(tmpStrong).html(tmpStrong.html());
-							tmpStrong.remove();
-						});
-					}
-
-					$('<a class="last">...'+iNum+'</a>').appendTo("#"+divId).hide();
-					
-					$('<label><input name="custompage" class="px" type="text" value="1" title="输入页码，按回车快速跳转" size="2" /><span title="共 '
-							+iNum+' 页"> / '+iNum+' 页</span></label>').appendTo("#"+divId);
-					
-					$('<a class="nxt">下一页</a>').appendTo("#"+divId).hide();
-					
+				$('<strong>1</strong>').appendTo("#"+divId);
+				
+				var itmp = iNum<oPages.iPagesCount ? iNum:oPages.iPagesCount;
+				for (var i = 2; i <= itmp; i++) {
+					$('<a>'+i+'</a>').appendTo("#"+divId).click(function(){
+						_fnPagesOut($(this).html());
+						var tmpStrong = $("#"+divId).children("strong");
+						$(this).after('<strong>'+$(this).html()+'</strong>');
+						$(this).insertAfter(tmpStrong).html(tmpStrong.html());
+						tmpStrong.remove();
+					});
 				}
+				
+				oPages.iStart = 1;
+				oPages.iEnd = itmp;
+				
+				$('<a class="last">...'+iNum+'</a>').appendTo("#"+divId).click(function(){
+					_fnPagesOut(parseInt($(this).html()));
+				});
+				
+				$('<label><input name="custompage" class="px" type="text" value="1" title="输入页码，按回车快速跳转" size="2" /><span title="共 '
+						+iNum+' 页"> / '+iNum+' 页</span></label>').appendTo("#"+divId);
+				
+				$('<a class="nxt">下一页</a>').appendTo("#"+divId).click(function(){
+					_fnPagesOut(parseInt($("#"+divId).children("strong").html())+1);
+				});
 			}
-			$("#"+divId).show();
 			return true;
+		}
+		
+		function _fnChangePagesDiv(iNum) {
+			var oPages = DataTable.ext.oPages;
+			$("#"+divId).hide();
+			if(oPages[oPages.curType]<2)
+				return false;
+			if (iNum === 1) {
+				$("a.Prev").hide();
+				$("a.nxt").show();
+			} else if (iNum === oPages[oPages.curType]) {
+				$("a.Prev").show();
+				$("a.nxt").hide();
+			}
+			
+			if(iNum<=oPages.iStart) {
+			} else {
+			iNum<oPages.iEnd;
+			}
+			
+			$("#"+divId).show();
 		}
 		
 		function _fnPagesOut(iNum) {
@@ -984,6 +1013,7 @@
 				case "idayPages":
 					var aOutData = DataTable.DataCols["aDate"];
 					if(iPageCols) {
+						iNum = iNum>oPages.idayPages ? oPages.idayPages:iNum;
 						x = oPages.adays[iNum-1];
 						imax = oPages.adays[iNum];
 					} else {
@@ -1041,9 +1071,10 @@
 					DataTable.DataCols["aSort"]["OutType"] = "DateData";
 					break;
 					
-				default:
+				case "iPages":
 					var aOutData = DataTable.DataCols["aSort"]["sortData"];
 					if(iPageCols) {
+						iNum = iNum>oPages.iPages ? oPages.iPages:iNum;
 						x = iPageCols*(iNum-1);
 						imax = iPageCols*iNum;
 					} else {
@@ -1067,7 +1098,10 @@
 					}
 					DataTable.DataCols["aSort"]["OutType"] = "SortData";
 					break;
+				default:
+					return false;
 			}
+			_fnChangePagesDiv(iNum);
 			return true;
 		}
 		
@@ -1101,6 +1135,7 @@
 			"_fnInitPages"          : _fnInitPages,
 			"_fnSetPagesNum"        : _fnSetPagesNum,
 			"_fnSetPagesDiv"        : _fnSetPagesDiv,
+			"_fnChangePagesDiv"     : _fnChangePagesDiv,
 			"_fnPagesOut"           : _fnPagesOut
 		};
 		
