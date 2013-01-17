@@ -986,20 +986,30 @@
 			$("#"+divId).hide();
 			if(oPages[oPages.curType]<2)
 				return false;
+			$("a.nxt").show();
+			$("a.Prev").show();
 			if (iNum === 1) {
 				$("a.Prev").hide();
-				$("a.nxt").show();
 			} else if (iNum === oPages[oPages.curType]) {
-				$("a.Prev").show();
 				$("a.nxt").hide();
 			}
 			
-			if(iNum<=oPages.iStart) {
+			if(iNum<=oPages.iStart || iNum>=oPages.iEnd) {
+				$("a.first").hide();
+				$("a.last").hide();
+				var tmp = oPages.iPagesCount/2;
+				if(iNum > tmp+1)
+					$("a.first").show();
+				if(iNum+tmp-(oPages.iPagesCount%2?0:1) < oPages[oPages.curType])
+					$("a.last").show();
+				$("a:not([class])").each(function(){
+				});
 			} else {
-			iNum<oPages.iEnd;
+				
 			}
 			
 			$("#"+divId).show();
+			return true;
 		}
 		
 		function _fnPagesOut(iNum) {
@@ -1101,8 +1111,7 @@
 				default:
 					return false;
 			}
-			_fnChangePagesDiv(iNum);
-			return true;
+			return _fnChangePagesDiv(iNum);
 		}
 		
 		this.oApi = {
