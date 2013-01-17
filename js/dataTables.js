@@ -562,14 +562,14 @@
 			switch(type) {
 				case "date":
 					_fnSetPagesNum("idayPages");
-					_fnPagesOut(1);
 					_fnSetPagesDiv("idayPages");
+					_fnPagesOut(1);
 					break;
 					
 				default:
 					_fnSetPagesNum("iPages");
-					_fnPagesOut(1);
 					_fnSetPagesDiv("iPages");
+					_fnPagesOut(1);
 					break;
 			}
 			return true;
@@ -924,7 +924,7 @@
 					
 				case "iPages":
 					var aOutData = DataTable.DataCols["aSort"]["sortData"];
-					oPages.iPages = aOutData.length/iPageCols + ((aOutData.length%iPageCols)?0:1);
+					oPages.iPages = Math.ceil(aOutData.length/iPageCols);
 					break;
 					
 				default:
@@ -951,16 +951,12 @@
 					_fnPagesOut(1);
 				});
 					
-				$('<strong>1</strong>').appendTo("#"+divId);
+				$('<strong>0</strong>').appendTo("#"+divId);
 				
 				var itmp = iNum<oPages.iPagesCount ? iNum:oPages.iPagesCount;
 				for (var i = 2; i <= itmp; i++) {
-					$('<a>'+i+'</a>').appendTo("#"+divId).click(function(){
+					$('<a name="'+i+'">'+i+'</a>').appendTo("#"+divId).click(function(){
 						_fnPagesOut($(this).html());
-						var tmpStrong = $("#"+divId).children("strong");
-						$(this).after('<strong>'+$(this).html()+'</strong>');
-						$(this).insertAfter(tmpStrong).html(tmpStrong.html());
-						tmpStrong.remove();
 					});
 				}
 				
@@ -968,11 +964,15 @@
 				oPages.iEnd = itmp;
 				
 				$('<a class="last">...'+iNum+'</a>').appendTo("#"+divId).click(function(){
-					_fnPagesOut(parseInt($(this).html()));
+					_fnPagesOut(parseInt($(this).html().slice(3)));
 				});
 				
-				$('<label><input name="custompage" class="px" type="text" value="1" title="输入页码，按回车快速跳转" size="2" /><span title="共 '
+				$('<label><input id="custompage" class="px" type="text" value="1" title="输入页码，按回车快速跳转" size="2" /><span title="共 '
 						+iNum+' 页"> / '+iNum+' 页</span></label>').appendTo("#"+divId);
+				$('#custompage').keypress(function(eventData){
+					if(eventData.keyCode == 13 && parseInt($(this).val()) > 0)
+						_fnPagesOut(parseInt($(this).val()));
+				});
 				
 				$('<a class="nxt">下一页</a>').appendTo("#"+divId).click(function(){
 					_fnPagesOut(parseInt($("#"+divId).children("strong").html())+1);
@@ -983,31 +983,63 @@
 		
 		function _fnChangePagesDiv(iNum) {
 			var oPages = DataTable.ext.oPages;
-			$("#"+divId).hide();
+			$("#"+divId).show();
 			if(oPages[oPages.curType]<2)
 				return false;
-			$("a.nxt").show();
-			$("a.Prev").show();
-			if (iNum === 1) {
-				$("a.Prev").hide();
-			} else if (iNum === oPages[oPages.curType]) {
-				$("a.nxt").hide();
+			var tmpStrong = $("#"+divId).children("strong");
+			if(iNum == tmpStrong.html())
+				return true;
+			$("a.nxt", "#"+divId).show();
+			$("a.prev", "#"+divId).show();
+			if (iNum == 1) {
+				$("a.prev", "#"+divId).hide();
+			} else if (iNum == oPages[oPages.curType]) {
+				$("a.nxt", "#"+divId).hide();
 			}
 			
 			if(iNum<=oPages.iStart || iNum>=oPages.iEnd) {
-				$("a.first").hide();
-				$("a.last").hide();
-				var tmp = oPages.iPagesCount/2;
-				if(iNum > tmp+1)
-					$("a.first").show();
-				if(iNum+tmp-(oPages.iPagesCount%2?0:1) < oPages[oPages.curType])
-					$("a.last").show();
-				$("a:not([class])").each(function(){
-				});
-			} else {
+				$("a.first", "#"+divId).hide();
+				$("a.last", "#"+divId).hide();
+				var tmp = Math.floor(oPages.iPagesCount/2);
 				
+				var iEnd = parseInt(tmp)+parseInt(iNum)-(oPages.iPagesCount%2?0:1);
+				if(iEnd < oPages[oPages.curType]) {
+					$("a.last", "#"+divId).show();
+				} else if (iEnd > oPages[oPages.curType]) {
+					tmp += iEnd - oPages[oPages.curType];
+					iEnd = oPages[oPages.curType];
+				}
+				
+				var iFirst = 1;
+				if(iNum > tmp+1) {
+					$("a.first", "#"+divId).show();
+					iFirst = iNum - tmp;
+				}
+				
+				$("a[name]", "#"+divId).each(function(index) {
+					if(iNum <= iFirst+index) {
+						if(iNum == iFirst+index)
+							tmpStrong.insertBefore($("a.last", "#"+divId)).html(iNum);
+						$(this).insertBefore($("a.last", "#"+divId)).html(iFirst+index+1);
+					} else {
+						$(this).insertBefore($("a.last", "#"+divId)).html(iFirst+index);
+					}
+				});
+				if(iNum == iEnd) {
+					tmpStrong.insertBefore($("a.last", "#"+divId)).html(iNum);
+				}
+			} else {
+				$("a[name]", "#"+divId).each(function(index) {
+					if($(this).html() == iNum) {
+						$(this).after('<strong>'+$(this).html()+'</strong>');
+						$(this).insertAfter(tmpStrong).html(tmpStrong.html());
+						tmpStrong.remove();
+						return false;
+					}
+				});
 			}
 			
+			$("#custompage").val(iNum);
 			$("#"+divId).show();
 			return true;
 		}
