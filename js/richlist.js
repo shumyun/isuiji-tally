@@ -485,7 +485,7 @@ jQuery(document).ready(function($) {
 		popn_pos = $("#sel_sother").position();
 		$("#sel_hother").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
 		popn_pos.top = popn_pos.top + 22;
-		$("#ac_popother").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px; padding-top:8px; width:248px;");
+		$("#ac_popother").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px; padding-top:8px;");
 	});
 	
 	$("#sel_hother").click(function(){
