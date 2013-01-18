@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-15
+ *    Last Updated: 2013-01-18
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -103,6 +103,7 @@
 		.ac_pop a { cursor: pointer; display: block; }
 		.ac_ahover { color: {NOTICETEXT}; }
 		.ac_ul { border-bottom: 1px solid {DROPMENUBORDER}; margin-bottom: 4px; padding-bottom: 5px; }
+		.ac_ultime { border-top: 1px solid {DROPMENUBORDER}; }
 		.ac_pop label { cursor: default; float: left; line-height: 22px; vertical-align: middle; }
 		.ac_pop input { float: left; width: 65px; }
 		
@@ -111,11 +112,11 @@
 		.ac_li li:hover { color: {NOTICETEXT}; }
 	
 	.ac_sel { padding: 3px 16px 3px 6px; }
-	.ac_selclr { padding: 3px 2px 3px 20px; cursor: pointer; }
-	.ac_selall { padding: 3px 0px; cursor: pointer; }
+	.ac_species { padding: 3px 2px 3px 55px; cursor: default; }
 	
 	/* datatables */
 	.ac_dt { width: 100%; border-collapse: separate; table-layout:fixed; }
+		table.ac_dt { border-bottom: 1px solid {COMMONBG} !important; }
 		.ac_dt thead th { border-width: 0 1px; border-color: #FFF; border-style: solid; text-align: center; font-weight: 700; }
 		.ac_dt .th_1 { width: 9%; }
 		.ac_dt .th_2 { width: 12%; }
@@ -144,7 +145,8 @@
 	.ac_pgs {}
 		.ac_pg { float: right; line-height: 26px; }
 		.ac_pg a, .ac_pg strong, .ac_pg label { float: left; display: inline; margin-left: 4px; padding: 0 8px; height: 26px; border: 1px solid; border-color: {SPECIALBORDER}; background-color: {WRAPBG}; background-repeat: no-repeat; color: {LINK}; overflow: hidden; text-decoration: none; }
-			.ac_pg label { cursor: text; }
+			.ac_pg a { cursor: pointer; }
+			.ac_pg strong, .ac_pg label { cursor: default; }
 				.ac_pg label .px { height: 16px; line-height: 16px; padding: 0; width: 25px; }		
 			.ac_pg a:hover { border-color: {HIGHLIGHTLINK}; color: {HIGHLIGHTLINK}; }
 			.ac_pg a.nxt { padding-right: 25px; background-image: url({IMGDIR}/arw_r.gif); background-position: 90% 50%; }

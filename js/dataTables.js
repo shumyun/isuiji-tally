@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-17
+ *    Last Updated: 2013-01-18
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1002,30 +1002,30 @@
 				$("a.last", "#"+divId).hide();
 				var tmp = Math.floor(oPages.iPagesCount/2);
 				
-				var iEnd = parseInt(tmp)+parseInt(iNum)-(oPages.iPagesCount%2?0:1);
-				if(iEnd < oPages[oPages.curType]) {
+				oPages.iEnd = parseInt(tmp)+parseInt(iNum)-(oPages.iPagesCount%2?0:1);
+				if(oPages.iEnd < oPages[oPages.curType]) {
 					$("a.last", "#"+divId).show();
-				} else if (iEnd > oPages[oPages.curType]) {
-					tmp += iEnd - oPages[oPages.curType];
-					iEnd = oPages[oPages.curType];
+				} else if (oPages.iEnd > oPages[oPages.curType]) {
+					tmp += oPages.iEnd - oPages[oPages.curType];
+					oPages.iEnd = oPages[oPages.curType];
 				}
 				
-				var iFirst = 1;
+				oPages.iStart = 1;
 				if(iNum > tmp+1) {
 					$("a.first", "#"+divId).show();
-					iFirst = iNum - tmp;
+					oPages.iStart = iNum - tmp;
 				}
 				
 				$("a[name]", "#"+divId).each(function(index) {
-					if(iNum <= iFirst+index) {
-						if(iNum == iFirst+index)
+					if(iNum <= oPages.iStart+index) {
+						if(iNum == oPages.iStart+index)
 							tmpStrong.insertBefore($("a.last", "#"+divId)).html(iNum);
-						$(this).insertBefore($("a.last", "#"+divId)).html(iFirst+index+1);
+						$(this).insertBefore($("a.last", "#"+divId)).html(oPages.iStart+index+1);
 					} else {
-						$(this).insertBefore($("a.last", "#"+divId)).html(iFirst+index);
+						$(this).insertBefore($("a.last", "#"+divId)).html(oPages.iStart+index);
 					}
 				});
-				if(iNum == iEnd) {
+				if(iNum == oPages.iEnd) {
 					tmpStrong.insertBefore($("a.last", "#"+divId)).html(iNum);
 				}
 			} else {

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-14
+ *    Last Updated: 2013-01-18
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -34,13 +34,13 @@ jQuery(document).ready(function($) {
 	var display_year = $("#a_popmenu").html();
 	var display_month = $("#tb_time1").html();
 	var pop_time1 = $('<div class="p_pop ac_li">\
-						<ul class="ac_ul"><li id="time1_m">最近一个月</li><li id="time1_last">上一个月</li><li id="time1_y">最近一年</li></ul>\
-						<div><strong>按月份查询：</strong><br />\
+						<div><strong>时间查询：</strong><br />\
 							<div style="margin: 4px 0px;">\
-								<input id="time1_year" class="px" style="width:30px;" value="'+parseInt(display_year)+'"/>&nbsp;-&nbsp;\
-								<input id="time1_month" class="px" style="width:15px;" value="'+parseInt(display_month)+'"/><br /></div>\
-							<button class="pn pnc" style="margin: 2px 0px 6px 18px;"><strong>确定</strong></button>\
+								<input id="bdate" type="text" readonly="readonly" onclick="showcalendar(event, this)" class="px" style="width: 65px;"/><br />&nbsp;至<br />\
+								<input id="edate" type="text" readonly="readonly" onclick="showcalendar(event, this)" class="px" style="width: 65px;"/><br /></div>\
+							<button id="btn_date" class="pn pnc" style="margin: 2px 0px 6px 10px;"><strong>确定</strong></button>\
 						</div>\
+						<ul class="ac_ultime"><li id="time1_m">最近一个月</li><li id="time1_last">上一个月</li><li id="time1_y">最近一年</li></ul>\
 					  </div>')
 	.appendTo("body")
 	.position({
@@ -93,16 +93,6 @@ jQuery(document).ready(function($) {
 			$("#tb_time1").attr("data", ajaxparam);
 		}
 	});
-	$("#time1_year").click(function(){
-		hiden_time1 = false;
-	}).keypress(function(e){
-		if ((e.which < 48 || e.which > 57) && e.which != 8) return false;
-	});
-	$("#time1_month").click(function(){
-		hiden_time1 = false;
-	}).keypress(function(e){
-		if ((e.which < 48 || e.which > 57) && e.which != 8) return false;
-	});
 	
 	$("#li_popmenu").click(function() {
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
@@ -144,6 +134,7 @@ jQuery(document).ready(function($) {
 			var ajaxparam = "bTime=" + parseInt(display_year) + "-" + parseInt(display_month) + "-1&eTime=-";
 			if(ajaxparam != $(this).attr("data"))
 				$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
+				$(this).attr("data", ajaxparam);
 		}
 	});
 	
@@ -482,24 +473,24 @@ jQuery(document).ready(function($) {
 	/*
 	 * 时间选择菜单
 	 */
-	$("#sel_stime2").click(function(){
+	$("#sel_sother").click(function(){
 		if(cur_popbtn && cur_pop){
 			$(cur_popbtn).attr("style", "display: none");
 			$(cur_pop).attr("style", "display: none");
 		}
-		cur_popbtn = "#sel_htime2";
-		cur_pop = "#ac_popt2";
+		cur_popbtn = "#sel_hother";
+		cur_pop = "#ac_popother";
 		hiden_pop = false;
 		
-		popn_pos = $("#sel_stime2").position();
-		$("#sel_htime2").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
+		popn_pos = $("#sel_sother").position();
+		$("#sel_hother").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px;");
 		popn_pos.top = popn_pos.top + 22;
-		$("#ac_popt2").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px; padding-top:8px; width:248px;");
+		$("#ac_popother").attr("style", "display: block; left:"+popn_pos.left+"px; top:"+popn_pos.top+"px; padding-top:8px; width:248px;");
 	});
 	
-	$("#sel_htime2").click(function(){
-		$("#sel_htime2").attr("style", "display: none");
-		$("#ac_popt2").attr("style", "display: none");
+	$("#sel_hother").click(function(){
+		$("#sel_hother").attr("style", "display: none");
+		$("#ac_popother").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
 	});
 
@@ -538,8 +529,8 @@ jQuery(document).ready(function($) {
 			return;
 		}
 		
-		$("#sel_htime2").attr("style", "display: none");
-		$("#ac_popt2").attr("style", "display: none");
+		$("#sel_hother").attr("style", "display: none");
+		$("#ac_popother").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
 		if(!bdate && !edate) return;
 		
