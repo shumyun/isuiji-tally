@@ -24,15 +24,15 @@
 					<span id="sel_showb" class="ac_sel ac_showm"><a>账户归属</a></span><span class="pipe">|</span>
 					<span id="sel_showl" class="ac_sel ac_showm"><a>借贷账户</a></span><span class="pipe">|</span>
 					<span id="sel_showt" class="ac_sel ac_showm"><a>账单类别</a></span><span class="pipe">|</span>
-					<span id="sel_stime2" class="ac_sel ac_showm"><a>时间范围</a></span><span class="pipe">|</span>
-					<span id="sel_clr" class="ac_selclr"><a>条件清除</a></span><span class="pipe">|</span>
-					<span id="sel_all" class="ac_selall"><a>全部数据</a></span>
+					<span id="sel_sother" class="ac_sel ac_showm"><a>其它操作</a></span>
+					<span id="sel_clr" class="ac_species"><a>当前单位：元(￥)</a></span>
+					<!--<span class="pipe">|</span><span id="sel_all" class="ac_selall"><a>全部数据</a></span>-->
 					<div id="sel_hidep" class="ac_sel ac_hidem"><a>支出名称</a></div>
 					<div id="sel_hidee" class="ac_sel ac_hidem"><a>收入名称</a></div>
 					<div id="sel_hideb" class="ac_sel ac_hidem"><a>账户归属</a></div>
 					<div id="sel_hidel" class="ac_sel ac_hidem"><a>借贷账户</a></div>
 					<div id="sel_hidet" class="ac_sel ac_hidem"><a>账单类别</a></div>
-					<div id="sel_htime2" class="ac_sel ac_hidem"><a>时间范围</a></div>
+					<div id="sel_hother" class="ac_sel ac_hidem"><a>其它操作</a></div>
 					{$ac_pdiv}{$ac_ediv}
 					<div id="ac_popt" ac_pop="type" class="ac_pop">
 						<ul id="ul_type" ul_aid="a_type" class="ac_ul" sum="0" count="4">
@@ -53,10 +53,11 @@
 						</ul>
 					</div>
 					{$ac_bdiv}{$ac_ldiv}
-					<div id="ac_popt2" ac_pop="time2" class="ac_pop">
-						<label style="margin:0 3px;">从</label><input type="text" readonly="readonly" onclick="showcalendar(event, this)" class="px" id="bdate"/>
+					<div id="ac_popother" ac_pop="other" class="ac_pop ac_ul">
+						<ul><li id="sel_clr">条件清除</li><li id="sel_all">全部数据</li></ul>
+						<!--<label style="margin:0 3px;">从</label><input type="text" readonly="readonly" onclick="showcalendar(event, this)" class="px" id="bdate"/>
 						<label style="margin:0 3px;">到</label><input type="text" readonly="readonly" onclick="showcalendar(event, this)" class="px" id="edate"/>
-						<button id="btn_date" class="pn pnc" style="margin:0 0 0 4px;"><strong>确定</strong></button>
+						<button id="btn_date" class="pn pnc" style="margin:0 0 0 4px;"><strong>确定</strong></button>-->
 					</div>
 				</div>
 			</div>
@@ -87,7 +88,7 @@
 						<th>备&nbsp;注</th>
 					</tr>
 				</thead>
-				<tbody style="border-width: 0 0 1px 0;">
+				<tbody>
 				<tr id="loading"><td colspan="7">
 				<div id="container" style="width: 100%; height: 100%; margin: 0 auto">
 					<img style="padding:65px 0 70px 130px;vertical-align:middle" src="{$basedir}js/images/LoadingBlue.gif">
