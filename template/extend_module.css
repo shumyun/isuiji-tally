@@ -31,7 +31,7 @@
 			.aimg { cursor: pointer; float: left; margin-left: 10px; margin-top: 2px; }
 			.txtlabel {cursor: default; float: left; margin-top: 10px; margin-left: 5px; vertical-align: middle; line-height: 22px;}
 				
-		/* 账单图片 */	
+		/* 账单图片 */
 		.acexfm .avatar a { position: relative; }
 			.ie6 .acexfm a { float: left; }
 			.acexfm .avatar a:hover { text-decoration: none; }
@@ -126,11 +126,12 @@
 		.ie6 .th_4_left, .ie7 .th_4_left { text-align: left; }
 		.ac_dt .th_1 .ac_colblue, .ac_dt .th_2 .ac_colblue, .ac_dt .th_3 .ac_colblue, .ac_dt .th_4 .ac_colblue, .ac_dt .th_4_left .ac_colblue { color:#00F; }
 		.ac_dt .th_2_left .ac_sortby { font-size: 15px; color: #00F; }
-		.ie6 .ac_dt .th_2_left .ac_sortby, .ie7 .ac_dt .th_2_left .ac_sortby {  font-size: 12px; }
+		.ie6 .ac_dt .th_2_left .ac_sortby, .ie7 .ac_dt .th_2_left .ac_sortby { font-size: 12px; }
 		.ac_dt td { cursor: default; border-width: 0px 1px; border-color: {COMMONBG}; border-style: solid; line-height: 25px; }
 		.ac_dt td:hover { background-color: {SPECIALBG}; }
+		.tr_null td:hover { background-color: transparent; }
 		.ac_dt .notrans_td td { background-color: {COMMONBG}; border-width: 0 1px; border-color:#FFF; border-style: solid; }
-		.ac_dt .notrans_td td:hover { background-color: {SPECIALBG}; }		
+		.ac_dt .notrans_td td:hover { background-color: {SPECIALBG}; }
 		.tr_sum td { background-color: {SPECIALBG}; border-width: 1px 0; border-color:#FFF; border-style: solid; line-height: 28px; }
 		.td_left { padding-left: 15px; text-align: left; }
 		.td_center { padding-left: 0px; text-align: center; }

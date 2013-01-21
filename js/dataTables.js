@@ -140,6 +140,8 @@
 		 *  @returns boolean
 		 */
 		function _fnAjaxSaveData(ajaxdata) {
+
+			ajaxdata = ajaxdata.replace(/\n/g, "<BR>");
 			var oReceive = $.parseJSON(ajaxdata);
 			if(oReceive["state"] == "error") {
 				_fnLog( null, 0, oReceive["errinfo"]);
@@ -194,7 +196,8 @@
 								+'</td><td class="td_right">'+ oData[4]
 								+'</td><td class="td_center td_linehide" title="'+oData[5]+'">'+ oData[5]
 								+'</td><td class="td_center td_linehide" title="'+oname+'">'+ oname
-								+'</td><td class="td_left td_linehide" title="'+'-'+'">-</td></tr>')
+								+'</td><td class="td_left td_linehide" title="'+(oData[6]?oData[6].replace(/<BR>/g, "\r\n"):'')+'">'
+								+(oData[6]?oData[6].replace(/<BR>/g, "\r\n"):'')+'</td></tr>')
 								.hover(
 									function () {
 										$(this).children(":eq(0)")
@@ -569,11 +572,11 @@
 		function _fnInitConditions() {
 			DataTable.ext.oConditions = {
 				"Step" : {
-					"Fst": {"adata": ["借入", "借出", "还债", "收债"], "haddata": null, "fitlertype": "and"},
-					"Sec": {"adata": ["借贷账户"], "haddata": ["Fst"], "fitlertype": "and"},
-					"Thr": {"adata": ["支出", "转账", "收入"], "haddata": ["Sec"], "fitlertype": "or"},
-					"For": {"adata": ["账户"], "haddata": ["Thr"], "fitlertype": "and"},
-					"fiv": {"adata": ["备注"], "haddata": ["For"], "fitlertype": "contain"}},
+					"Fst": {"adata": ["借入", "借出", "还债", "收债"], "haddata": null, "filtertype": "and"},
+					"Sec": {"adata": ["借贷账户"], "haddata": ["Fst"], "filtertype": "and"},
+					"Thr": {"adata": ["支出", "转账", "收入"], "haddata": ["Sec"], "filtertype": "or"},
+					"For": {"adata": ["账户"], "haddata": ["Thr"], "filtertype": "and"},
+					"Fiv": {"adata": ["备注"], "haddata": ["For"], "filtertype": "contain"}},
 				"odata": {"收入": {"data": null, "cond":"", "isUsed": 'n'}, "支出": {"data": null, "cond":"", "isUsed": 'n'},
 						  "借入": {"data": null, "cond":"", "isUsed": 'n'}, "借出": {"data": null, "cond":"", "isUsed": 'n'},
 						  "还债": {"data": null, "cond":"", "isUsed": 'n'}, "收债": {"data": null, "cond":"", "isUsed": 'n'},
@@ -682,7 +685,16 @@
 					tmpdata = todata;
 				}
 			} else if (filtertype === "contain") {
-				;
+				for(var i in afilter) {
+					for (var j in tmpdata) {
+						var sData = tmpdata[j].children(":eq("+afilter[i]["col"]+")").html();
+						sData = sData.replace(/[\r\n]/g, " ");
+						var oSearch =  new RegExp(afilter[i]["str"].split(' '), "i");
+						if( oSearch.test(sData) )
+							todata.push(tmpdata[j]);
+					}
+					tmpdata = todata;
+				}
 			}
 			return todata = tmpdata;
 		}
@@ -704,6 +716,7 @@
 			tmpdata = _fnCondStepSort(step.Sec["adata"], tmpdata, step.Sec["filtertype"]);
 			tmpdata = _fnCondStepSort(step.Thr["adata"], tmpdata, step.Thr["filtertype"]);
 			tmpdata = _fnCondStepSort(step.For["adata"], tmpdata, step.For["filtertype"]);
+			tmpdata = _fnCondStepSort(step.Fiv["adata"], tmpdata, step.Fiv["filtertype"]);
 			
 			var aSort = DataTable.DataCols["aSort"];
 			aSort["sortData"] = tmpdata;
@@ -833,37 +846,6 @@
 			_fnAgainOut();
 			
 			return true;
-		}
-		
-		/**
-		 * 初始化搜索框
-		 */
-		function _fnInitSearch() {
-		}
-		
-		/**
-		 * Build a regular expression object suitable for searching a table
-		 *  @param {string} sSearch string to search for
-		 *  @returns {RegExp} constructed object
-		 *  @memberof DataTable#oApi
-		 */
-		function _fnFilterCreateSearch( sSearch )
-		{
-			var asSearch, sRegExpString;
-			sSearch = sSearch.split(' ');
-			return new RegExp( sSearch, "i");
-		}
-		
-		/**
-		 * Convert raw data into something that the user can search on
-		 *  @param {string} sData data to be modified
-		 *  @param {string} sType data type
-		 *  @returns {string} search string
-		 *  @memberof DataTable#oApi
-		 */
-		function _fnDataToSearch ( sData )
-		{
-			return sData.replace(/[\r\n]/g," ");
 		}
 		
 		function _fnInitPages() {
@@ -1154,9 +1136,6 @@
 			"_fnSortConditions"     : _fnSortConditions,
 			"fnSetConditions"       : _fnSetConditions,
 			"fnDelConditions"       : _fnDelConditions,
-			"_fnInitSearch"         : _fnInitSearch,
-			"_fnFilterCreateSearch" : _fnFilterCreateSearch,
-			"_fnDataToSearch"       : _fnDataToSearch,
 			"_fnInitPages"          : _fnInitPages,
 			"_fnSetPagesNum"        : _fnSetPagesNum,
 			"_fnSetPagesDiv"        : _fnSetPagesDiv,
@@ -1203,7 +1182,7 @@
 		"aSort"     : {"doing": "y", "sortID": null, "sortby": null, "OutType":null, "sortData": null},
 		"TrClass"   : {"cClass": [null, "notrans_td"], "hClass": "notrans_td"},
 		"aClassData": {},
-		"PageCols"  : 2
+		"PageCols"  : 30
 	};
 	
 	DataTable.ext = {
@@ -1219,7 +1198,6 @@
 	 * @SortColumns : 含2个数据的对象,包括1、需要排列的列数：{列数(从0开始计算)，该列的数据类型("date","string","numerical")}
 	 * 									2、默认排列的列号
 	 * @OperateCols : 操作列的列数(从0开始计算)
-	 * @Searchwidget: 进行搜索的控件，一般为input,含有2个数据的对象,包括{搜索的列的列数，进行搜索的控件}
 	 * @CountRows   : 按照时间进行统计，对象包括3个数据
 	 *                {iOrderByTime: 时间所在列, iOrderByType: 统计时的类型, iOrderByTotal: 统计时的数据, trClass: 统计行的css类, tdCount: 合并的td个数}
 	 * @Ajax        : ajax的地址
@@ -1229,7 +1207,6 @@
 	DataTable.defaults = {
 		"SortColumns" : {"Cols": null, "defCol": null},
 		"OperateCols" : null,
-		"SearchWidget": {},
 		"CountRows"   : {},
 		"Ajax"        : null,
 		"ajParam"     : null,
@@ -1246,7 +1223,6 @@ jQuery(document).ready(function($) {
 		                         [3, "numerical"],[4, "string"],[5, "string"]],
 		                 "defCol" : 0},
 		"OperateCols" : 0,
-		"SearchWidget": {"SearchCol": 6, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
 		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist",
 		"ajParam"	  : $("#tb_time").attr("data"),

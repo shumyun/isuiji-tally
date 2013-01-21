@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-14
+ *    Last Updated: 2013-01-21
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -25,18 +25,17 @@ if (!isset($_POST['eTime']) || ($_POST['eTime']!='-' && !($eTime = strtotime($_P
 }
 
 if ($_POST['bTime']=='-' && $_POST['eTime']=='-') {
-	echo '{"state":"error", "errinfo":"时间错误"}';
-	return ;
+	$sTime = "";
 } else if ($_POST['bTime']=='-') {
-	$sTime = "datatime <= ".$eTime;
+	$sTime = " AND datatime <= ".$eTime;
 } else if ($_POST['eTime']=='-') {
-	$sTime = "datatime >= ".$bTime;
+	$sTime = " AND datatime >= ".$bTime;
 } else {
 	if ($eTime < $bTime) {
 		echo '{"state":"error", "errinfo":"开始时间应该大于结束时间"}';
 		return ;
 	}
-	$sTime = "datatime >= ".$bTime." AND datatime <= ".$eTime;
+	$sTime = " AND datatime >= ".$bTime." AND datatime <= ".$eTime;
 }
 
 $outjson = '{"state":"ok"';
@@ -47,17 +46,17 @@ $oTable = "";
  * 获取支出类型的数据
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_paydata').
-		" WHERE uid='$_G[uid]' AND ".$sTime);
+		" WHERE uid='$_G[uid]'".$sTime);
 
 $datatmp = '';
 $data['pay'] = '';
 while($daydata = DB::fetch($query)) {
 	$datatmp = '["'.$daydata['recordtime'].'", "'.
 			date('Y/m/d', $daydata['datatime']).'", "'.
-			$daydata['seclv'].'", "'.($daydata['onelv'] ? $daydata['onelv'] : '').
+			addslashes($daydata['seclv']).'", "'.($daydata['onelv'] ? addslashes($daydata['onelv']) : '').
 			'", "'.$daydata['amount'].'", "'.
-			$daydata['category'].
-			($daydata['info'] ? '", "'.$daydata['info'] : '').'"]';
+			addslashes($daydata['category']).
+			($daydata['info'] ? '", "'.addslashes($daydata['info']) : '').'"]';
 	
 	$data['pay'] .= $datatmp.',';
 }
@@ -69,17 +68,17 @@ if($data['pay'])
  * 获取收入类型的数据
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_earndata').
-     " WHERE uid='$_G[uid]' AND ".$sTime);
+     " WHERE uid='$_G[uid]'".$sTime);
 
 $datatmp = '';
 $data['earn'] = '';
 while($daydata = DB::fetch($query)) {
 	$datatmp = '["'.$daydata['recordtime'].'", "'.
 				date('Y/m/d', $daydata['datatime']).'", "'.
-				$daydata['seclv'].'", "'.($daydata['onelv'] ? $daydata['onelv'] : '').
+				addslashes($daydata['seclv']).'", "'.($daydata['onelv'] ? addslashes($daydata['onelv']) : '').
 				'", "'.$daydata['amount'].'", "'.
-				$daydata['category'].
-				($daydata['info'] ? '", "'.$daydata['info'] : '').'"]';
+				addslashes($daydata['category']).
+				($daydata['info'] ? '", "'.addslashes($daydata['info']) : '').'"]';
 	
 	$data['earn'] .= $datatmp.',';
 }
@@ -91,17 +90,17 @@ if($data['earn'])
  * 获取转账类型的数据
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_transfer').
-		" WHERE uid='$_G[uid]' AND ".$sTime);
+		" WHERE uid='$_G[uid]'".$sTime);
 
 $datatmp = '';
 $data['transfer'] = '';
 while($daydata = DB::fetch($query)) {
 	$datatmp = '["'.$daydata['recordtime'].'", "'.
 			date('Y/m/d', $daydata['datatime']).
-			'", "", "'.$daydata['ocategory'].
+			'", "", "'.addslashes($daydata['ocategory']).
 			'", "'.$daydata['amount'].'", "'.
-			$daydata['icategory'].
-			($daydata['info'] ? '", "'.$daydata['info'] : '').'"]';
+			addslashes($daydata['icategory']).
+			($daydata['info'] ? '", "'.addslashes($daydata['info']) : '').'"]';
 	
 	$data['transfer'] .= $datatmp.',';
 }
@@ -113,17 +112,17 @@ if($data['transfer'])
  * 获取借贷类型的数据
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_loandebt').
-		" WHERE uid='$_G[uid]' AND ".$sTime);
+		" WHERE uid='$_G[uid]'".$sTime);
 
 $datastr = array('', '', '', '', '');
 $datatmp = '';
 while($daydata = DB::fetch($query)) {
 	$datatmp = '["'.$daydata['recordtime'].'", "'.
 			date('Y/m/d', $daydata['datatime']).
-			'", "", "'.$daydata['loandebt'].
+			'", "", "'.addslashes($daydata['loandebt']).
 			'", "'.$daydata['amount'].'", "'.
-			$daydata['category'].
-			($daydata['info'] ? '", "'.$daydata['info'] : '').'"]';
+			addslashes($daydata['category']).
+			($daydata['info'] ? '", "'.addslashes($daydata['info']) : '').'"]';
 	
 	$datastr[$daydata['type']] .= $datatmp.',';
 }
@@ -138,6 +137,7 @@ if($datastr[4])
 
 
 $outjson .= ( $oTable ? ', "oTable": {'.$oTable.'}':'').'}';
+
 echo $outjson;
 
 ?>

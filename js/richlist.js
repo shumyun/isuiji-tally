@@ -18,7 +18,8 @@ jQuery(document).ready(function($) {
 	var hiden_time = true, hiden_pop = true, cur_popbtn = null, cur_pop = null;
 	$(document).click(function(e){
 		if( !pop_time.is(":hidden") && hiden_time ) {
-			$("#li_popmenu").click();
+			$("#li_popmenu").toggleClass("ac_showm li_hidem");
+			pop_time.hide();
 		}
 		if( cur_popbtn && cur_pop && hiden_pop ) {
 			$(cur_popbtn).attr("style", "display: none");
@@ -84,7 +85,7 @@ jQuery(document).ready(function($) {
 	});
 	$("#time_y").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
-		pop_time1.hide();
+		pop_time.hide();
 		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
 		$("#tb_time").html(display_year+"全年").attr("tab_time", "use").attr("title", "关闭");
 		var ajaxparam = "bTime="+parseInt(display_year)+"-1-1&eTime="+parseInt(display_year)+"-12-31";
@@ -565,6 +566,24 @@ jQuery(document).ready(function($) {
 		$("[ac_tab='use']").each(function(){
 			$(this).attr("style", "display: none");
 		});
+		$("#s_input").val("");
+	});
+	
+	/**
+	 * 全部数据
+	 */
+	$("#sel_all").click(function(){
+		$("#sel_hother").attr("style", "display: none");
+		$("#ac_popother").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+		
+		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
+		$("#tb_time").html("全部数据").attr("tab_time", "use").attr("title", "关闭");
+		var ajaxparam = "bTime=-&eTime=-";
+		if(ajaxparam != $("#tb_time").attr("data")) {
+			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
+			$("#tb_time").attr("data", ajaxparam);
+		}
 	});
 	
 	/**
@@ -838,4 +857,15 @@ jQuery(document).ready(function($) {
 		});
 	});
 	
+
+	$("#s_input").keypress(function(eventData){
+		if(eventData.keyCode == 13) {
+			if($(this).val().length > 0) {
+				var oDatatype = {"condName": "备注", "FstCol": 6};
+				$("#datatable").DataTable.ext.oApi.fnSetConditions([$(this).val()], oDatatype);
+			} else {
+				$("#datatable").DataTable.ext.oApi.fnDelConditions("备注");
+			}
+		}
+	});
 });
