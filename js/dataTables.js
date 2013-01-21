@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-18
+ *    Last Updated: 2013-01-21
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -116,22 +116,10 @@
 		}
 		
 		/**
-		 * 整合原始datatable数据,包括存储、排序、合计
+		 * 设置table的ajax的参数，并开始查询
+		 * @param {string} sParam 参数
+		 * @returns boolean
 		 */
-		function _fnInitData() {
-			if(!DataTable.ext.hasOwnProperty("oTable") || DataTable.ext["oTable"] === null) {
-				_fnLog( null, 0, "找不到相应的table控件。");
-				return false;
-			}
-			
-			if(!_fnSaveData()) return false;
-			
-			if(!_fnSortData()) return false;
-			
-			if(!_fnDefaultOut()) return false;
-			return true;
-		}
-		
 		function _fnAjaxSetParam(sParam){
 			if(DataTable.ext.optdata["ajParam"] === sParam)
 				return true;
@@ -164,7 +152,7 @@
 				return false;
 			}
 			
-			var aDate = {"sortday" : null, "asort" : null };
+			var aDate = {"sortday" : null };
 			var aSortData = new Array();
 			var ClassData = new Array();
 			aDate["sortday"] = new Array();
@@ -246,56 +234,12 @@
 		 * 存储table数据
 		 *  @returns boolean
 		 */
-		function _fnSaveData(){
-			var othis = DataTable.ext.oTable;
-			var aCountRows = DataTable.ext.optdata["CountRows"];
-			
-			var aSort = new Array();
-			var aDate = new Array();
-			var oType = {};
-			$("tbody > tr", othis).each(function() {
-				aSort.push(this);
-				$(this).hide();
-				
-				if( aCountRows["iOrderByTime"] !== undefined && $(this).children()) {
-					var tmpType = $(this).children().eq(aCountRows["iOrderByType"]);
-					if(!tmpType || (tmpType = _fntransition(tmpType.html(), "string")) === false)
-						return false;
-					if(typeof oType[tmpType] == "undefined") {
-						oType[tmpType] = 0;
-						for(var x in aDate) {
-							aDate[x]["oType"][tmpType] = 0;
-						}
-					}
-					
-					var tmpTime = $(this).children().eq(aCountRows["iOrderByTime"]);
-					if(!tmpTime || (tmpTime = _fntransition(tmpTime.html().replace(/\./g, "/"), "date")) === false )
-						return false;
-					if( !aDate.hasOwnProperty(tmpTime) ) {
-						aDate[tmpTime] = {"oType": {}, "adata": null, "iSumCols": 0};
-						$.extend(true, aDate[tmpTime]["oType"], oType);
-						aDate[tmpTime]["adata"] = new Array();
-					}
-					
-					var tmpval = $(this).children().eq(aCountRows["iOrderByTotal"]);
-					if(!tmpval || (tmpval = _fntransition(tmpval.html(), "numerical")) === false )
-						return false;
-					aDate[tmpTime]["oType"][tmpType] += tmpval;
-					aDate[tmpTime]["adata"].push(this);
-					aDate[tmpTime]["iSumCols"]++;
-				}
-			});
-			DataTable.DataCols["aDate"] = aDate;
-			DataTable.DataCols["aSort"] = aSort;
-			return true;
-		}
-		
 		function _fnSetDataDate(aData) {
 			//清空date数据
 			aDate = DataTable.DataCols["aDate"];
 			aDate["sortday"] = [];
 			for(var i in aDate) {
-				if(i === "sortday" || i === "asort")
+				if(i === "sortday")
 					continue;
 				aDate[i]["adata"]    = [];
 				//$("ul >li" ,aDate[i]["trWidget"]).children(".ac_datefloat").remove();
@@ -316,7 +260,7 @@
 			}
 			
 			for(var i in aDate) {
-				if(i === "sortday" || i === "asort")
+				if(i === "sortday")
 					continue;
 				if(aDate[i]["adata"].length)
 					aDate["sortday"].push(i);
@@ -464,7 +408,7 @@
 		function _fnSortDateElement(sortby){
 			var aDate = DataTable.DataCols["aDate"];
 			for(var date in aDate){
-				if(date === "sortday" || date === "asort")
+				if(date === "sortday")
 					continue;
 				switch( sortby ) {
 					case "asc":
@@ -554,7 +498,7 @@
 			return true;
 		}
 		/**
-		 * 
+		 * 按类型排序
 		 * @param type  排序的类型
 		 * @returns {boolean}
 		 */
@@ -625,15 +569,17 @@
 		function _fnInitConditions() {
 			DataTable.ext.oConditions = {
 				"Step" : {
-					"Fst": {"adata": ["借入", "借出", "还债", "收债"], "haddata": null, "andor": "and"},
-					"Sec": {"adata": ["借贷账户"], "haddata": ["Fst"], "andor": "and"},
-					"Thr": {"adata": ["支出", "转账", "收入"], "haddata": ["Sec"], "andor": "or"},
-					"For": {"adata": ["账户"], "haddata": ["Thr"], "andor": "and"}},
+					"Fst": {"adata": ["借入", "借出", "还债", "收债"], "haddata": null, "fitlertype": "and"},
+					"Sec": {"adata": ["借贷账户"], "haddata": ["Fst"], "fitlertype": "and"},
+					"Thr": {"adata": ["支出", "转账", "收入"], "haddata": ["Sec"], "fitlertype": "or"},
+					"For": {"adata": ["账户"], "haddata": ["Thr"], "fitlertype": "and"},
+					"fiv": {"adata": ["备注"], "haddata": ["For"], "fitlertype": "contain"}},
 				"odata": {"收入": {"data": null, "cond":"", "isUsed": 'n'}, "支出": {"data": null, "cond":"", "isUsed": 'n'},
 						  "借入": {"data": null, "cond":"", "isUsed": 'n'}, "借出": {"data": null, "cond":"", "isUsed": 'n'},
 						  "还债": {"data": null, "cond":"", "isUsed": 'n'}, "收债": {"data": null, "cond":"", "isUsed": 'n'},
 						  "转账": {"data": null, "cond":"", "isUsed": 'n'},
-						  "账户": {"cond":"", "isUsed": 'n'}, "借贷账户": {"cond":"", "isUsed": 'n'}},
+						  "账户": {"cond":"", "isUsed": 'n'}, "借贷账户": {"cond":"", "isUsed": 'n'},
+						  "备注": {"cond":"", "isUsed": 'n'}},
 				"iCount": 0};
 		}
 		
@@ -708,10 +654,10 @@
 		 * 每步的并交的处理
 		 * @param adata   该步骤要操作的对象合集名称
 		 * @param haddata 上步骤所得的对象数组
-		 * @param andor   并交集
+		 * @param filtertype   并交集
 		 * @returns {Array} 返回这步骤的数据组
 		 */
-		function _fnCondStepSort(adata, haddata, andor) {
+		function _fnCondStepSort(adata, haddata, filtertype) {
 			var odata = DataTable.ext.oConditions.odata;
 			var todata = new Array();
 			var tmpdata = new Array();
@@ -727,7 +673,7 @@
 						afilter = odata[adata[i]]["cond"];
 				}
 			}
-			if(andor === "and") {
+			if(filtertype === "and") {
 				for(var i in afilter) {
 					for (var j in tmpdata) {
 						if(tmpdata[j].children(":eq("+afilter[i]["col"]+")").html() === afilter[i]["str"])
@@ -735,6 +681,8 @@
 					}
 					tmpdata = todata;
 				}
+			} else if (filtertype === "contain") {
+				;
 			}
 			return todata = tmpdata;
 		}
@@ -752,10 +700,10 @@
 					tmpdata = tmpdata.concat(alldata[i]);
 				}
 			}
-			tmpdata = _fnCondStepSort(step.Fst["adata"], tmpdata, step.Fst["andor"]);
-			tmpdata = _fnCondStepSort(step.Sec["adata"], tmpdata, step.Sec["andor"]);
-			tmpdata = _fnCondStepSort(step.Thr["adata"], tmpdata, step.Thr["andor"]);
-			tmpdata = _fnCondStepSort(step.For["adata"], tmpdata, step.For["andor"]);
+			tmpdata = _fnCondStepSort(step.Fst["adata"], tmpdata, step.Fst["filtertype"]);
+			tmpdata = _fnCondStepSort(step.Sec["adata"], tmpdata, step.Sec["filtertype"]);
+			tmpdata = _fnCondStepSort(step.Thr["adata"], tmpdata, step.Thr["filtertype"]);
+			tmpdata = _fnCondStepSort(step.For["adata"], tmpdata, step.For["filtertype"]);
 			
 			var aSort = DataTable.DataCols["aSort"];
 			aSort["sortData"] = tmpdata;
@@ -853,7 +801,7 @@
 					if(oData[i].hasOwnProperty("data"))
 						oData[i]["data"]  = [];
 				}
-				oData.iCount = 0;
+				DataTable.ext.oConditions.iCount = 0;
 			} else {
 				if(oData[sType]["isUsed"] === 'y') {
 					oData[sType]["isUsed"] = 'n';
@@ -887,6 +835,37 @@
 			return true;
 		}
 		
+		/**
+		 * 初始化搜索框
+		 */
+		function _fnInitSearch() {
+		}
+		
+		/**
+		 * Build a regular expression object suitable for searching a table
+		 *  @param {string} sSearch string to search for
+		 *  @returns {RegExp} constructed object
+		 *  @memberof DataTable#oApi
+		 */
+		function _fnFilterCreateSearch( sSearch )
+		{
+			var asSearch, sRegExpString;
+			sSearch = sSearch.split(' ');
+			return new RegExp( sSearch, "i");
+		}
+		
+		/**
+		 * Convert raw data into something that the user can search on
+		 *  @param {string} sData data to be modified
+		 *  @param {string} sType data type
+		 *  @returns {string} search string
+		 *  @memberof DataTable#oApi
+		 */
+		function _fnDataToSearch ( sData )
+		{
+			return sData.replace(/[\r\n]/g," ");
+		}
+		
 		function _fnInitPages() {
 			if(!DataTable.ext.optdata.pagedivId)
 				return true;
@@ -907,11 +886,11 @@
 			switch(PagesType) {
 				case "idayPages":
 					var aOutData = DataTable.DataCols["aDate"];
-					var tmplen = 0;
+					var tmplen = 0, x;
 					oPages.adays = [];
 					oPages.idayPages = 0;
 					oPages.adays.push(0);		//这里表示从0开始
-					for (var x = 0; x < aOutData["sortday"].length; x++) {
+					for (x = 0; x < aOutData["sortday"].length; x++) {
 						var tmpDate = aOutData["sortday"][x];
 						tmplen += aOutData[tmpDate]["adata"].length;
 						if(tmplen >= iPageCols) {
@@ -919,6 +898,10 @@
 							tmplen = 0;
 							oPages.idayPages++;
 						}
+					}
+					if(tmplen){
+							oPages.adays.push(x);
+							oPages.idayPages++;
 					}
 					break;
 					
@@ -1151,10 +1134,8 @@
 			"_fnLog"                : _fnLog,
 			"_fnExtend"             : _fnExtend,
 			"_fntransition"         : _fntransition,
-			"_fnInitData"           : _fnInitData,
 			"fnAjaxSetParam"        : _fnAjaxSetParam,
 			"_fnAjaxSaveData"       : _fnAjaxSaveData,
-			"_fnSaveData"           : _fnSaveData,
 			"_fnSetDataDate"        : _fnSetDataDate,
 			"_fnInitTheadSort"      : _fnInitTheadSort,
 			"_fnSetTheadClass"      : _fnSetTheadClass,
@@ -1173,6 +1154,9 @@
 			"_fnSortConditions"     : _fnSortConditions,
 			"fnSetConditions"       : _fnSetConditions,
 			"fnDelConditions"       : _fnDelConditions,
+			"_fnInitSearch"         : _fnInitSearch,
+			"_fnFilterCreateSearch" : _fnFilterCreateSearch,
+			"_fnDataToSearch"       : _fnDataToSearch,
 			"_fnInitPages"          : _fnInitPages,
 			"_fnSetPagesNum"        : _fnSetPagesNum,
 			"_fnSetPagesDiv"        : _fnSetPagesDiv,
@@ -1243,7 +1227,7 @@
 	 * @pagedivId   : pageDIV的ID号
 	 */
 	DataTable.defaults = {
-		"SortColumns" : {"Cols":null, "defCol":null},
+		"SortColumns" : {"Cols": null, "defCol": null},
 		"OperateCols" : null,
 		"SearchWidget": {},
 		"CountRows"   : {},
@@ -1262,10 +1246,10 @@ jQuery(document).ready(function($) {
 		                         [3, "numerical"],[4, "string"],[5, "string"]],
 		                 "defCol" : 0},
 		"OperateCols" : 0,
-		"SearchWidget": {"SearchCol": 5, "Id": "s_input"},
+		"SearchWidget": {"SearchCol": 6, "Id": "s_input"},
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
 		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist",
-		"ajParam"	  : $("#tb_time1").attr("data"),
+		"ajParam"	  : $("#tb_time").attr("data"),
 		"pagedivId"   : "tb_page"
 	});
 });

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-18
+ *    Last Updated: 2013-01-21
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -15,9 +15,9 @@ jQuery.noConflict();
  */
 jQuery(document).ready(function($) {
 	
-	var hiden_time1 = true, hiden_pop = true, cur_popbtn = null, cur_pop = null;
+	var hiden_time = true, hiden_pop = true, cur_popbtn = null, cur_pop = null;
 	$(document).click(function(e){
-		if( !pop_time1.is(":hidden") && hiden_time1 ) {
+		if( !pop_time.is(":hidden") && hiden_time ) {
 			$("#li_popmenu").click();
 		}
 		if( cur_popbtn && cur_pop && hiden_pop ) {
@@ -25,22 +25,22 @@ jQuery(document).ready(function($) {
 			$(cur_pop).attr("style", "display: none");
 			cur_popbtn = cur_pop = null;
 		}
-		hiden_time1 = hiden_pop = true;
+		hiden_time = hiden_pop = true;
 	});
 	
 	/*
-	 * 显示时间选项
+	 * 时间选择菜单
 	 */
 	var display_year = $("#a_popmenu").html();
-	var display_month = $("#tb_time1").html();
-	var pop_time1 = $('<div class="p_pop ac_li">\
+	var display_month = $("#tb_time").html();
+	var pop_time = $('<div class="p_pop ac_li">\
 						<div><strong>时间查询：</strong><br />\
 							<div style="margin: 4px 0px;">\
 								<input id="bdate" type="text" readonly="readonly" onclick="showcalendar(event, this)" class="px" style="width: 65px;"/><br />&nbsp;至<br />\
 								<input id="edate" type="text" readonly="readonly" onclick="showcalendar(event, this)" class="px" style="width: 65px;"/><br /></div>\
 							<button id="btn_date" class="pn pnc" style="margin: 2px 0px 6px 10px;"><strong>确定</strong></button>\
 						</div>\
-						<ul class="ac_ultime"><li id="time1_m">最近一个月</li><li id="time1_last">上一个月</li><li id="time1_y">最近一年</li></ul>\
+						<ul class="ac_ultime"><li id="time_m">最近一个月</li><li id="time_last">上一个月</li><li id="time_y">最近一年</li></ul>\
 					  </div>')
 	.appendTo("body")
 	.position({
@@ -49,76 +49,120 @@ jQuery(document).ready(function($) {
 		of: $("#li_popmenu"),
 		offset: "0 2"
 	}).hide();
-	$("#time1_m").click(function(){
+	$("#time_m").click(function(){
 		$("#a_popmenu").html(display_year);
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
-		pop_time1.hide();
-		$("#tb_time1").html(display_month).attr("tab_time", "undo").attr("title", "");
+		pop_time.hide();
+		$("#tb_time").html(display_month).attr("tab_time", "undo").attr("title", "");
 		var ajaxparam = "bTime=" + parseInt(display_year) + "-" + parseInt(display_month) + "-1&eTime=-";
-		if(ajaxparam != $("#tb_time1").attr("data")) {
+		if(ajaxparam != $("#tb_time").attr("data")) {
 			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
-			$("#tb_time1").attr("data", ajaxparam);
+			$("#tb_time").attr("data", ajaxparam);
 		}
 	});
-	$("#time1_last").click(function(){
+	$("#time_last").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
-		pop_time1.hide();
+		pop_time.hide();
 		var tmp_m = 0, ajaxparam;
 		if((tmp_m = parseInt(display_month)-1) == 0){
 			var tmp = parseInt(display_year) - 1;
 			$("#a_popmenu").html(tmp+"年");
-			$("#tb_time1").html("12月份").attr("tab_time", "use").attr("title", "关闭");
+			$("#tb_time").html("12月份").attr("tab_time", "use").attr("title", "关闭");
 			ajaxparam = "bTime=" + tmp + "-12-1&eTime=" + tmp + "-12-31";
 		} else {
 			$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
 			//$("#a_popmenu").html();
-			$("#tb_time1").html(+tmp_m+"月份").attr("ac_tab", "use").attr("title", "关闭");
+			$("#tb_time").html(+tmp_m+"月份").attr("tab_time", "use").attr("title", "关闭");
 			var tmp_y = parseInt(display_year);
 			var day = new Date(tmp_y,tmp_m,0);
 			ajaxparam = "bTime="+tmp_y+"-"+tmp_m+"-1&eTime="+tmp_y+"-"+tmp_m+"-"+day.getDate();
 		};
-		if(ajaxparam != $("#tb_time1").attr("data")) {
+		if(ajaxparam != $("#tb_time").attr("data")) {
 			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
-			$("#tb_time1").attr("data", ajaxparam);
+			$("#tb_time").attr("data", ajaxparam);
 		}
 	});
-	$("#time1_y").click(function(){
+	$("#time_y").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time1.hide();
 		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
-		$("#tb_time1").html(display_year+"全年").attr("tab_time", "use").attr("title", "关闭");
+		$("#tb_time").html(display_year+"全年").attr("tab_time", "use").attr("title", "关闭");
 		var ajaxparam = "bTime="+parseInt(display_year)+"-1-1&eTime="+parseInt(display_year)+"-12-31";
-		if(ajaxparam != $("#tb_time1").attr("data")) {
+		if(ajaxparam != $("#tb_time").attr("data")) {
 			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
-			$("#tb_time1").attr("data", ajaxparam);
+			$("#tb_time").attr("data", ajaxparam);
+		}
+	});
+
+	function dateFormat(date, separate) {
+		var month = parseInt(date.getMonth()) + 1;
+		return date.getFullYear() + separate + month + separate + date.getDate();
+	}
+	
+	/**
+	 * 解决在IE7和IE8下用new Date()加参数会无法转化，返回NAN的数据
+	 */
+	function parseISO8601(dateStringInRange) {
+		var isoExp = /^\s*(\d{4})-(\d\d)-(\d\d)\s*$/,
+		date = new Date(NaN), month,
+		parts = isoExp.exec(dateStringInRange);
+		
+		if(parts) {
+			month = +parts[2];
+			date.setFullYear(parts[1], month - 1, parts[3]);
+			if(month != date.getMonth() + 1) {
+				date.setTime(NaN);
+			}
+		}
+		return date;
+	}
+	
+	$("#btn_date").click(function(){
+		var bdate = null, edate = null;
+		if($("#bdate").val())
+			bdate = parseISO8601($("#bdate").val());
+		if($("#edate").val())
+			edate = parseISO8601($("#edate").val());
+
+		if(bdate && edate && (bdate > edate)){
+			alert("错误提示：开始时间不能大于结束时间！");
+			return;
+		}
+		
+		$("#sel_hother").attr("style", "display: none");
+		$("#ac_popother").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+		if(!bdate && !edate) return;
+		
+		var str, ajaxparam; 
+		if(!bdate){
+			str = "<strong>~</strong> — " + dateFormat(edate, ".");
+			ajaxparam = "bTime=-&eTime=" + dateFormat(edate, "-");
+		} else if(!edate) {
+			str = dateFormat(bdate, ".") + " — <strong>~</strong>";
+			ajaxparam = "bTime=" + dateFormat(bdate, "-") + "&eTime=-";
+		} else {
+			str = dateFormat(bdate, ".") + " — " + dateFormat(edate, ".");
+			ajaxparam = "bTime=" + dateFormat(bdate, "-") + "&eTime=" + dateFormat(edate, "-");
+		}
+		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
+		if(ajaxparam != $("#tb_time1").attr("data")) {
+			$("#tb_time").html(str).attr("tab_time", "use").attr("title", "关闭").attr("data", ajaxparam);
+			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
 		}
 	});
 	
 	$("#li_popmenu").click(function() {
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
-		if(pop_time1.is(":hidden")){
-			pop_time1.show();
-			hiden_time1 = false;
+		if(pop_time.is(":hidden")){
+			pop_time.show();
+			hiden_time = false;
 		} else {
-			pop_time1.hide();
+			pop_time.hide();
 		}
 	});
 	
-	$("[ac_tab='use']").each(function(){
-		$(this).hover(function(){
-			$(this).attr("style", "padding: 0 17px 0 3px; background: url(static/image/common/data_invalid.gif) no-repeat 98% 50%; font-weight: 700; cursor: pointer;");
-		},function(){
-			if(!$(this).is(":hidden")){
-				$(this).attr("style", "");
-			}
-		});
-		$(this).click(function(){
-			$("#datatable").DataTable.ext.oApi.fnDelConditions($(this).attr("name"));
-			$(this).hide();
-		});
-	});
-	
-	$("#tb_time1").hover(function(){
+	$("#tb_time").hover(function(){
 		if($(this).attr("tab_time") == "use"){
 			$(this).attr("style", "padding: 0 17px 0 3px; background: url(static/image/common/data_invalid.gif) no-repeat 98% 50%; font-weight: 700; cursor: pointer;");
 		}
@@ -136,6 +180,20 @@ jQuery(document).ready(function($) {
 				$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
 				$(this).attr("data", ajaxparam);
 		}
+	});
+	
+	$("[ac_tab='use']").each(function(){
+		$(this).hover(function(){
+			$(this).attr("style", "padding: 0 17px 0 3px; background: url(static/image/common/data_invalid.gif) no-repeat 98% 50%; font-weight: 700; cursor: pointer;");
+		},function(){
+			if(!$(this).is(":hidden")){
+				$(this).attr("style", "");
+			}
+		});
+		$(this).click(function(){
+			$("#datatable").DataTable.ext.oApi.fnDelConditions($(this).attr("name"));
+			$(this).hide();
+		});
 	});
 	
 	/**
@@ -470,8 +528,8 @@ jQuery(document).ready(function($) {
 		}
 	});
 	
-	/*
-	 * 时间选择菜单
+	/**
+	 * 其他操作选项
 	 */
 	$("#sel_sother").click(function(){
 		if(cur_popbtn && cur_pop){
@@ -493,63 +551,20 @@ jQuery(document).ready(function($) {
 		$("#ac_popother").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
 	});
-
-	function dateFormat(date, separate) {
-		var month = parseInt(date.getMonth()) + 1;
-		return date.getFullYear() + separate + month + separate + date.getDate();
-	}
 	
 	/**
-	 * 解决在IE7和IE8下用new Date()加参数会无法转化，返回NAN的数据
+	 * 全部条件清除
 	 */
-	function parseISO8601(dateStringInRange) {
-		var isoExp = /^\s*(\d{4})-(\d\d)-(\d\d)\s*$/,
-		date = new Date(NaN), month,
-		parts = isoExp.exec(dateStringInRange);
-		
-		if(parts) {
-			month = +parts[2];
-			date.setFullYear(parts[1], month - 1, parts[3]);
-			if(month != date.getMonth() + 1) {
-				date.setTime(NaN);
-			}
-		}
-		return date;
-	}
-	
-	$("#btn_date").click(function(){
-		var bdate = null, edate = null;
-		if($("#bdate").val())
-			bdate = parseISO8601($("#bdate").val());
-		if($("#edate").val())
-			edate = parseISO8601($("#edate").val());
-
-		if(bdate && edate && (bdate > edate)){
-			alert("错误提示：开始时间不能大于结束时间！");
-			return;
-		}
-		
+	$("#sel_clr").click(function(){
 		$("#sel_hother").attr("style", "display: none");
 		$("#ac_popother").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
-		if(!bdate && !edate) return;
 		
-		var str, ajaxparam; 
-		if(!bdate){
-			str = "<strong>~</strong> — " + dateFormat(edate, ".");
-			ajaxparam = "bTime=-&eTime=" + dateFormat(edate, "-");
-		} else if(!edate) {
-			str = dateFormat(bdate, ".") + " — <strong>~</strong>";
-			ajaxparam = "bTime=" + dateFormat(bdate, "-") + "&eTime=-";
-		} else {
-			str = dateFormat(bdate, ".") + " — " + dateFormat(edate, ".");
-			ajaxparam = "bTime=" + dateFormat(bdate, "-") + "&eTime=" + dateFormat(edate, "-");
-		}
-		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
-		if(ajaxparam != $("#tb_time1").attr("data")) {
-			$("#tb_time1").html(str).attr("tab_time", "use").attr("title", "关闭").attr("data", ajaxparam);
-			$("#datatable").DataTable.ext.oApi.fnAjaxSetParam(ajaxparam);
-		}
+		$("#datatable").DataTable.ext.oApi.fnDelConditions("all");
+
+		$("[ac_tab='use']").each(function(){
+			$(this).attr("style", "display: none");
+		});
 	});
 	
 	/**
