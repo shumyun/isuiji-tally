@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-21
+ *    Last Updated: 2013-01-22
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -17,6 +17,8 @@
 			_fnInitConditions();
 			
 			_fnInitPages();
+			
+			_fnInitOperate();
 			
 			if( DataTable.ext.optdata["Ajax"] === null) {
 				return ;
@@ -189,6 +191,7 @@
 							$.extend(true, aDate[tmpTime]["oType"], oType);
 						}
 					}
+					var oOperate = DataTable.ext.oOperate;
 					var oCol = $('<tr id="'+ oData[0]
 								+'"><td date="'+ oData[1] +'" class="td_left"></td>'
 								+'<td class="td_rsecond td_linehide" title="'+oData[2]+'">'+ oData[2]
@@ -200,11 +203,11 @@
 								+(oData[6]?oData[6].replace(/<BR>/g, "\r\n"):'')+'</td></tr>')
 								.hover(
 									function () {
-										$(this).children(":eq(0)")
-										.html($('<a style="color:#f00">删除</a><span class="pipe">|</span><a style="color:#f00">修改</a>'));
-										//.appendTo();
+										$(this).children(":eq(0)").html("")
+										.append(oOperate.DelCtl).append('<span class="pipe">|</span>').append(oOperate.ChangeCtl);
 									},
 									function () {
+										$(this).children(":eq(0)").children().detach();
 										if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
 											var date=new Date($(this).children(":eq(0)").attr("date"));
 											var month = parseInt(date.getMonth()) + 1;
@@ -213,8 +216,7 @@
 													.html(date.getFullYear()+"."
 															+(month<10 ? ("0"+month):month)+"."
 															+(idate<10 ? ("0"+idate):idate));
-										} else
-											$(this).children(":eq(0)").html("");
+										} //else
 									}
 								);
 					oCol.children(":eq(0)").attr("title", tmpdate.getFullYear()+"年"+nMonth+"月"+tmpdate.getDate()+"日");
@@ -1111,6 +1113,28 @@
 			return _fnChangePagesDiv(iNum);
 		}
 		
+		function _fnInitOperate() {
+			
+			var aDel = $('<a style="color: #f00; cursor: pointer;">删除</a>').click(function(){
+				var trData = $(this).closest("tr");
+				var msg = '您确定要删除于<label style="color: #f00;">'+trData.children(":eq(0)").attr("title")+
+							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
+							trData.children(":eq(3)").html()+'</label>的记录吗?';
+				hideWindow("change");
+				showDialog(msg, "confirm", "操作提示", "jQuery('#datatable').DataTable.ext.oApi.fnDelData(\""+trData.children(":eq(3)").html()+"\")");
+			});
+			
+			var aChange = $('<a style="color:#f00; cursor: pointer;">修改</a>').click(function(){
+				showWindow("change", "plugin.php?id=account:index&mod=winchange");
+			});
+			
+			DataTable.ext.oOperate = {"DelCtl": aDel, "ChangeCtl": aChange};
+		}
+		
+		function _fnDelData(e) {
+			alert(e);
+		}
+		
 		this.oApi = {
 			"fnInit"                : _fnInit,
 			"_fnLog"                : _fnLog,
@@ -1140,7 +1164,9 @@
 			"_fnSetPagesNum"        : _fnSetPagesNum,
 			"_fnSetPagesDiv"        : _fnSetPagesDiv,
 			"_fnChangePagesDiv"     : _fnChangePagesDiv,
-			"_fnPagesOut"           : _fnPagesOut
+			"_fnPagesOut"           : _fnPagesOut,
+			"_fnInitOperate"        : _fnInitOperate,
+			"fnDelData"             : _fnDelData
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );
@@ -1190,7 +1216,8 @@
 		"optdata"     : {},
 		"oApi"        : {},
 		"oConditions" : {},
-		"oPages"      : {}
+		"oPages"      : {},
+		"oOperate"    : {}
 	};
 	
 	/**

@@ -3,9 +3,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-02
+ *    Last Updated: 2013-01-22
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -31,7 +31,7 @@ global $account;
 
 $acc_date = dgmdate($_G['timestamp'], 'd');
 
-$acc_mod = in_array($_GET['mod'], array('richadd', 'richlist', 'richbudget', 'richcount', 'richset')) ? trim($_GET['mod']) : $defaultop;
+$acc_mod = in_array($_GET['mod'], array('richadd', 'richlist', 'winchange', 'richbudget', 'richcount', 'richset')) ? trim($_GET['mod']) : $defaultop;
 
 switch ($acc_mod) {
 	case 'richlist':
@@ -39,6 +39,11 @@ switch ($acc_mod) {
 		include template('account:richlist');
 		break;
 
+	case 'winchange':
+		require_once 'mod/mod_winchange.php';
+		include template('account:winchange');
+		break;
+		
 	default:
 		require_once 'mod/mod_richadd.php';
 		include template('account:index');
