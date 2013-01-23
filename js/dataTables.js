@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-22
+ *    Last Updated: 2013-01-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -216,7 +216,7 @@
 													.html(date.getFullYear()+"."
 															+(month<10 ? ("0"+month):month)+"."
 															+(idate<10 ? ("0"+idate):idate));
-										} //else
+										}
 									}
 								);
 					oCol.children(":eq(0)").attr("title", tmpdate.getFullYear()+"年"+nMonth+"月"+tmpdate.getDate()+"日");
@@ -1113,47 +1113,60 @@
 			return _fnChangePagesDiv(iNum);
 		}
 		
-		function _fnInitOperate(othis) {
-			
+		function _fnInitOperate() {
 			var aDel = $('<a style="color: #f00; cursor: pointer;">删除</a>').click(function(){
 				var trData = $(this).closest("tr");
 				var msg = '您确定要删除于<label style="color: #f00;">'+trData.children(":eq(0)").attr("title")+
 							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
 							trData.children(":eq(3)").html()+'</label>的记录吗?';
 				hideWindow("change");
-				showDialog(msg, "confirm", "操作提示", "jQuery('#datatable').DataTable.ext.oApi.fnDelData(\""+trData.children(":eq(3)").html()+"\")");
+				showDialog(msg,
+									"confirm",
+									"操作提示",
+									"jQuery('"+DataTable.ext.oApi.fnIdTransStr()+"').DataTable.ext.oApi.fnDelData(\""+trData.children(":eq(3)").html()+"\")");
 			});
 			
 			var aChange = $('<a style="color:#f00; cursor: pointer;">修改</a>').click(function(){
 				showWindow("change", "plugin.php?id=account:index&mod=winchange");
 			});
-			var oacPrompt = $('<div style="position: absolute;" >\
+			
+			var dPrompt = $('<div style="position: absolute;" >\
 								<table cellpadding="0" cellspacing="0" class="fwin">\
 									<tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
 									<tr><td class="m_l">&nbsp;&nbsp;</td>\
 										<td class="m_c"><h3 class="flb"><em id="datatable_prompt"></em></td>\
 										<td class="m_r"></td></tr>\
-									<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table></div>').appendTo("body")
-							.position({
-							  my: "center center",
-							  at: "center center",
-							  of: othis,
-							  offset: "-50 -50"
-							});
-			var string = '<img src="' + IMGDIR + '/loading.gif"> 正在保存...';
-			DataTable.ext.oOperate = {"DelCtl": aDel, "ChangeCtl": aChange};
+									<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table></div>').appendTo("body").hide();
+									
+			DataTable.ext.oOperate = {"DelCtl": aDel, "ChangeCtl": aChange, "PromptCtl": dPrompt};
 		}
 		
-		function _fnShowPrompt(str) {
-			
+		function _fnSetPrompt(html) {
+			$("#datatable_prompt").html(html);
+		}
+		
+		function _fnShowPrompt() {
+			DataTable.ext.oOperate.PromptCtl.position({ my: "center center",
+																									at: "center center",
+																									of: $(_fnIdTransStr()).children("tbody"),
+																									offset: "-50 -50"}).show();
 		}
 		
 		function _fnHidePrompt() {
-			
+			setTimeout("DataTable.ext.oOperate.PromptCtl.hide()", 1000);
+			;
 		}
 		
 		function _fnDelData(e) {
-			alert(e);
+			var string = '<img src="' + IMGDIR + '/loading.gif"> 正在删除...';
+			_fnSetPrompt(string);
+			_fnShowPrompt();
+			$.post("plugin.php?id=account:ajax&func=deldata", $.param(e),
+		}
+		
+		function _fnIdTransStr() {
+			var othis = DataTable.ext.oTable;
+			return "#"+$(othis).attr("id");
 		}
 		
 		this.oApi = {
@@ -1187,7 +1200,11 @@
 			"_fnChangePagesDiv"     : _fnChangePagesDiv,
 			"_fnPagesOut"           : _fnPagesOut,
 			"_fnInitOperate"        : _fnInitOperate,
-			"fnDelData"             : _fnDelData
+			"_fnSetPrompt"          : _fnSetPrompt,
+			"_fnShowPrompt"         : _fnShowPrompt,
+			"_fnHidePrompt"         : _fnHidePrompt,
+			"fnDelData"             : _fnDelData,
+			"fnIdTransStr"          : _fnIdTransStr
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );

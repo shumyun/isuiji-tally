@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-21
+ *    Last Updated: 2013-01-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -41,6 +41,10 @@ if ($_POST['bTime']=='-' && $_POST['eTime']=='-') {
 $outjson = '{"state":"ok"';
 $oTable = "";
 
+/**
+ * 添加唯一标志
+ * uid*(存储的行数*10+该数据所在的表的号码)
+ */
 
 /**
  * 获取支出类型的数据
