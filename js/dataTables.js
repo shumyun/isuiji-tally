@@ -18,7 +18,7 @@
 			
 			_fnInitPages();
 			
-			_fnInitOperate();
+			_fnInitOperate(othis);
 			
 			if( DataTable.ext.optdata["Ajax"] === null) {
 				return ;
@@ -1113,7 +1113,7 @@
 			return _fnChangePagesDiv(iNum);
 		}
 		
-		function _fnInitOperate() {
+		function _fnInitOperate(othis) {
 			
 			var aDel = $('<a style="color: #f00; cursor: pointer;">删除</a>').click(function(){
 				var trData = $(this).closest("tr");
@@ -1127,8 +1127,29 @@
 			var aChange = $('<a style="color:#f00; cursor: pointer;">修改</a>').click(function(){
 				showWindow("change", "plugin.php?id=account:index&mod=winchange");
 			});
-			
+			var oacPrompt = $('<div style="position: absolute;" >\
+								<table cellpadding="0" cellspacing="0" class="fwin">\
+									<tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
+									<tr><td class="m_l">&nbsp;&nbsp;</td>\
+										<td class="m_c"><h3 class="flb"><em id="datatable_prompt"></em></td>\
+										<td class="m_r"></td></tr>\
+									<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table></div>').appendTo("body")
+							.position({
+							  my: "center center",
+							  at: "center center",
+							  of: othis,
+							  offset: "-50 -50"
+							});
+			var string = '<img src="' + IMGDIR + '/loading.gif"> 正在保存...';
 			DataTable.ext.oOperate = {"DelCtl": aDel, "ChangeCtl": aChange};
+		}
+		
+		function _fnShowPrompt(str) {
+			
+		}
+		
+		function _fnHidePrompt() {
+			
 		}
 		
 		function _fnDelData(e) {
