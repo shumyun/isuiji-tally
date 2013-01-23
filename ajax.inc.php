@@ -13,6 +13,14 @@ if(!defined('IN_DISCUZ')) {
 }
 define('NOROBOT', TRUE);
 
+/**
+ * 数据所在的表的宏
+ */
+define(AC_PAY,  1);
+define(AC_EARN, 2);
+define(AC_TRANSFER, 3);
+define(AC_LOANDEBT, 4);
+
 $basedir = 'source/plugin/account/';
 
 if(empty($_G['uid'])) {

@@ -167,7 +167,7 @@
 				var tmpdate = new Date();
 				for (var i = 0; i < aData.length; i++) {
 					var oData = aData[i];
-					if((tmpTime = _fntransition(oData[1], "date")) === false)
+					if((tmpTime = _fntransition(oData[2], "date")) === false)
 						return false;
 					tmpdate.setTime(tmpTime);
 					var nMonth = parseInt(tmpdate.getMonth()) + 1;
@@ -192,15 +192,15 @@
 						}
 					}
 					var oOperate = DataTable.ext.oOperate;
-					var oCol = $('<tr id="'+ oData[0]
-								+'"><td date="'+ oData[1] +'" class="td_left"></td>'
-								+'<td class="td_rsecond td_linehide" title="'+oData[2]+'">'+ oData[2]
-								+'</td><td class="td_lfirst td_linehide" title="'+oData[3]+'">'+ oData[3]
-								+'</td><td class="td_right">'+ oData[4]
-								+'</td><td class="td_center td_linehide" title="'+oData[5]+'">'+ oData[5]
+					var oCol = $('<tr id="'+ oData[0] +'" sort="'+ oData[1]
+								+'"><td date="'+ oData[2] +'" class="td_left"></td>'
+								+'<td class="td_rsecond td_linehide" title="'+oData[3]+'">'+ oData[3]
+								+'</td><td class="td_lfirst td_linehide" title="'+oData[4]+'">'+ oData[4]
+								+'</td><td class="td_right">'+ oData[5]
+								+'</td><td class="td_center td_linehide" title="'+oData[6]+'">'+ oData[6]
 								+'</td><td class="td_center td_linehide" title="'+oname+'">'+ oname
-								+'</td><td class="td_left td_linehide" title="'+(oData[6]?oData[6].replace(/<BR>/g, "\r\n"):'')+'">'
-								+(oData[6]?oData[6].replace(/<BR>/g, "\r\n"):'')+'</td></tr>')
+								+'</td><td class="td_left td_linehide" title="'+(oData[7]?oData[7].replace(/<BR>/g, "\r\n"):'')+'">'
+								+(oData[7]?oData[7].replace(/<BR>/g, "\r\n"):'')+'</td></tr>')
 								.hover(
 									function () {
 										$(this).children(":eq(0)").html("")
@@ -220,7 +220,7 @@
 									}
 								);
 					oCol.children(":eq(0)").attr("title", tmpdate.getFullYear()+"年"+nMonth+"月"+tmpdate.getDate()+"日");
-					if((tmpval = _fntransition(oData[4], "numerical")) === false)
+					if((tmpval = _fntransition(oData[5], "numerical")) === false)
 						return false;
 					oType[oname]["sum"] += tmpval;
 					oType[oname]["count"]++;
@@ -418,12 +418,12 @@
 				switch( sortby ) {
 					case "asc":
 						aDate[date]["adata"].sort(function(a, b) {
-							return a.attr("id") - b.attr("id");
+							return a.attr("sort") - b.attr("sort");
 						});
 						break;
 					case "desc":
 						aDate[date]["adata"].sort(function(a, b) {
-							return b.attr("id") - a.attr("id");
+							return b.attr("sort") - a.attr("sort");
 						});
 						break;
 					default:
@@ -1120,16 +1120,14 @@
 							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
 							trData.children(":eq(3)").html()+'</label>的记录吗?';
 				hideWindow("change");
-				showDialog(msg,
-									"confirm",
-									"操作提示",
-									"jQuery('"+DataTable.ext.oApi.fnIdTransStr()+"').DataTable.ext.oApi.fnDelData(\""+trData.children(":eq(3)").html()+"\")");
+				showDialog(msg, "confirm", "操作提示",
+							"jQuery('"+DataTable.ext.oApi.fnIdTransStr()+"').DataTable.ext.oApi.fnDelData(\""+trData.children(":eq(3)").html()+"\")");
 			});
-			
+
 			var aChange = $('<a style="color:#f00; cursor: pointer;">修改</a>').click(function(){
 				showWindow("change", "plugin.php?id=account:index&mod=winchange");
 			});
-			
+
 			var dPrompt = $('<div style="position: absolute;" >\
 								<table cellpadding="0" cellspacing="0" class="fwin">\
 									<tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
@@ -1137,7 +1135,7 @@
 										<td class="m_c"><h3 class="flb"><em id="datatable_prompt"></em></td>\
 										<td class="m_r"></td></tr>\
 									<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table></div>').appendTo("body").hide();
-									
+
 			DataTable.ext.oOperate = {"DelCtl": aDel, "ChangeCtl": aChange, "PromptCtl": dPrompt};
 		}
 		
@@ -1146,22 +1144,22 @@
 		}
 		
 		function _fnShowPrompt() {
-			DataTable.ext.oOperate.PromptCtl.position({ my: "center center",
-																									at: "center center",
-																									of: $(_fnIdTransStr()).children("tbody"),
-																									offset: "-50 -50"}).show();
+			DataTable.ext.oOperate.PromptCtl
+				.position({ my: "center center",
+							at: "center center",
+							of: $(_fnIdTransStr()).children("tbody"),
+							offset: "-50 -50"}).show();
 		}
 		
 		function _fnHidePrompt() {
 			setTimeout("DataTable.ext.oOperate.PromptCtl.hide()", 1000);
-			;
 		}
 		
 		function _fnDelData(e) {
 			var string = '<img src="' + IMGDIR + '/loading.gif"> 正在删除...';
 			_fnSetPrompt(string);
 			_fnShowPrompt();
-			$.post("plugin.php?id=account:ajax&func=deldata", $.param(e),
+			$.post("plugin.php?id=account:ajax&func=deldata", $.param(e),function(data) {});
 		}
 		
 		function _fnIdTransStr() {

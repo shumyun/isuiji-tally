@@ -45,9 +45,10 @@ $oTable = "";
  * 添加唯一标志
  * uid*(存储的行数*10+该数据所在的表的号码)
  */
+$tmpsign = 0;
 
 /**
- * 获取支出类型的数据
+ * 获取支出类型的数据 表号: AC_PAY
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_paydata').
 		" WHERE uid='$_G[uid]'".$sTime);
@@ -55,7 +56,9 @@ $query = DB::query("SELECT * FROM ".DB::table('account_paydata').
 $datatmp = '';
 $data['pay'] = '';
 while($daydata = DB::fetch($query)) {
-	$datatmp = '["'.$daydata['recordtime'].'", "'.
+	
+	$tmpsign = $_G[uid]*($daydata['cid']*10+AC_PAY);
+	$datatmp = '["'.$tmpsign.'", "'.$daydata['recordtime'].'", "'.
 			date('Y/m/d', $daydata['datatime']).'", "'.
 			addslashes($daydata['seclv']).'", "'.($daydata['onelv'] ? addslashes($daydata['onelv']) : '').
 			'", "'.$daydata['amount'].'", "'.
@@ -69,7 +72,7 @@ if($data['pay'])
 
 
 /**
- * 获取收入类型的数据
+ * 获取收入类型的数据 表号: AC_EARN
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_earndata').
      " WHERE uid='$_G[uid]'".$sTime);
@@ -77,7 +80,9 @@ $query = DB::query("SELECT * FROM ".DB::table('account_earndata').
 $datatmp = '';
 $data['earn'] = '';
 while($daydata = DB::fetch($query)) {
-	$datatmp = '["'.$daydata['recordtime'].'", "'.
+	
+	$tmpsign = $_G[uid]*($daydata['cid']*10+AC_EARN);
+	$datatmp = '["'.$tmpsign.'", "'.$daydata['recordtime'].'", "'.
 				date('Y/m/d', $daydata['datatime']).'", "'.
 				addslashes($daydata['seclv']).'", "'.($daydata['onelv'] ? addslashes($daydata['onelv']) : '').
 				'", "'.$daydata['amount'].'", "'.
@@ -91,7 +96,7 @@ if($data['earn'])
 
 
 /**
- * 获取转账类型的数据
+ * 获取转账类型的数据 表号: AC_TRANSFER
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_transfer').
 		" WHERE uid='$_G[uid]'".$sTime);
@@ -99,7 +104,9 @@ $query = DB::query("SELECT * FROM ".DB::table('account_transfer').
 $datatmp = '';
 $data['transfer'] = '';
 while($daydata = DB::fetch($query)) {
-	$datatmp = '["'.$daydata['recordtime'].'", "'.
+	
+	$tmpsign = $_G[uid]*($daydata['cid']*10+AC_TRANSFER);
+	$datatmp = '["'.$tmpsign.'", "'.$daydata['recordtime'].'", "'.
 			date('Y/m/d', $daydata['datatime']).
 			'", "", "'.addslashes($daydata['ocategory']).
 			'", "'.$daydata['amount'].'", "'.
@@ -113,7 +120,7 @@ if($data['transfer'])
 
 
 /**
- * 获取借贷类型的数据
+ * 获取借贷类型的数据 表号: AC_LOANDEBT
  */
 $query = DB::query("SELECT * FROM ".DB::table('account_loandebt').
 		" WHERE uid='$_G[uid]'".$sTime);
@@ -121,7 +128,9 @@ $query = DB::query("SELECT * FROM ".DB::table('account_loandebt').
 $datastr = array('', '', '', '', '');
 $datatmp = '';
 while($daydata = DB::fetch($query)) {
-	$datatmp = '["'.$daydata['recordtime'].'", "'.
+	
+	$tmpsign = $_G[uid]*($daydata['cid']*10+AC_LOANDEBT);
+	$datatmp = '["'.$tmpsign.'", "'.$daydata['recordtime'].'", "'.
 			date('Y/m/d', $daydata['datatime']).
 			'", "", "'.addslashes($daydata['loandebt']).
 			'", "'.$daydata['amount'].'", "'.
