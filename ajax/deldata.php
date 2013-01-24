@@ -15,58 +15,59 @@ if(!defined('IN_DISCUZ')) {
 define('NOROBOT', TRUE);
 
 
-$ac_response = array(
+$ac_aresponse = array(
 		'state' => 'ok',
 		'curerr' => '');
 
-if(!isset($_POST['sort'])) {
-	$ac_response['state'] = 'err';
-	$ac_response['curerr'] = 'datetype';
-	//echo "¼ÇÂ¼µÄÊ±¼ä´íÎó";
-	echo json_encode($ac_response);
+if(!isset($_POST['isort'])) {
+	$ac_aresponse['state'] = 'err';
+	$ac_aresponse['curerr'] = 'datetype';
+	//echo "è®°å½•æ—¶é—´é”™è¯¯";
+	echo json_encode($ac_aresponse);
 	return;
 }
 
-if(!isset($_POST['id'])) {
-	$ac_response['state'] = 'err';
-	$ac_response['curerr'] = 'datetype';
-	//echo "ID´íÎó";
-	echo json_encode($ac_response);
+if(!isset($_POST['onlyid'])) {
+	$ac_aresponse['state'] = 'err';
+	$ac_aresponse['curerr'] = 'datetype';
+	//echo "IDé”™è¯¯";
+	echo json_encode($ac_aresponse);
 	return;
 }
 
+echo json_encode($ac_aresponse);
+return;
 
 /**
- * Ìí¼ÓÎ¨Ò»±êÖ¾
- * uid*(´æ´¢µÄÐÐÊý*10+¸ÃÊý¾ÝËùÔÚµÄ±íµÄºÅÂë)
+ * å”¯ä¸€æ ‡å¿—
+ * uid*(å­˜å‚¨çš„è¡Œæ•°*10+è¯¥æ•°æ®æ‰€åœ¨çš„è¡¨çš„å·ç )
  */
-$tmp = $_POST['id']/$_G['uid'];
+$tmp = $_POST['onlyid']/$_G['uid'];
 $tableID = $tmp%10;
-$cid = $tmp/10;
+$cid = ($tmp-$tableID)/10;
 switch ($tableID) {
 	case AC_PAY:
 		$insarr = array(
 			'cid' => $cid,
 			'uid' => $_G['uid'],
-			'recordtime' => $_G['sort']
+			'recordtime' => $_POST['isort']
 			);
-		$sqlstr = "SELECT datatime, amount FROM ".DB::table('account_paydata')
-							." WHERE uid='$_G[uid]' AND cid='$cid' AND recordtime='$_G['sort']'";
+		$sqlstr = "SELECT datatime, amount FROM ".DB::table('account_paydata')." WHERE uid='$_G[uid]' AND cid='$cid' AND recordtime='$_POST[isort]'";
 		if(!($data = DB::fetch_first($sqlstr)) || !DB::delete('account_paydata', $insarr)) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'Dont';
-			//echo "²Ù×÷´íÎó";
-			echo json_encode($ac_response);
+			$ac_aresponse['state'] = 'err';
+			$ac_aresponse['curerr'] = 'Dont';
+			//echo "æ“ä½œå¤±è´¥";
+			echo json_encode($ac_aresponse);
 			return;
 		}
 		
 		$sqlstr = "UPDATE ".DB::table('account_daytotal')." SET paymoney = paymoney - '$data[amount]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
 		if(!DB::query($sqlstr)
 		 || !DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay - '$data[amount]' WHERE uid = '$_G[uid]'")) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'Dont';
-			//echo "²Ù×÷´íÎó";
-			echo json_encode($ac_response);
+			$ac_aresponse['state'] = 'err';
+			$ac_aresponse['curerr'] = 'Dont';
+			//echo "æ“ä½œå¤±è´¥";
+			echo json_encode($ac_aresponse);
 			return;
 		}
 		break;
@@ -84,6 +85,6 @@ switch ($tableID) {
 		break;
 }
 
-echo json_encode($ac_response);
+echo json_encode($ac_aresponse);
 
 ?>

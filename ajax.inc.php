@@ -31,7 +31,8 @@ if(empty($_G['uid'])) {
 require_once 'class/class_account.php';
 global $account;
 
-if(in_array($_GET['func'], array('adddata', 'chart', 'ra_data', 'aj_richlist', "deldata"))) {
+	
+if(in_array($_GET['func'], array('adddata', 'chart', 'ra_data', 'aj_richlist', 'deldata'))) {
 	require_once DISCUZ_ROOT.$basedir.'ajax/'.trim($_GET['func']).'.php';
 }
 

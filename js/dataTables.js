@@ -254,14 +254,14 @@
 				}
 			}
 			
-			var idate, stype, imoney;
+			var iDate, sType, iMoney;
 			for(var i in aData) {
-				idate = _fntransition(aData[i].children(":eq(0)").attr("date"), "date");
-				imoney = _fntransition(aData[i].children(":eq(3)").html(), "numerical");
-				stype = aData[i].children(":eq(5)").html();
-				aDate[idate]["adata"].push(aData[i]);
-				aDate[idate]["oType"][stype]["sum"] += imoney;
-				aDate[idate]["oType"][stype]["count"] ++;
+				iDate = _fntransition(aData[i].children(":eq(0)").attr("date"), "date");
+				iMoney = _fntransition(aData[i].children(":eq(3)").html(), "numerical");
+				sType = aData[i].children(":eq(5)").html();
+				aDate[iDate]["adata"].push(aData[i]);
+				aDate[iDate]["oType"][sType]["sum"] += iMoney;
+				aDate[iDate]["oType"][sType]["count"] ++;
 			}
 			
 			for(var i in aDate) {
@@ -343,7 +343,7 @@
 				switch(type) {
 					case "date":
 						if(_fnSortDate(sortby)) {
-							_fnOut(type);
+							_fnOut(type, 1);
 							_fnSetTheadClass(index, sortby);
 							aSort.sortID = index;
 							aSort.sortby = sortby;
@@ -352,7 +352,7 @@
 						
 					case "string":
 						if(_fnSortString(index, sortby)) {
-							_fnOut(type);
+							_fnOut(type, 1);
 							_fnSetTheadClass(index, sortby);
 							aSort.sortID = index;
 							aSort.sortby = sortby;
@@ -361,7 +361,7 @@
 						
 					case "numerical":
 						if(_fnSortNumerical(index, sortby)) {
-							_fnOut(type);
+							_fnOut(type, 1);
 							_fnSetTheadClass(index, sortby);
 							aSort.sortID = index;
 							aSort.sortby = sortby;
@@ -505,20 +505,21 @@
 		/**
 		 * 按类型排序
 		 * @param type  排序的类型
+		 * @param num   显示的页数
 		 * @returns {boolean}
 		 */
-		function _fnOut(type) {
+		function _fnOut(type, num) {
 			switch(type) {
 				case "date":
 					_fnSetPagesNum("idayPages");
 					_fnSetPagesDiv("idayPages");
-					_fnPagesOut(1);
+					_fnPagesOut(num);
 					break;
 					
 				default:
 					_fnSetPagesNum("iPages");
 					_fnSetPagesDiv("iPages");
-					_fnPagesOut(1);
+					_fnPagesOut(num);
 					break;
 			}
 			return true;
@@ -552,7 +553,7 @@
 			aSort.doing = "y";
 
 			_fnSortDate("desc");
-			_fnOut("date");
+			_fnOut("date", 1);
 
 			var othis = DataTable.ext.oTable;
 			th = $("thead > tr", othis).children('":eq('+DataTable.ext.optdata["SortColumns"]["defCol"]+')"');
@@ -1119,10 +1120,11 @@
 				var msg = '您确定要删除于<label style="color: #f00;">'+trData.children(":eq(0)").attr("title")+
 							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
 							trData.children(":eq(3)").html()+'</label>的记录吗?';
+				DataTable.ext.oOperate.DelData = {"sid":trData.attr("id"), "sort":trData.attr("ssort")};
 				hideWindow("change");
 				showDialog(msg, "confirm", "操作提示",
-							"jQuery('"+DataTable.ext.oApi.fnIdTransStr()+"').DataTable.ext.oApi.fnDelData(\""
-							+trData.attr("id")+"\", \""+trData.attr("sort")+"\")");
+						'jQuery("'+DataTable.ext.oApi.fnTransIdForStr()+'").DataTable.ext.oApi.fnDelData("'
+						+trData.attr("id")+'", "'+trData.attr("sort")+'", "'+trData.children(":eq(5)").html()+'")');
 			});
 
 			var aChange = $('<a style="color:#f00; cursor: pointer;">修改</a>').click(function(){
@@ -1148,53 +1150,115 @@
 			DataTable.ext.oOperate.PromptCtl
 				.position({ my: "center center",
 							at: "center center",
-							of: $(_fnIdTransStr()).children("tbody"),
+							of: $(_fnTransIdForStr()).children("tbody"),
 							offset: "-50 -50"}).show();
 		}
 		
 		function _fnHidePrompt(msec) {
-			setTimeout("DataTable.ext.oOperate.PromptCtl.hide()", msec);
+			setTimeout('jQuery("'+DataTable.ext.oApi.fnTransIdForStr()+
+						'").DataTable.ext.oOperate.PromptCtl.hide()',
+						msec);
 		}
 		
-		function _fnDelData(sId, sSort) {
+		function _fnDelData(sId, sSort, sname) {
 			var dataobj = new Object();
-			dataobj.id = sId;
-			dataobj.sort = sSort;
+			dataobj.onlyid = sId;
+			dataobj.isort = sSort;
 			var string = '<img src="' + IMGDIR + '/loading.gif"> 正在删除...';
-			_fnSetPrompt(string);
-			_fnShowPrompt();
-			$.post("plugin.php?id=account:ajax&func=deldata", $.param(dataobj),function(data) {
+			//_fnSetPrompt(string);
+			//_fnShowPrompt();
+			$.post("plugin.php?id=account:ajax&func=deldata", $.param(dataobj), function(data) {
 				if(data == null) {
-			  	_fnHidePrompt(0);
+					_fnHidePrompt(0);
 					alert("未知错误1");
 				}
-				if(data.state.toLowerCase() == 'ok') {
+				var adata = (new Function("return " + data))();
+				if(adata.state.toLowerCase() == 'ok') {
 					var string = '<img src="' + IMGDIR + '/check_right.gif"> 删除成功.';
-					_fnSetPrompt(string);
-					
-					;
-					
-					_fnHidePrompt(1000);
+					_fnDelTRData(sname, sId);
+					//_fnSetPrompt(string);
+					//_fnHidePrompt(1000);
 				} else {
-					switch( data.curerr ) {
-						case "no_login":
-			  			showWindow('login', 'plugin.php?id=account:index');
-			  			break;
-			  			
-			  		default:
-							var string = '<img src="' + IMGDIR + '/check_error.gif"> 删除失败.';
-							_fnSetPrompt(string);
-							_fnHidePrompt(1000);
-							break;
+					switch( adata.curerr ) {
+					case "no_login":
+						showWindow('login', 'plugin.php?id=account:index');
+						break;
+					default:
+						var string = '<img src="' + IMGDIR + '/check_error.gif"> 删除失败.';
+						_fnSetPrompt(string);
+						_fnHidePrompt(1000);
+						break;
 					}
 				}
 			}).error(function() {
-			  _fnHidePrompt(0);
+				_fnHidePrompt(0);
 				alert("未知错误2");
 			});
 		}
 		
-		function _fnIdTransStr() {
+		function _fnDelTRData(sName, sId) {
+			
+			var ClassData = DataTable.DataCols.Data;
+			for(var i in ClassData[sName]) {
+				if(ClassData[sName][i].attr("id") == sId) {
+					ClassData[sName].splice(i,1);
+					break;
+				}
+			}
+			if(!ClassData[sName].length)
+				delete ClassData[sName];
+			
+			var aSortData = DataTable.DataCols["aSort"]["sortData"];
+			for(var i in aSortData) {
+				if(aSortData[i].attr("id") == sId) {
+					aSortData.splice(i,1);
+					break;
+				}
+			}
+			
+			var aDate = DataTable.DataCols["aDate"];
+			var tmpTime = _fntransition($("#"+sId).children(":eq(0)").attr("date"), "date");
+			for(var i in aDate[tmpTime]["adata"]) {
+				if(aDate[tmpTime]["adata"][i].attr("id") == sId) {
+					aDate[tmpTime]["adata"].splice(i,1);
+					break;
+				}
+			}
+			if(aDate[tmpTime]["adata"].length) {
+				var oType = aDate[tmpTime]["oType"];
+				if( !(--oType[sName]["count"]) ) {
+					delete oType[sName];
+				} else {
+					oType[sName]["sum"] -= $("#"+sId).children(":eq(3)").html();
+				}
+			} else {
+				for(var i in aDate["sortday"]) {
+					if(aDate["sortday"][i] == tmpTime){
+						aDate["sortday"].splice(i,1);
+						break;
+					}
+				}
+				aDate[tmpTime]["trWidget"].remove();
+				delete aDate[tmpTime];
+			}
+			$("#"+sId).remove();
+			_fnOperateOut();
+		}
+		
+		function _fnOperateOut() {
+			var Cols = DataTable.ext.optdata.SortColumns.Cols;
+			var pageId = DataTable.ext.optdata.pagedivId;
+			var aSort = DataTable.DataCols["aSort"];
+			var iNum = parseInt($("#"+pageId).children("strong").length ? $("#"+pageId).children("strong").html():1);
+			for(var i in Cols){
+				if(Cols[i][0] === aSort.sortID) {
+					_fnOut(Cols[i][1], iNum);
+					break;
+				}
+			}
+		}
+		
+		function _fnTransIdForStr() {
 			var othis = DataTable.ext.oTable;
 			return "#"+$(othis).attr("id");
 		}
@@ -1234,7 +1298,9 @@
 			"_fnShowPrompt"         : _fnShowPrompt,
 			"_fnHidePrompt"         : _fnHidePrompt,
 			"fnDelData"             : _fnDelData,
-			"fnIdTransStr"          : _fnIdTransStr
+			"_fnDelTRData"          : _fnDelTRData,
+			"_fnOperateOut"         : _fnOperateOut,
+			"fnTransIdForStr"       : _fnTransIdForStr
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );
