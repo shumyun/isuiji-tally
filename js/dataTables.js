@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-23
+ *    Last Updated: 2013-01-24
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -18,7 +18,7 @@
 			
 			_fnInitPages();
 			
-			_fnInitOperate(othis);
+			_fnInitOperate();
 			
 			if( DataTable.ext.optdata["Ajax"] === null) {
 				return ;
@@ -1121,7 +1121,8 @@
 							trData.children(":eq(3)").html()+'</label>的记录吗?';
 				hideWindow("change");
 				showDialog(msg, "confirm", "操作提示",
-							"jQuery('"+DataTable.ext.oApi.fnIdTransStr()+"').DataTable.ext.oApi.fnDelData(\""+trData.children(":eq(3)").html()+"\")");
+							"jQuery('"+DataTable.ext.oApi.fnIdTransStr()+"').DataTable.ext.oApi.fnDelData(\""
+							+trData.attr("id")+"\", \""+trData.attr("sort")+"\")");
 			});
 
 			var aChange = $('<a style="color:#f00; cursor: pointer;">修改</a>').click(function(){
@@ -1151,15 +1152,46 @@
 							offset: "-50 -50"}).show();
 		}
 		
-		function _fnHidePrompt() {
-			setTimeout("DataTable.ext.oOperate.PromptCtl.hide()", 1000);
+		function _fnHidePrompt(msec) {
+			setTimeout("DataTable.ext.oOperate.PromptCtl.hide()", msec);
 		}
 		
-		function _fnDelData(e) {
+		function _fnDelData(sId, sSort) {
+			var dataobj = new Object();
+			dataobj.id = sId;
+			dataobj.sort = sSort;
 			var string = '<img src="' + IMGDIR + '/loading.gif"> 正在删除...';
 			_fnSetPrompt(string);
 			_fnShowPrompt();
-			$.post("plugin.php?id=account:ajax&func=deldata", $.param(e),function(data) {});
+			$.post("plugin.php?id=account:ajax&func=deldata", $.param(dataobj),function(data) {
+				if(data == null) {
+			  	_fnHidePrompt(0);
+					alert("未知错误1");
+				}
+				if(data.state.toLowerCase() == 'ok') {
+					var string = '<img src="' + IMGDIR + '/check_right.gif"> 删除成功.';
+					_fnSetPrompt(string);
+					
+					;
+					
+					_fnHidePrompt(1000);
+				} else {
+					switch( data.curerr ) {
+						case "no_login":
+			  			showWindow('login', 'plugin.php?id=account:index');
+			  			break;
+			  			
+			  		default:
+							var string = '<img src="' + IMGDIR + '/check_error.gif"> 删除失败.';
+							_fnSetPrompt(string);
+							_fnHidePrompt(1000);
+							break;
+					}
+				}
+			}).error(function() {
+			  _fnHidePrompt(0);
+				alert("未知错误2");
+			});
 		}
 		
 		function _fnIdTransStr() {
