@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-24
+ *    Last Updated: 2013-01-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -201,24 +201,20 @@
 								+'</td><td class="td_center td_linehide" title="'+oname+'">'+ oname
 								+'</td><td class="td_left td_linehide" title="'+(oData[7]?oData[7].replace(/<BR>/g, "\r\n"):'')+'">'
 								+(oData[7]?oData[7].replace(/<BR>/g, "\r\n"):'')+'</td></tr>')
-								.hover(
-									function () {
-										$(this).children(":eq(0)").html("")
-										.append(oOperate.DelCtl).append('<span class="pipe">|</span>').append(oOperate.ChangeCtl);
-									},
-									function () {
-										$(this).children(":eq(0)").children().detach();
-										if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
-											var date=new Date($(this).children(":eq(0)").attr("date"));
-											var month = parseInt(date.getMonth()) + 1;
-											var idate = parseInt(date.getDate());
-											$(this).children(":eq(0)")
-													.html(date.getFullYear()+"."
-															+(month<10 ? ("0"+month):month)+"."
-															+(idate<10 ? ("0"+idate):idate));
-										}
-									}
-								);
+								.bind("mouseenter.DT", function () {
+											$(this).children(":eq(0)").html("")
+											.append(oOperate.DelCtl).append('<span class="pipe">|</span>').append(oOperate.ChangeCtl);})
+								.bind("mouseleave.DT", function () {
+											$(this).children(":eq(0)").children().detach();
+											if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
+												var date=new Date($(this).children(":eq(0)").attr("date"));
+												var month = parseInt(date.getMonth()) + 1;
+												var idate = parseInt(date.getDate());
+												$(this).children(":eq(0)")
+														.html(date.getFullYear()+"."
+																+(month<10 ? ("0"+month):month)+"."
+																+(idate<10 ? ("0"+idate):idate));
+											}});
 					oCol.children(":eq(0)").attr("title", tmpdate.getFullYear()+"年"+nMonth+"月"+tmpdate.getDate()+"日");
 					if((tmpval = _fntransition(oData[5], "numerical")) === false)
 						return false;
@@ -1120,7 +1116,6 @@
 				var msg = '您确定要删除于<label style="color: #f00;">'+trData.children(":eq(0)").attr("title")+
 							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
 							trData.children(":eq(3)").html()+'</label>的记录吗?';
-				DataTable.ext.oOperate.DelData = {"sid":trData.attr("id"), "sort":trData.attr("ssort")};
 				hideWindow("change");
 				showDialog(msg, "confirm", "操作提示",
 						'jQuery("'+DataTable.ext.oApi.fnTransIdForStr()+'").DataTable.ext.oApi.fnDelData("'
@@ -1137,7 +1132,12 @@
 									<tr><td class="m_l">&nbsp;&nbsp;</td>\
 										<td class="m_c"><h3 class="flb"><em id="datatable_prompt"></em></td>\
 										<td class="m_r"></td></tr>\
-									<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table></div>').appendTo("body").hide();
+									<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table></div>')
+									.appendTo("body")
+									.position({ my: "center center",
+												at: "center center",
+												of: DataTable.ext.oTable,
+												offset: "-50 -50"}).hide();
 
 			DataTable.ext.oOperate = {"DelCtl": aDel, "ChangeCtl": aChange, "PromptCtl": dPrompt};
 		}
@@ -1147,14 +1147,27 @@
 		}
 		
 		function _fnShowPrompt() {
-			DataTable.ext.oOperate.PromptCtl
-				.position({ my: "center center",
-							at: "center center",
-							of: $(_fnTransIdForStr()).children("tbody"),
-							offset: "-50 -50"}).show();
+			$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
+			DataTable.ext.oOperate.PromptCtl.show();
 		}
 		
 		function _fnHidePrompt(msec) {
+			var oOperate = DataTable.ext.oOperate;
+			$("tbody > tr[sort]", $(DataTable.ext.oTable))
+			.bind("mouseenter.DT", function () {
+				$(this).children(":eq(0)").html("")
+				.append(oOperate.DelCtl).append('<span class="pipe">|</span>').append(oOperate.ChangeCtl);})
+			.bind("mouseleave.DT", function () {
+				$(this).children(":eq(0)").children().detach();
+				if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
+					var date=new Date($(this).children(":eq(0)").attr("date"));
+					var month = parseInt(date.getMonth()) + 1;
+					var idate = parseInt(date.getDate());
+					$(this).children(":eq(0)")
+					.html(date.getFullYear()+"."
+								+(month<10 ? ("0"+month):month)+"."
+								+(idate<10 ? ("0"+idate):idate));
+				}});
 			setTimeout('jQuery("'+DataTable.ext.oApi.fnTransIdForStr()+
 						'").DataTable.ext.oOperate.PromptCtl.hide()',
 						msec);
@@ -1165,8 +1178,8 @@
 			dataobj.onlyid = sId;
 			dataobj.isort = sSort;
 			var string = '<img src="' + IMGDIR + '/loading.gif"> 正在删除...';
-			//_fnSetPrompt(string);
-			//_fnShowPrompt();
+			_fnSetPrompt(string);
+			_fnShowPrompt();
 			$.post("plugin.php?id=account:ajax&func=deldata", $.param(dataobj), function(data) {
 				if(data == null) {
 					_fnHidePrompt(0);
@@ -1176,8 +1189,8 @@
 				if(adata.state.toLowerCase() == 'ok') {
 					var string = '<img src="' + IMGDIR + '/check_right.gif"> 删除成功.';
 					_fnDelTRData(sname, sId);
-					//_fnSetPrompt(string);
-					//_fnHidePrompt(1000);
+					_fnSetPrompt(string);
+					_fnHidePrompt(1000);
 				} else {
 					switch( adata.curerr ) {
 					case "no_login":

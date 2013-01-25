@@ -3,9 +3,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2011-02-09
+ *    Last Updated: 2013-01-25
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -30,8 +30,9 @@ if(!$account->run_modrichadd($_G['uid'])){
 $acc_datetime = dmktime($acc_date);
 $isoWeekStartDate = strtotime(date('o-\\WW', $_G['timestamp'])); //{isoYear}-W{isoWeekNumber}
 $isoWeekEndDate = strtotime( "+6 days", $isoWeekStartDate);
-$MonthStartDate = strtotime(date('Y-m', $_G['timestamp']));
-$MonthEndDate = strtotime(date('Y-m-t', $_G['timestamp']));
+$MonthStartDate = strtotime(date('Y-m-1', $_G['timestamp']));
+$MonthEndDate = strtotime(date('Y-m-t', strtotime(date('Y-m', $_G['timestamp']))));
+
 $acc_amount = array(
 		'dpm' => '0.00',
 		'dem' => '0.00',

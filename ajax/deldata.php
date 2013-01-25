@@ -35,9 +35,6 @@ if(!isset($_POST['onlyid'])) {
 	return;
 }
 
-echo json_encode($ac_aresponse);
-return;
-
 /**
  * 唯一标志
  * uid*(存储的行数*10+该数据所在的表的号码)
@@ -73,15 +70,66 @@ switch ($tableID) {
 		break;
 		
 	case AC_EARN:
+		$insarr = array(
+			'cid' => $cid,
+			'uid' => $_G['uid'],
+			'recordtime' => $_POST['isort']
+			);
+		$sqlstr = "SELECT datatime, amount FROM ".DB::table('account_earndata')." WHERE uid='$_G[uid]' AND cid='$cid' AND recordtime='$_POST[isort]'";
+		if(!($data = DB::fetch_first($sqlstr)) || !DB::delete('account_earndata', $insarr)) {
+			$ac_aresponse['state'] = 'err';
+			$ac_aresponse['curerr'] = 'Dont';
+			//echo "操作失败";
+			echo json_encode($ac_aresponse);
+			return;
+		}
+		
+		$sqlstr = "UPDATE ".DB::table('account_daytotal')." SET earnmoney = earnmoney - '$data[amount]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
+		if(!DB::query($sqlstr)
+		 || !DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn - '$data[amount]' WHERE uid = '$_G[uid]'")) {
+			$ac_aresponse['state'] = 'err';
+			$ac_aresponse['curerr'] = 'Dont';
+			//echo "操作失败";
+			echo json_encode($ac_aresponse);
+			return;
+		}
 		break;
 		
 	case AC_TRANSFER:
+		$insarr = array(
+			'cid' => $cid,
+			'uid' => $_G['uid'],
+			'recordtime' => $_POST['isort']
+			);
+		if(!DB::delete('account_transfer', $insarr)) {
+			$ac_aresponse['state'] = 'err';
+			$ac_aresponse['curerr'] = 'Dont';
+			//echo "操作失败";
+			echo json_encode($ac_aresponse);
+			return;
+		}
 		break;
 		
 	case AC_LOANDEBT:
+		$insarr = array(
+			'cid' => $cid,
+			'uid' => $_G['uid'],
+			'recordtime' => $_POST['isort']
+			);
+		if(!DB::delete('account_loandebt', $insarr)) {
+			$ac_aresponse['state'] = 'err';
+			$ac_aresponse['curerr'] = 'Dont';
+			//echo "操作失败";
+			echo json_encode($ac_aresponse);
+			return;
+		}
 		break;
 		
 	default:
+			$ac_aresponse['state'] = 'err';
+			$ac_aresponse['curerr'] = 'Dont';
+			//echo "无此表";
+			echo json_encode($ac_aresponse);
 		break;
 }
 
