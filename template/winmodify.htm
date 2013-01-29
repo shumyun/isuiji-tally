@@ -1,0 +1,74 @@
+﻿<!--{template common/header}-->
+
+<div id="ac_dmodify">
+	<div>
+		<h3 class="flb">
+			<em>您正在修改数据中</em>
+			<span><!--{if !empty($_G['gp_infloat']) && !isset($_G['gp_frommessage'])}--><a href="javascript:;" class="flbc" onclick="hideWindow('$_G[gp_handlekey]', 0, 1);" title="{lang close}">{lang close}</a><!--{/if}--></span>
+		</h3>
+		<form action="$baseurl&mod=richadd&op=$operation" method="post"
+			 enctype="multipart/form-data" autocomplete="off" onsubmit="">
+			 	<input type="hidden" value="{FORMHASH}" name="formhash" />
+				<div class="acexfm" style="margin-top: 1px;"  id="richaddlist">
+					<table cellspacing="0" cellpadding="0">
+						<th>
+							<div class="avatar" >
+								<a id="ac_pic" title="待开发功能" href="javascript:;">
+									<span id="ac_pic_tar">待开发功能</span>
+									<!--{avatar($_G[uid],middle)}-->
+								</a>
+							</div>
+						</th>
+						<td class = "acarea">
+							<ul class="ul-1">
+								<label id="l_1" style="width: auto;">账单日期：</label>
+								<input type="text" readonly="readonly" onclick="showcalendar(event, this)" value="{$acc_date}" class="px" id="richdate"  tabindex="4" />
+								<label id="l_2">账单名称：</label>
+								<span class="ftid" style="margin-right: 0;">
+									<select id="richtype_out" class="ps" width="128" tabindex="4" style="display:none;"></select>
+								</span>
+								<input id="richcategory" type="hidden" value="" />
+								<input id="richname" class="px" style="width:120px" tabindex="1" />
+								<a id="richnamebtn" class="dpbtn" >^</a>
+								<img src="{IMGDIR}/edit.gif" class="aimg" />
+							</ul>
+							<ul class="ul-1">
+								<label id="l_3" style="width: auto;">账单金额：</label>
+								<input id="richnum" class="px" style="width:120px" tabindex="2" />
+								<label id="l_4" style="width: 83px;">账单归属：</label>
+								<span class="ftid" style="margin-right: 0;">
+									<select id="richtype" class="ps" width="128" tabindex="3" ></select>
+								</span>
+								<img src="{IMGDIR}/edit.gif" class="aimg" />
+							</ul>
+							<ul class="ul-2">
+								<textarea name="message" id="message" class="xg1" onkeyup="strLenCalc(this, 'maxlimit')" tabindex="5">此处可输入详细信息，限制最大字数为200。</textarea>
+								<input id="maxlimit" name="maxlimit" type="hidden" />
+							</ul>
+						</td>
+						<td>
+							<ul	class="ul-2" style="cursor: default;"><span id="s_help" style="color:#ff0000; font-weight: bolder;">推荐：使用拼音首字母查找（如：zc=>早餐）</span></ul>
+							<ul	class="ul-2">
+								<img src="{IMGDIR}/mood_input_btn.png" class="aimg" id="richaddbtn" />
+								<label class="txtlabel" >当前金额<br/>单位：元(￥)</label>
+							</ul>
+						</td>
+					</table>
+				</div>
+			</form>
+		<form method="post" autocomplete="off" name="fmodify" id="111" class="cl">
+			<div class="c cl">
+				<div class="rfm">
+					<table>
+						<tr>
+							<th>111</th>
+							<td><a target="_blank">123</a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!--{template common/footer}-->

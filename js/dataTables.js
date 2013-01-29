@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-25
+ *    Last Updated: 2013-01-29
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1111,7 +1111,7 @@
 		}
 		
 		function _fnInitOperate() {
-			var aDel = $('<a style="color: #f00; cursor: pointer;">删除</a>').click(function(){
+			var aDel = $('<a style="color: #f00; cursor: pointer;" title="删除">删除</a>').click(function(){
 				var trData = $(this).closest("tr");
 				var msg = '您确定要删除于<label style="color: #f00;">'+trData.children(":eq(0)").attr("title")+
 							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
@@ -1122,8 +1122,8 @@
 						+trData.attr("id")+'", "'+trData.attr("sort")+'", "'+trData.children(":eq(5)").html()+'")');
 			});
 
-			var aChange = $('<a style="color:#f00; cursor: pointer;">修改</a>').click(function(){
-				showWindow("change", "plugin.php?id=account:index&mod=winchange");
+			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
+				showWindow("change", "plugin.php?id=account:index&mod=winmodify");
 			});
 
 			var dPrompt = $('<div style="position: absolute;" >\
