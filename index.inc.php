@@ -41,7 +41,7 @@ switch ($acc_mod) {
 
 	case 'winmodify':
 		require_once 'mod/mod_winmodify.php';
-		include template('account:winchange');
+		include template('account:winmodify');
 		break;
 		
 	default:
