@@ -10,4 +10,6 @@
   /*
 	 * 计算器
 	 */
+$(document).ready(function() {
 	$("#richnum").calculator();
+});
