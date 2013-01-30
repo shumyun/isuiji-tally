@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-29
+ *    Last Updated: 2013-01-30
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -14,16 +14,16 @@
 .ac-icon-pay { background-position: 0 -28px; }
 
 /* 提交账单 */
-	.acexfm { margin: 10px 0; padding: 10px 14px; border: 1px dashed {SPECIALBORDER}; background: {SPECIALBG}; }
+	.acexfm { margin:1px 0 10px 0; padding: 10px 14px; border: 1px dashed {SPECIALBORDER}; background: {SPECIALBG}; }
 		.acexfm table { width: 100%; }
 			.acexfm table th, .acexfm table td { padding: 4px 2px; }
 			.acexfm table th { width: 145px; }
 			/* 账单填写区域 */
-			.acarea { width: 465px; }
+			.acarea { width: 455px; }
 				.ul-1 { height: 30px; }
 				.ul-2 { height: 60px; }
 				.acarea label { cursor: default; float: left; text-align: right; vertical-align: middle; width: 80px; line-height: 22px; }
-				.acarea input, .acarea select { float: left; width: 141px; }
+				.acarea input, .acarea select { float: left; width: 138px; }
 				.acarea textarea { width: 100%; height: 100%; border: 1px solid; border-color: {INPUTBORDERDARKCOLOR} {INPUTBORDER} {INPUTBORDER} {INPUTBORDERDARKCOLOR}; overflow-y: auto; }
 					.ie6 .acarea textarea { height:60px; }
 				.acarea img { float: left; }
@@ -156,7 +156,31 @@
 			.ac_pg strong { background-color: {SPECIALBG}; }
 		
 /* 修改账单 */
-		
+	.ac_winmodify { padding: 10px 14px; border: 1px dashed {SPECIALBORDER}; border-width: 1px 0 0 0; }
+		.ac_winmodify table { width: 100%; }
+			.ac_winmodify table th, .acexfm ac_winmodify td { padding: 4px 2px; }
+			.ac_winmodify table th { width: 145px; }
+			/* 账单填写区域 */
+			.modifyarea { width: 385px; }
+				.modifyarea .ul-1 { height: 30px; }
+				.modifyarea .ul-2 { height: 60px; }
+				.modifyarea label { cursor: default; float: left; text-align: right; vertical-align: middle; width: 80px; line-height: 22px; }
+				.modifyarea input, .modifyarea select { float: left; width: 101px; }
+				.modifyarea textarea { width: 100%; height: 100%; border: 1px solid; border-color: {INPUTBORDERDARKCOLOR} {INPUTBORDER} {INPUTBORDER} {INPUTBORDERDARKCOLOR}; overflow-y: auto; }
+					.ie6 .modifyarea textarea { height:60px; }
+				.modifyarea img { float: left; }
+				.modifyarea .aimg { cursor: pointer; margin-left: 1px; margin-top: 2px; }
+			.modifyarea .aimg { cursor: pointer; float: left; margin-left: 10px; margin-top: 2px; }
+			.modifyarea .txtlabel {cursor: default; float: left; margin-top: 10px; margin-left: 5px; vertical-align: middle; line-height: 22px;}
+				
+		/* 账单图片 */
+		.ac_winmodify .avatar a { position: relative; }
+			.ie6 .ac_winmodify a { float: left; }
+			.ac_winmodify .avatar a:hover { text-decoration: none; }
+			.ac_winmodify .avatar a span { display: none; position: absolute; bottom: 3px; padding: 5px 0; width: 100%; text-align: center; background: transparent; background: rgba(255, 255, 255, 0.5); cursor: pointer; filter:progid:DXImageTransform.Microsoft.gradient(startColorstr = #50FFFFFF, endColorstr = #50FFFFFF); }
+				.ac_winmodify .avatar a:hover span { display: block; }
+				.ac_winmodify .avatar img { padding: 3px; border: 1px solid {COMMONBORDER}; }
+		.mdcp .um { margin-bottom: 0; padding: 10px 5px; }
 		
 	/* 参考 .fl .bm_h */
 	.ac_thead {  } /* 提示：{TITLEBGCODE} 在module.css下调用会出现bug，即对单引号、双引号进行反编译 */
