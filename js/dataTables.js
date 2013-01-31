@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-29
+ *    Last Updated: 2013-01-31
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1123,7 +1123,7 @@
 			});
 
 			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
-				showWindow("modify", "plugin.php?id=account:index&mod=winmodify", 'get', 0);
+				showWindow("modify", "plugin.php?id=account:index&mod=winmodify");
 			});
 
 			var dPrompt = $('<div style="position: absolute;" >\

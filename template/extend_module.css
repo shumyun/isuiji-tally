@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-30
+ *    Last Updated: 2013-01-31
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -161,11 +161,12 @@
 			.ac_winmodify table th, .acexfm ac_winmodify td { padding: 4px 2px; }
 			.ac_winmodify table th { width: 145px; }
 			/* 账单填写区域 */
-			.modifyarea { width: 385px; }
+			.modifyarea { width: 380px; }
 				.modifyarea .ul-1 { height: 30px; }
 				.modifyarea .ul-2 { height: 60px; }
 				.modifyarea label { cursor: default; float: left; text-align: right; vertical-align: middle; width: 80px; line-height: 22px; }
-				.modifyarea input, .modifyarea select { float: left; width: 101px; }
+				.modifyarea input { float: left; width: 91px; }
+				.modifyarea select { float: left; width: 112px; }
 				.modifyarea textarea { width: 100%; height: 100%; border: 1px solid; border-color: {INPUTBORDERDARKCOLOR} {INPUTBORDER} {INPUTBORDER} {INPUTBORDERDARKCOLOR}; overflow-y: auto; }
 					.ie6 .modifyarea textarea { height:60px; }
 				.modifyarea img { float: left; }

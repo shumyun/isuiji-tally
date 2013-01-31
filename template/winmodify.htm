@@ -26,19 +26,19 @@
                                 <input type="text" readonly="readonly" onclick="showcalendar(event, this)" value="{$acc_date}" class="px" id="richdate"  tabindex="4" />
                                 <label id="l_2">账单名称：</label>
                                 <span class="ftid" style="margin-right: 0;">
-                                    <select id="richtype_out" class="ps" width="118" tabindex="4" style="display:none;"></select>
+                                    <select id="richtype_out" class="ps" tabindex="4" style="display:none;"></select>
                                 </span>
                                 <input id="richcategory" type="hidden" value="" />
-                                <input id="richname" class="px" style="width:70px" tabindex="1" />
+                                <input id="richname" class="px" style="width:80px" tabindex="1" />
                                 <a id="richnamebtn" class="dpbtn" >^</a>
                                 <img src="{IMGDIR}/edit.gif" class="aimg" />
                             </ul>
                             <ul class="ul-1">
                                 <label id="l_3" style="width: auto;">账单金额：</label>
-                                <input id="richnum" class="px" style="width:70px" tabindex="2" />
-                                <label id="l_4" style="width: 83px;">账单归属：</label>
+                                <input id="richnum" class="px" style="width: 71px;" tabindex="2" />
+                                <label id="l_4" style="width: 82px;">账单归属：</label>
                                 <span class="ftid" style="margin-right: 0;">
-                                    <select id="richtype" class="ps" width="118" tabindex="3" ></select>
+                                    <select id="richtype" class="ps" tabindex="3" ></select>
                                 </span>
                                 <img src="{IMGDIR}/edit.gif" class="aimg" />
                             </ul>
@@ -64,6 +64,13 @@
 <script type="text/javascript" src="{$basedir}js/calculator.js"></script>
 <link type="text/css" href="{$basedir}js/catcomplete.css" rel="stylesheet" />
 <script type="text/javascript" src="{$basedir}js/catcomplete.js"></script>
-<script type="text/javascript" src="{$basedir}js/winmodify.js"></script>
-
+<script language="javascript">
+jQuery.noConflict();
+/*
+ * 计算器
+ */
+jQuery(document).ready(function($) {
+	$("#richnum").calculator();
+});
+</script>
 <!--{template common/footer}-->
