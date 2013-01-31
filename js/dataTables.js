@@ -1123,7 +1123,7 @@
 			});
 
 			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
-				showWindow("modify", "plugin.php?id=account:index&mod=winmodify");
+				showWindow("modify", "plugin.php?id=account:index&mod=winmodify", 'get', 0);
 			});
 
 			var dPrompt = $('<div style="position: absolute;" >\
