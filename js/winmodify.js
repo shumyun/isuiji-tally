@@ -8,16 +8,21 @@
 jQuery.noConflict();
 
 /*
- * 计算器
+ * 修改窗口
  */
 jQuery(document).ready(function($) {
 	$("#richnum").calculator();
 	
-	$("#win_dmodify").detach().appendTo("body").position({
+	$("#ac_dmodify").detach().appendTo("body").position({
 		my: "center center",
 		at: "center center",
 		of: $("body"),
 		offset: "0 -50"
-	}).show();
-	
+	});
+	$("#h3_move").mousedown(function(e){
+		dragMenu($("#ac_dmodify")[0], e, 1);
+	});
+	$("#modify_aclose").click(function(){
+		$("#ac_dmodify").hide();
+	});
 });

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-31
+ *    Last Updated: 2013-02-04
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1123,7 +1123,19 @@
 			});
 
 			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
-				showWindow("modify", "plugin.php?id=account:index&mod=winmodify");
+				var string = '<img src="' + IMGDIR + '/loading.gif"> 请稍等...';
+				_fnSetPrompt(string);
+				_fnShowPrompt();
+				var trData = $(this).closest("tr");
+				var dataobj = new Object();
+				dataobj.onlyid = trData.attr("id");
+				dataobj.isort = trData.attr("sort");
+				$.post("plugin.php?id=account:ajax&func=modifydata&way=g", $.param(dataobj), function(data) {
+					alert(data);
+				}).error(function() {
+					_fnHidePrompt(0);
+					alert("未知错误4");
+				});
 			});
 
 			var dPrompt = $('<div style="position: absolute;" >\
@@ -1133,11 +1145,11 @@
 										<td class="m_c"><h3 class="flb"><em id="datatable_prompt"></em></td>\
 										<td class="m_r"></td></tr>\
 									<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table></div>')
-									.appendTo("body")
-									.position({ my: "center center",
-												at: "center center",
-												of: DataTable.ext.oTable,
-												offset: "-50 -50"}).hide();
+							.appendTo("body")
+							.position({ my: "center center",
+										at: "center center",
+										of: DataTable.ext.oTable,
+										offset: "-50 -50"}).hide();
 
 			DataTable.ext.oOperate = {"DelCtl": aDel, "ChangeCtl": aChange, "PromptCtl": dPrompt};
 		}
@@ -1171,6 +1183,10 @@
 			setTimeout('jQuery("'+DataTable.ext.oApi.fnTransIdForStr()+
 						'").DataTable.ext.oOperate.PromptCtl.hide()',
 						msec);
+		}
+		
+		function _fnModifyData() {
+			;
 		}
 		
 		function _fnDelData(sId, sSort, sname) {
@@ -1310,6 +1326,7 @@
 			"_fnSetPrompt"          : _fnSetPrompt,
 			"_fnShowPrompt"         : _fnShowPrompt,
 			"_fnHidePrompt"         : _fnHidePrompt,
+			"fnModifyData"          : _fnModifyData,
 			"fnDelData"             : _fnDelData,
 			"_fnDelTRData"          : _fnDelTRData,
 			"_fnOperateOut"         : _fnOperateOut,
@@ -1384,7 +1401,8 @@
 		"CountRows"   : {},
 		"Ajax"        : null,
 		"ajParam"     : null,
-		"pagedivId"   : null
+		"pagedivId"   : null,
+		"modifyId"    : null
 	};
 	
 	$.fn.DataTable = DataTable;
@@ -1400,6 +1418,7 @@ jQuery(document).ready(function($) {
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
 		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist",
 		"ajParam"	  : $("#tb_time").attr("data"),
-		"pagedivId"   : "tb_page"
+		"pagedivId"   : "tb_page",
+		"modifyId"    : "ac_dmodify"
 	});
 });
