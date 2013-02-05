@@ -27,6 +27,23 @@ jQuery(document).ready(function($) {
 	});
 	
 	function Setwinmodify(data, fncallback) {
+		switch(data['type']) {
+		case '支出':
+		break;
+		case '收入':
+			break;
+		case '借入':
+			break;
+		case '借出':
+			break;
+		case '转账':
+			break;
+		case '收债':
+			break;
+		case '坏债':
+			break;
+		default:break;
+		}
 		return true;
 	};
 	

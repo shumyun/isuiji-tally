@@ -24,9 +24,9 @@ var acc_changehtml = function(cur, change) {
 /*
  * 初始化数据
  * type	:	0	恢复空数据
- * 			  1	恢复 支出/收入页面
- * 			  2	恢复 转账页面
- * 			  3	恢复 借贷页面
+ * 			1	恢复 支出/收入页面
+ *			2	恢复 转账页面
+ *			3	恢复 借贷页面
  *         (4:负债, 5:借出, 6:还债, 7:收债)
  */
 var set_default = function(type){
@@ -99,88 +99,6 @@ var set_default = function(type){
 	}
 };
 
-/*
- * 获取账单名称
- * force  :  强制更新
- */
-var titledata = {};
-var ajax_radata = function(arr, force){
-	var tmparr = {};
-	var bajax = false;
-	var tmpstr = "";
-	if(force) {
-		tmparr = arr;
-	} else {
-		for (x in arr)
-		{
-			if(arr[x] == "richtype_out")
-				tmpstr = "richtype";
-			else if (arr[x] == "loan" || arr[x] == "debt")
-				tmpstr = "loandebt";
-			else
-				tmpstr = arr[x];
-			
-			if(typeof titledata[tmpstr] == "undefined" || titledata[tmpstr] == "") {
-				tmparr[x] = arr[x];
-				bajax = true;
-			} else {
-				switch(arr[x]) {
-					case "pay":
-					case "earn":
-						jQuery( "#richname" ).catcomplete( "option", "source",  titledata[arr[x]]);
-						break;
-
-					case "richtype":
-					case "richtype_out":
-						acc_simulateSel(arr[x], titledata['richtype']);
-						break;
-						
-					case "loan":
-					case "debt":
-						acc_simulateSel("richtype_out", titledata['loandebt']);
-					default:break;
-				}
-			}
-		}
-	}
-	
-	if( !bajax )
-		return ;
-	
-	jQuery.post("plugin.php?id=account:ajax&func=ra_data", jQuery.param(tmparr), function(data) {
-		var ar_data = (new Function("return " + data))(); //var ar_data = eval('('+data+')');
-		for( x in ar_data) {
-			for (y in ar_data[x]) {
-				if(y == "richtype_out")
-					titledata["richtype"] = ar_data[x][y];
-				else if(y == "loan" || y == "debt")
-					titledata["loandebt"] = ar_data[x][y];
-				else
-					titledata[y] = ar_data[x][y];
-				
-				switch(y) {
-					case "pay":
-					case "earn":
-						jQuery( "#richname" ).catcomplete( "option", "source",  titledata[y]);
-						break;
-						
-					case "richtype":
-					case "richtype_out":
-						acc_simulateSel(y, titledata["richtype"]);
-						break;
-					
-					case "loan":
-					case "debt":
-						acc_simulateSel("richtype_out", titledata["loandebt"]);
-						break;
-						
-					default:break;
-				}
-			}
-		}
-	});
-};
-
 jQuery(document).ready(function($) {
 	$("#li\\.pay").click(function() {
 		var change = $(this).parent().attr("curstatus");
@@ -188,7 +106,9 @@ jQuery(document).ready(function($) {
 			acc_changehtml("li.pay", change);
 			$("#p\\.loandebt").slideUp();
 			set_default(("li\\.earn" != change)?1:0);
-			ajax_radata(["pay"], false);
+			var aData = new Array();
+			aData["pay"] = "richcategory";
+			ajax_getdataparam(aData, false);
 		}
 	});
 	
@@ -198,7 +118,9 @@ jQuery(document).ready(function($) {
 			acc_changehtml("li.earn", change);
 			$("#p\\.loandebt").slideUp();
 			set_default(("li\\.pay" != change)?1:0);
-			ajax_radata(["earn"], false);
+			var aData = new Array();
+			aData["earn"] = "richcategory";
+			ajax_getdataparam(aData, false);
 		}
 	});
 	
@@ -208,7 +130,9 @@ jQuery(document).ready(function($) {
 			acc_changehtml("li.transfer", change);
 			$("#p\\.loandebt").slideUp();
 			set_default(2);
-			ajax_radata(["richtype_out"], false);
+			var aData = new Array();
+			aData["richtype_out"] = "richtype_out";
+			ajax_getdataparam(aData, false);
 		}
 	});
 	
@@ -221,7 +145,9 @@ jQuery(document).ready(function($) {
 			change = $("#p\\.loandebt").attr("curstatus");
 			if ("a.borrow" != change)
 				acc_changehtml("a.borrow", change);
-			ajax_radata(["loan"], false);
+			var aData = new Array();
+			aData["loan"] = "richtype_out";
+			ajax_getdataparam(aData, false);
 		}
 	});
 	
@@ -233,7 +159,9 @@ jQuery(document).ready(function($) {
 		if ("a.borrow" != change) {
 			acc_changehtml("a.borrow", change);
 			set_default(4);
-			ajax_radata(["loan"], false);
+			var aData = new Array();
+			aData["loan"] = "richtype_out";
+			ajax_getdataparam(aData, false);
 		}
 	});
 
@@ -242,7 +170,9 @@ jQuery(document).ready(function($) {
 		if ("a.loan" != change) {
 			acc_changehtml("a.loan", change);
 			set_default(5);
-			ajax_radata(["debt"], false);
+			var aData = new Array();
+			aData["debt"] = "richtype_out";
+			ajax_getdataparam(aData, false);
 		}
 	});
 
@@ -251,7 +181,9 @@ jQuery(document).ready(function($) {
 		if ("a.repay" != change) {
 			acc_changehtml("a.repay", change);
 			set_default(6);
-			ajax_radata(["loan"], false);
+			var aData = new Array();
+			aData["loan"] = "richtype_out";
+			ajax_getdataparam(aData, false);
 		}
 	});
 
@@ -260,7 +192,9 @@ jQuery(document).ready(function($) {
 		if ("a.debt" != change) {
 			acc_changehtml("a.debt", change);
 			set_default(7);
-			ajax_radata(["debt"], false);
+			var aData = new Array();
+			aData["debt"] = "richtype_out";
+			ajax_getdataparam(aData, false);
 		}
 	});
 });
@@ -415,8 +349,10 @@ jQuery(document).ready(function($) {
 	/*
 	 * 获取一些控件的数据
 	 */
-	var arr = ["pay", "richtype"];
-	ajax_radata(arr, false);
+	var arr = new Array();
+	arr["pay"] = "richcategory";
+	arr["richtype"] = "richtype";
+	ajax_getdataparam(arr, false);
 	
 	
 	/*

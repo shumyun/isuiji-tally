@@ -19,7 +19,7 @@ $ac_aresponse = array(
 		'state' => 'ok',
 		'curerr' => '');
 
-if(!isset($_POST['isort'] || !isset($_POST['onlyid'])) {
+if(!isset($_POST['isort']) || !isset($_POST['onlyid'])) {
 	$ac_aresponse['state'] = 'err';
 	$ac_aresponse['curerr'] = 'datetype';
 	//echo "记录时间错误或者ID错误";

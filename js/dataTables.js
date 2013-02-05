@@ -1126,6 +1126,7 @@
 				var string = '<img src="' + IMGDIR + '/loading.gif"> 请稍等...';
 				_fnSetPrompt(string);
 				_fnShowPrompt();
+				/*
 				var trData = $(this).closest("tr");
 				var dataobj = new Object();
 				dataobj.onlyid = trData.attr("id");
@@ -1136,7 +1137,7 @@
 				}).error(function() {
 					_fnHidePrompt(0);
 					alert("未知错误4");
-				});
+				});*/
 			});
 
 			var dPrompt = $('<div style="position: absolute;" >\

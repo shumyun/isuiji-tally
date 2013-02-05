@@ -7,6 +7,7 @@
  */
 
 
+
 /*
  * 模仿common.js 中 simulateSelect 函数
  */
@@ -129,6 +130,8 @@ function acc_simulateSel(selectId, value) {
 	}
 }
 
+
+
 /*
  * jQuery UI tip
  * Depends:
@@ -164,3 +167,86 @@ var destroyTip = function() {
 };
 
 
+
+/*
+ * 控件获取数据(包括账单归属、账单名称、账户等)
+ * aData : 是一组 下标为数据名称,数据为控件ID名称 的数组
+ * force : 强制更新
+ */
+var titledata = {};
+var ajax_getdataparam = function(aData, force) {
+	var tmparr = {};
+	var bajax = false;
+	var tmpstr = "";
+	if(force) {
+		for(var name in aData)
+			tmparr.push(name);
+	} else {
+		var i = 1;
+		for (var name in aData) {
+			if(name == "richtype_out")
+				tmpstr = "richtype";
+			else if (name == "loan" || name == "debt")
+				tmpstr = "loandebt";
+			else
+				tmpstr = name;
+			
+			if(typeof titledata[tmpstr] == "undefined" || titledata[tmpstr] == "") {
+				tmparr[i++] = name;
+				bajax = true;
+			} else {
+				switch(name) {
+					case "pay":
+					case "earn":
+						jQuery( "#"+aData[name] ).catcomplete( "option", "source",  titledata[tmpstr]);
+						break;
+
+					case "richtype":
+					case "richtype_out":
+					case "loan":
+					case "debt":
+						acc_simulateSel(aData[name], titledata[tmpstr]);
+						break;
+						
+					default:break;
+				}
+			}
+		}
+	}
+	
+	if( !bajax )
+		return ;
+	
+	jQuery.post("plugin.php?id=account:ajax&func=getdataparam", jQuery.param(tmparr), function(data) {
+		var aParams = (new Function("return " + data))(); //var ar_data = eval('('+data+')');
+		for(var x in aParams) {
+			for (var y in aParams[x]) {
+				if(y == "richtype_out")
+					titledata["richtype"] = aParams[x][y];
+				else if(y == "loan" || y == "debt")
+					titledata["loandebt"] = aParams[x][y];
+				else
+					titledata[y] = aParams[x][y];
+				
+				switch(y) {
+					case "pay":
+					case "earn":
+						jQuery( "#"+aData[y] ).catcomplete( "option", "source",  titledata[y]);
+						break;
+						
+					case "richtype":
+					case "richtype_out":
+						acc_simulateSel(aData[y], titledata["richtype"]);
+						break;
+					
+					case "loan":
+					case "debt":
+						acc_simulateSel(aData[y], titledata["loandebt"]);
+						break;
+						
+					default:break;
+				}
+			}
+		}
+	});
+};

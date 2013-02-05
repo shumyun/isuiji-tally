@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 
 /**
  *    account v0.1.0
@@ -18,25 +18,20 @@ $ac_aresponse = array(
 		'state' => 'ok',
 		'curerr' => '');
 
-if(!isset($_POST['isort'] || !isset($_POST['onlyid'])) {
+if(!isset($_POST['isort']) || !isset($_POST['onlyid'])) {
 	$ac_aresponse['state'] = 'err';
 	$ac_aresponse['curerr'] = 'datetype';
-	//echo "¼ÇÂ¼Ê±¼ä´íÎó»òÕßID´íÎó";
+	//echo "è®°å½•æ—¶é—´é”™è¯¯æˆ–è€…IDé”™è¯¯";
 	echo json_encode($ac_aresponse);
 	return;
 }
 
 /**
- * Î¨Ò»±êÖ¾
- * uid*(´æ´¢µÄÐÐÊý*10+¸ÃÊý¾ÝËùÔÚµÄ±íµÄºÅÂë)
+ * å”¯ä¸€æ ‡å¿—
+ * uid*(å­˜å‚¨çš„è¡Œæ•°*10+è¯¥æ•°æ®æ‰€åœ¨çš„è¡¨çš„å·ç )
  */
 $tmp = $_POST['onlyid']/$_G['uid'];
 $tableID = $tmp%10;
 $cid = ($tmp-$tableID)/10;
-
-if($_GET['way'] == 'g')
-	echo "hello";
-else if ($_GET['way'] == 's')
-	echo "olleh";
 
 ?>
