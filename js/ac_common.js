@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-30
+ *    Last Updated: 2013-02-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -128,3 +128,39 @@ function acc_simulateSel(selectId, value) {
 		};
 	}
 }
+
+/*
+ * jQuery UI tip
+ * Depends:
+ *	jquery.ui.position.js
+ */
+jQuery.noConflict();
+
+var tipdiv = null, timeID = null;
+
+var errTip = function(domID, str, tippos, timeval) {
+	if(tipdiv != null) {
+		destroyTip();
+	}
+	tipdiv = jQuery('<div class="acc_tip"><div class="acc_tip_' +tippos+ '"><div class="acc_tip_horn"></div>' +str+ '</div></div>')
+	.appendTo("body")
+	.position({
+		of: jQuery(domID),
+		my: "left top",
+		at: "left bottom",
+		collision: "none"
+	});
+	jQuery(domID).focus();
+	timeID = setTimeout("destroyTip()", timeval);
+};
+
+var destroyTip = function() {
+	clearTimeout(timeID);
+	if(tipdiv) {
+		tipdiv.remove();
+	}
+	tipdiv = null;
+	timeID = null;
+};
+
+

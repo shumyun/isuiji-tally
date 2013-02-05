@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-04
+ *    Last Updated: 2013-02-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1131,6 +1131,7 @@
 				dataobj.onlyid = trData.attr("id");
 				dataobj.isort = trData.attr("sort");
 				$.post("plugin.php?id=account:ajax&func=modifydata&way=g", $.param(dataobj), function(data) {
+					_fnHidePrompt(0);
 					alert(data);
 				}).error(function() {
 					_fnHidePrompt(0);

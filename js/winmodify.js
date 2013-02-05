@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-04
+ *    Last Updated: 2013-02-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -25,4 +25,9 @@ jQuery(document).ready(function($) {
 	$("#modify_aclose").click(function(){
 		$("#ac_dmodify").hide();
 	});
+	
+	function Setwinmodify(data, fncallback) {
+		return true;
+	};
+	
 });

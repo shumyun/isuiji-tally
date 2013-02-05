@@ -1,43 +1,12 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-19
+ *    Last Updated: 2013-02-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  *    未知错误使用已经到 3
  */
 jQuery.noConflict();
-
-
-/*
- * jQuery UI tip
- * Depends:
- *	jquery.ui.position.js
- */
-var tipdiv = null, timeID = null;
-var destroyTip = function() {
-	clearTimeout(timeID);
-	if(tipdiv) {
-		tipdiv.remove();
-	}
-	tipdiv = null;
-	timeID = null;
-};
-var errTip = function(dom, str, tippos, timeval) {
-	if(tipdiv != null) {
-		destroyTip();
-	}
-	tipdiv = jQuery('<div class="acc_tip"><div class="acc_tip_' +tippos+ '"><div class="acc_tip_horn"></div>' +str+ '</div></div>')
-	.appendTo("body")
-	.position({
-		of: jQuery(dom),
-		my: "left top",
-		at: "left bottom",
-		collision: "none"
-	});
-	jQuery(dom).focus();
-	timeID = setTimeout("destroyTip()", timeval);
-};
 
 
 /*
@@ -55,9 +24,10 @@ var acc_changehtml = function(cur, change) {
 /*
  * 初始化数据
  * type	:	0	恢复空数据
- * 			1	恢复 支出/收入页面
- * 			2	恢复 转账页面
- * 			3	恢复 借贷页面
+ * 			  1	恢复 支出/收入页面
+ * 			  2	恢复 转账页面
+ * 			  3	恢复 借贷页面
+ *         (4:负债, 5:借出, 6:还债, 7:收债)
  */
 var set_default = function(type){
 	
@@ -606,7 +576,7 @@ jQuery(document).ready(function($) {
 			  				errTip("#richtype_out_ctrl", "归属不存在，请重选或添加该名称", 1, 2500);
 			  				break;
 			  			case "richtype_same":
-							errTip("#richtype_out_ctrl", "转出和转入的归属不能相同", 1, 2500);
+								errTip("#richtype_out_ctrl", "转出和转入的归属不能相同", 1, 2500);
 			  				break;
 			  			case "no_login":
 			  				showWindow('login', 'plugin.php?id=account:index');

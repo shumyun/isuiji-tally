@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-24
+ *    Last Updated: 2013-02-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -19,18 +19,10 @@ $ac_aresponse = array(
 		'state' => 'ok',
 		'curerr' => '');
 
-if(!isset($_POST['isort'])) {
+if(!isset($_POST['isort'] || !isset($_POST['onlyid'])) {
 	$ac_aresponse['state'] = 'err';
 	$ac_aresponse['curerr'] = 'datetype';
-	//echo "记录时间错误";
-	echo json_encode($ac_aresponse);
-	return;
-}
-
-if(!isset($_POST['onlyid'])) {
-	$ac_aresponse['state'] = 'err';
-	$ac_aresponse['curerr'] = 'datetype';
-	//echo "ID错误";
+	//echo "记录时间错误或者ID错误";
 	echo json_encode($ac_aresponse);
 	return;
 }
