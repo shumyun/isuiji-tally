@@ -40,16 +40,16 @@ function setSelvalue(selectId, aVal, val){
 		ul.appendChild(li);
 	}
 	if(!bSelect) {
-		menuObj.getElementsByTagName('li')[0].className = 'current';
+		ul.getElementsByTagName('li')[0].className = 'current';
 		selectObj.setAttribute('selecti', 0);
 		selectObj.innerHTML = aVal[0];
 	}
 	return ul;
 }
 
-function ac_fnSimulateSelect(selectId, value) {
+function ac_fnSimulateSelect(selectId, aVal) {
 	var selectObj = $(selectId);
-	if(!selectObj || !value) return;
+	if(!selectObj || !aVal) return;
 	/*
 	if(BROWSER.other) {
 		if(selectObj.getAttribute('change')) {
@@ -61,13 +61,12 @@ function ac_fnSimulateSelect(selectId, value) {
 	if($(selectId + '_menu')){
 		var menuObj = $(selectId + '_menu');
 		if(!menuObj.removeChild(menuObj.lastChild)) return;
-		var ul = setSelvalue(selectId, value);
+		var ul = setSelvalue(selectId, aVal, selectObj.innerHTML);
 		menuObj.appendChild(ul);
-		$(selectId).style.display = 'block';
+		selectObj.style.display = 'block';
 	} else {
-		var defaultopt = value[0] ? value[0] : '';
 		var menuObj = document.createElement('div');
-		var ul = setSelvalue(selectId, value);
+		var ul = setSelvalue(selectId, aVal, selectObj.innerHTML);
 		var handleKeyDown = function(e) {
 			e = BROWSER.ie ? event : e;
 			if(e.keyCode == 40 || e.keyCode == 38) doane(e);
@@ -81,25 +80,25 @@ function ac_fnSimulateSelect(selectId, value) {
 		$('append_parent').appendChild(menuObj);
 
 		$(selectId).onclick = function(e) {
-			$(selectId + '_menu').style.width = selectwidth;
+			$(selectId + '_menu').style.width = selectObj.style.width;
 			showMenu({'ctrlid':(selectId == 'loginfield' ? 'account' : selectId),'menuid':selectId + '_menu','evt':'click','pos':'43'});
 			doane(e);
 		};
-		$(selectId).onfocus = menuObj.onfocus = function() {
+		selectObj.onfocus = menuObj.onfocus = function() {
 			_attachEvent(document.body, 'keydown', handleKeyDown);
 		};
-		$(selectId).onblur = menuObj.onblur = function() {
+		selectObj.onblur = menuObj.onblur = function() {
 			_detachEvent(document.body, 'keydown', handleKeyDown);
 		};
-		$(selectId).onkeyup = function(e) {
+		selectObj.onkeyup = function(e) {
 			e = e ? e : window.event;
 			value = e.keyCode;
 			if(value == 40 || value == 38) {
 				if(menuObj.style.display == 'none') {
-					$(selectId).onclick();
+					this.onclick();
 				} else {
 					lis = menuObj.getElementsByTagName('li');
-					selecti = selectObj.getAttribute('selecti');
+					selecti = this.getAttribute('selecti');
 					lis[selecti].className = '';
 					if(value == 40) {
 						selecti = parseInt(selecti) + 1;
@@ -112,12 +111,12 @@ function ac_fnSimulateSelect(selectId, value) {
 						selecti = 0;
 					}
 					lis[selecti].className = 'current';
-					selectObj.setAttribute('selecti', selecti);
+					this.setAttribute('selecti', selecti);
 					lis[selecti].parentNode.scrollTop = lis[selecti].offsetTop;
 				}
 			} else if(value == 13) {
 				var lis = menuObj.getElementsByTagName('li');
-				lis[selectObj.getAttribute('selecti')].onclick();
+				lis[this.getAttribute('selecti')].onclick();
 			} else if(value == 27) {
 				hideMenu(menuObj.id);
 			}
