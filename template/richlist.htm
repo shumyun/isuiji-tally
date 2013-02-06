@@ -120,7 +120,7 @@
 
 <!--[diy=diyaccountbottom]--><div id="diyaccountbottom" class="area"></div><!--[/diy]-->
 
-<div id="ac_dmodify" class="fwinmask" style="position: fixed; z-index: 3; display: none;">
+<div id="ac_dmodify" class="fwinmask" style="position: absolute; z-index: 3; display: none;">
 	<table class="fwin" cellspacing="0" cellpadding="0"><tbody><tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>
 	<tr><td class="m_l"></td>
 		<td class="m_c">
@@ -159,12 +159,12 @@
 		            <input id="richnum" class="px" style="width: 71px;" tabindex="2" />
 		            <label id="l_4" style="width: 82px;">账单归属：</label>
 		            <span class="ftid" style="margin-right: 0;">
-		            	<select id="richtype" class="ps" tabindex="3" ></select>
+		            	<a id="richtype" tabindex="3" style="width: 90px;"></a>
 		            </span>
 		            <img src="{IMGDIR}/edit.gif" class="aimg" />
 		          </ul>
 		          <ul class="ul-2">
-		            <textarea name="message" id="message" class="xg1" onkeyup="strLenCalc(this, 'maxlimit')" tabindex="5">此处可输入详细信息，限制最大字数为200。</textarea>
+		            <textarea name="message" id="message" class="xg2" onkeyup="strLenCalc(this, 'maxlimit')" tabindex="5"></textarea>
 		          	<input id="maxlimit" name="maxlimit" type="hidden" />
 		          </ul>
 		        </td>

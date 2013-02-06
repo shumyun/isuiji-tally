@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-05
+ *    Last Updated: 2013-02-06
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -11,59 +11,59 @@
 /*
  * 模仿common.js 中 simulateSelect 函数
  */
-function setSelvalue(selectId, value){
+function setSelvalue(selectId, aVal, val){
 	var selectObj = $(selectId);
 	var ul = document.createElement('ul');
-	
-	for(var i = 0; i < value.length; i++) {
+	var bSelect = false;
+	for(var i = 0; i < aVal.length; i++) {
 		var li = document.createElement('li');
-		li.innerHTML = value[i];
+		li.innerHTML = aVal[i];
 		li.k_id = i;
 		li.k_value = i;
-		if(i == 0) {
+		if(!(val===undefined) && !bSelect && (val == aVal[i])){
 			li.className = 'current';
 			selectObj.setAttribute('selecti', i);
-			selectObj.options.length = 0;
-			selectObj.options[0] = new Option('', li.k_value);
-			eval(selectObj.getAttribute('change'));
-			if($(selectId + '_ctrl'))
-				$(selectId + '_ctrl').innerHTML = value[i];
+			bSelect = true;
 		}
 		li.onclick = function() {
-			var menuObj = $(selectId + '_ctrl_menu');
-			if($(selectId + '_ctrl').innerHTML != this.innerHTML) {
+			var menuObj = $(selectId + '_menu');
+			if(selectObj.innerHTML != this.innerHTML) {
 				var lis = menuObj.getElementsByTagName('li');
-				lis[$(selectId).getAttribute('selecti')].className = '';
+				lis[selectObj.getAttribute('selecti')].className = '';
 				this.className = 'current';
-				$(selectId + '_ctrl').innerHTML = this.innerHTML;
+				selectObj.innerHTML = this.innerHTML;
 				$(selectId).setAttribute('selecti', this.k_id);
-				$(selectId).options.length = 0;
-				$(selectId).options[0] = new Option('', this.k_value);
-				eval(selectObj.getAttribute('change'));
 			}
 			hideMenu(menuObj.id);
 			return false;
 		};
 		ul.appendChild(li);
 	}
+	if(!bSelect) {
+		menuObj.getElementsByTagName('li')[0].className = 'current';
+		selectObj.setAttribute('selecti', 0);
+		selectObj.innerHTML = aVal[0];
+	}
 	return ul;
 }
 
-function acc_simulateSel(selectId, value) {
+function ac_fnSimulateSelect(selectId, value) {
 	var selectObj = $(selectId);
 	if(!selectObj || !value) return;
+	/*
 	if(BROWSER.other) {
 		if(selectObj.getAttribute('change')) {
 			selectObj.onchange = function () {eval(selectObj.getAttribute('change'));}
 		}
 		return;
 	}
-	if($(selectId + '_ctrl_menu') && $(selectId + '_ctrl')){
-		var menuObj = $(selectId + '_ctrl_menu');
+	*/
+	if($(selectId + '_menu')){
+		var menuObj = $(selectId + '_menu');
 		if(!menuObj.removeChild(menuObj.lastChild)) return;
 		var ul = setSelvalue(selectId, value);
 		menuObj.appendChild(ul);
-		jQuery("#"+selectId+"_ctrl").show();
+		$(selectId).style.display = 'block';
 	} else {
 		var defaultopt = value[0] ? value[0] : '';
 		var menuObj = document.createElement('div');
@@ -72,36 +72,31 @@ function acc_simulateSel(selectId, value) {
 			e = BROWSER.ie ? event : e;
 			if(e.keyCode == 40 || e.keyCode == 38) doane(e);
 		};
-		var selectwidth = (selectObj.getAttribute('width', i) ? selectObj.getAttribute('width', i) : 70) + 'px';
-		var tabindex = selectObj.getAttribute('tabindex', i) ? selectObj.getAttribute('tabindex', i) : 1;
-		
-		selectObj.style.display = 'none';
-		selectObj.outerHTML += '<a href="javascript:;" id="' + selectId + '_ctrl" style="width:' + selectwidth + '" tabindex="' + tabindex + '">' + defaultopt + '</a>';
 
-		menuObj.id = selectId + '_ctrl_menu';
+		menuObj.id = selectId + '_menu';
 		menuObj.className = 'sltm';
 		menuObj.style.display = 'none';
-		menuObj.style.width = selectwidth;
+		menuObj.style.width = selectObj.style.width;
 		menuObj.appendChild(ul);
 		$('append_parent').appendChild(menuObj);
 
-		$(selectId + '_ctrl').onclick = function(e) {
-			$(selectId + '_ctrl_menu').style.width = selectwidth;
-			showMenu({'ctrlid':(selectId == 'loginfield' ? 'account' : selectId + '_ctrl'),'menuid':selectId + '_ctrl_menu','evt':'click','pos':'43'});
+		$(selectId).onclick = function(e) {
+			$(selectId + '_menu').style.width = selectwidth;
+			showMenu({'ctrlid':(selectId == 'loginfield' ? 'account' : selectId),'menuid':selectId + '_menu','evt':'click','pos':'43'});
 			doane(e);
 		};
-		$(selectId + '_ctrl').onfocus = menuObj.onfocus = function() {
+		$(selectId).onfocus = menuObj.onfocus = function() {
 			_attachEvent(document.body, 'keydown', handleKeyDown);
 		};
-		$(selectId + '_ctrl').onblur = menuObj.onblur = function() {
+		$(selectId).onblur = menuObj.onblur = function() {
 			_detachEvent(document.body, 'keydown', handleKeyDown);
 		};
-		$(selectId + '_ctrl').onkeyup = function(e) {
+		$(selectId).onkeyup = function(e) {
 			e = e ? e : window.event;
 			value = e.keyCode;
 			if(value == 40 || value == 38) {
 				if(menuObj.style.display == 'none') {
-					$(selectId + '_ctrl').onclick();
+					$(selectId).onclick();
 				} else {
 					lis = menuObj.getElementsByTagName('li');
 					selecti = selectObj.getAttribute('selecti');
@@ -236,12 +231,12 @@ var ajax_getdataparam = function(aData, force) {
 						
 					case "richtype":
 					case "richtype_out":
-						acc_simulateSel(aData[y], titledata["richtype"]);
+						ac_fnSimulateSelect(aData[y], titledata["richtype"]);
 						break;
 					
 					case "loan":
 					case "debt":
-						acc_simulateSel(aData[y], titledata["loandebt"]);
+						ac_fnSimulateSelect(aData[y], titledata["loandebt"]);
 						break;
 						
 					default:break;

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-05
+ *    Last Updated: 2013-02-06
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1126,6 +1126,12 @@
 				var trData = $(this).closest("tr");
 				var dataobj = new Object();
 				dataobj.type = trData.children(":eq(5)").html();
+				dataobj.date = trData.children(":eq(0)").attr("date");
+				dataobj.account = trData.children(":eq(4)").html();
+				dataobj.amount = trData.children(":eq(3)").html();
+				dataobj.msg = trData.children(":eq(6)").html();
+				dataobj.data1 = trData.children(":eq(1)").html();
+				dataobj.data2 = trData.children(":eq(2)").html();
 				Setwinmodify(dataobj);
 				/*
 				var trData = $(this).closest("tr");

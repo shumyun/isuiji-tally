@@ -105,7 +105,7 @@ jQuery(document).ready(function($) {
 			$("#p\\.loandebt").slideUp();
 			set_default(("li\\.earn" != change)?1:0);
 			var aData = new Array();
-			aData["pay"] = "richcategory";
+			aData["pay"] = "richname";
 			ajax_getdataparam(aData, false);
 		}
 	});
@@ -117,7 +117,7 @@ jQuery(document).ready(function($) {
 			$("#p\\.loandebt").slideUp();
 			set_default(("li\\.pay" != change)?1:0);
 			var aData = new Array();
-			aData["earn"] = "richcategory";
+			aData["earn"] = "richname";
 			ajax_getdataparam(aData, false);
 		}
 	});
@@ -348,7 +348,7 @@ jQuery(document).ready(function($) {
 	 * 获取一些控件的数据
 	 */
 	var arr = new Array();
-	arr["pay"] = "richcategory";
+	arr["pay"] = "richname";
 	arr["richtype"] = "richtype";
 	ajax_getdataparam(arr, false);
 	
