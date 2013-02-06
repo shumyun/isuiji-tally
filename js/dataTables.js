@@ -1123,9 +1123,11 @@
 			});
 
 			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
-				var string = '<img src="' + IMGDIR + '/loading.gif"> 请稍等...';
-				_fnSetPrompt(string);
-				_fnShowPrompt();
+				$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
+				var trData = $(this).closest("tr");
+				var dataobj = new Object();
+				dataobj.type = "支出";
+				Setwinmodify(dataobj);
 				/*
 				var trData = $(this).closest("tr");
 				var dataobj = new Object();
@@ -1137,7 +1139,8 @@
 				}).error(function() {
 					_fnHidePrompt(0);
 					alert("未知错误4");
-				});*/
+				});
+				*/
 			});
 
 			var dPrompt = $('<div style="position: absolute;" >\

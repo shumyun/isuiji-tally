@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-05
+ *    Last Updated: 2013-02-06
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  *    未知错误使用已经到 3
@@ -23,10 +23,9 @@ var acc_changehtml = function(cur, change) {
 
 /*
  * 初始化数据
- * type	:	0	恢复空数据
- * 			1	恢复 支出/收入页面
- *			2	恢复 转账页面
- *			3	恢复 借贷页面
+ * type	:	1	恢复 支出/收入页面
+ *				2	恢复 转账页面
+ *				3	恢复 借贷页面
  *         (4:负债, 5:借出, 6:还债, 7:收债)
  */
 var set_default = function(type){
@@ -40,7 +39,6 @@ var set_default = function(type){
 	
 	switch(type){
 		case 1:
-			jQuery("#richtype_out");
 			jQuery("#l_1").html("账单日期：");
 			jQuery("#l_2").html("账单名称：");
 			if(jQuery("#richtype_out_ctrl").length)
