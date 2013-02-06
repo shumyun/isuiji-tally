@@ -8,7 +8,7 @@
 jQuery.noConflict();
 
 
-var Setwinmodify = function (data, fncallback) {
+var Setwinmodify = function (data) {
 	switch(data['type']) {
 		case '支出':
 		case '收入':
@@ -18,7 +18,9 @@ var Setwinmodify = function (data, fncallback) {
 			jQuery("#l_4").html("账单归属：");
 			if(jQuery("#richtype_out_ctrl").length)
 				jQuery("#richtype_out_ctrl").hide();
-			jQuery("#richname").show();
+			var aData = new Array();
+			aData["pay"] = "richcategory";
+			ajax_getdataparam(aData, false);
 			jQuery("#richnamebtn").show();
 			break;
 		case '转账':
@@ -84,7 +86,7 @@ jQuery(document).ready(function($) {
 	});
 	$("#modify_aclose").click(function(){
 		$("#ac_dmodify").hide();
+		jQuery("#datatable").DataTable.ext.oApi.fnModifyData();
 	});
-	
-	
+
 });

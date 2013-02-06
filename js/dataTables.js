@@ -1116,17 +1116,16 @@
 				var msg = '您确定要删除于<label style="color: #f00;">'+trData.children(":eq(0)").attr("title")+
 							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
 							trData.children(":eq(3)").html()+'</label>的记录吗?';
-				hideWindow("change");
 				showDialog(msg, "confirm", "操作提示",
 						'jQuery("'+DataTable.ext.oApi.fnTransIdForStr()+'").DataTable.ext.oApi.fnDelData("'
 						+trData.attr("id")+'", "'+trData.attr("sort")+'", "'+trData.children(":eq(5)").html()+'")');
 			});
 
 			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
-				$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
+				//$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
 				var trData = $(this).closest("tr");
 				var dataobj = new Object();
-				dataobj.type = "支出";
+				dataobj.type = trData.children(":eq(5)").html();
 				Setwinmodify(dataobj);
 				/*
 				var trData = $(this).closest("tr");

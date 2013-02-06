@@ -161,7 +161,7 @@
 			.ac_winmodify table th, .acexfm ac_winmodify td { padding: 4px 2px; }
 			.ac_winmodify table th { width: 145px; }
 			/* 账单填写区域 */
-			.modifyarea { width: 380px; }
+			.modifyarea { width: 375px; }
 				.modifyarea .ul-1 { height: 30px; }
 				.modifyarea .ul-2 { height: 60px; }
 				.modifyarea label { cursor: default; float: left; text-align: right; vertical-align: middle; width: 80px; line-height: 22px; }
@@ -171,8 +171,7 @@
 					.ie6 .modifyarea textarea { height:60px; }
 				.modifyarea img { float: left; }
 				.modifyarea .aimg { cursor: pointer; margin-left: 1px; margin-top: 2px; }
-			.modifyarea .aimg { cursor: pointer; float: left; margin-left: 10px; margin-top: 2px; }
-			.modifyarea .txtlabel {cursor: default; float: left; margin-top: 10px; margin-left: 5px; vertical-align: middle; line-height: 22px;}
+				.modifyarea .txtlabel {cursor: default; float: left; margin-top: 10px; margin-left: 5px; vertical-align: middle; line-height: 22px;}
 				
 		/* 账单图片 */
 		.ac_winmodify .avatar a { position: relative; }
