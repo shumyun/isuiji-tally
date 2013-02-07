@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-04
+ *    Last Updated: 2013-02-07
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -171,7 +171,7 @@
 					.ie6 .modifyarea textarea { height:60px; }
 				.modifyarea img { float: left; }
 				.modifyarea .aimg { cursor: pointer; margin-left: 1px; margin-top: 2px; }
-				.modifyarea .txtlabel {cursor: default; float: left; margin-top: 10px; margin-left: 5px; vertical-align: middle; line-height: 22px;}
+			.winmodify_txtlabel {cursor: default; float: left; margin-top: 5px; margin-left: 10px; vertical-align: middle; line-height: 22px;}
 				
 		/* 账单图片 */
 		.ac_winmodify .avatar a { position: relative; }

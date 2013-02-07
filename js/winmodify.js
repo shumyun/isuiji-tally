@@ -31,10 +31,11 @@ var Setwinmodify = function (data, ctl) {
 			jQuery("#richcategory").val(data["data2"]);
 			jQuery("#richnum").val(data["amount"]);
 			jQuery("#message").val(data["msg"]);
-			jQuery("#message").val(data["msg"]);
 			ac_setSelvalue("richtype", data["account"]);
+			jQuery("#richname").show();
 			jQuery("#richnamebtn").show();
 			break;
+			
 		case '转账':
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
@@ -42,48 +43,82 @@ var Setwinmodify = function (data, ctl) {
 			jQuery("#l_2").html("转出归属：");
 			jQuery("#l_3").html("转账金额：");
 			jQuery("#l_4").html("转入归属：");
+			aData["richtype_out"] = "richtype_out";
+			ajax_getdataparam(aData, false);
+			ac_setSelvalue("richtype_out", data["data2"]);
+			jQuery("#richtype_out").show();
+			ac_setSelvalue("richtype", data["account"]);
+			jQuery("#richnum").val(data["amount"]);
+			jQuery("#message").val(data["msg"]);
 			break;
+			
 		case '借入':
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
 			jQuery("#l_1").html("负债日期：");
-			jQuery("#l_2").html("负债账户：");
+			jQuery("#l_2").html("债权账户：");
 			jQuery("#l_3").html("负债金额：");
 			jQuery("#l_4").html("存入归属：");
+			aData["loan"] = "richtype_out";
+			ajax_getdataparam(aData, false);
+			ac_setSelvalue("richtype_out", data["data2"]);
+			jQuery("#richtype_out").show();
+			ac_setSelvalue("richtype", data["account"]);
+			jQuery("#richnum").val(data["amount"]);
+			jQuery("#message").val(data["msg"]);
 			break;
 		case '借出':
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
 			jQuery("#l_1").html("借出日期：");
-			jQuery("#l_2").html("债权账户：");
+			jQuery("#l_2").html("负债账户：");
 			jQuery("#l_3").html("借出金额：");
 			jQuery("#l_4").html("借出归属：");
+			aData["debt"] = "richtype_out";
+			ajax_getdataparam(aData, false);
+			ac_setSelvalue("richtype_out", data["data2"]);
+			jQuery("#richtype_out").show();
+			ac_setSelvalue("richtype", data["account"]);
+			jQuery("#richnum").val(data["amount"]);
+			jQuery("#message").val(data["msg"]);
 			break;
 		case '收债':
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
 			jQuery("#l_1").html("收债日期：");
-			jQuery("#l_2").html("债权账户：");
+			jQuery("#l_2").html("负债账户：");
 			jQuery("#l_3").html("收债金额：");
 			jQuery("#l_4").html("存入归属：");
+			aData["debt"] = "richtype_out";
+			ajax_getdataparam(aData, false);
+			ac_setSelvalue("richtype_out", data["data2"]);
+			jQuery("#richtype_out").show();
+			ac_setSelvalue("richtype", data["account"]);
+			jQuery("#richnum").val(data["amount"]);
+			jQuery("#message").val(data["msg"]);
 			break;
 		case '还债':
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
 			jQuery("#l_1").html("还债日期：");
-			jQuery("#l_2").html("负债账户：");
+			jQuery("#l_2").html("债权账户：");
 			jQuery("#l_3").html("还债金额：");
 			jQuery("#l_4").html("还债归属：");
+			aData["loan"] = "richtype_out";
+			ajax_getdataparam(aData, false);
+			ac_setSelvalue("richtype_out", data["data2"]);
+			jQuery("#richtype_out").show();
+			ac_setSelvalue("richtype", data["account"]);
+			jQuery("#richnum").val(data["amount"]);
+			jQuery("#message").val(data["msg"]);
 			break;
 		default:break;
 	}
-	jQuery(document).ready(function($) {
-		$("#ac_dmodify").show().position({
-			my: "left center",
-			at: "center center",
-			of: $(ctl),
-			offset: "-50 0"
-		});
+	jQuery("#ac_dmodify").show().position({
+		my: "left center",
+		at: "center center",
+		of: jQuery(ctl),
+		offset: "-50 0"
 	});
 	return true;
 }
@@ -99,6 +134,7 @@ jQuery(document).ready(function($) {
 	//获取归属的数据
 	var aData = new Array();
 	aData["richtype"] = "richtype";
+	aData["loan"] = "richtype_out";
 	ajax_getdataparam(aData, false);
 	
 	/*
@@ -140,8 +176,18 @@ jQuery(document).ready(function($) {
 		$("#ac_dmodify").hide();
 		jQuery("#datatable").DataTable.ext.oApi.fnModifyData();
 	});
+	$("#modify_cancel").click(function(){
+		$("#ac_dmodify").hide();
+		jQuery("#datatable").DataTable.ext.oApi.fnModifyData();
+	});
 	
 	//整个控件的初始化
 	$("#ac_dmodify").detach().appendTo("body");
 
+	$("#modify_submit").click(function() {
+		if( $("#richnum").val() == '' ) {
+			errTip("#richnum", "金额不能为空", 1, 2500);
+			return ;
+		}
+	});
 });

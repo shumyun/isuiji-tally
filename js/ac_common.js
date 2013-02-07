@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-06
+ *    Last Updated: 2013-02-07
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -151,6 +151,8 @@ var errTip = function(domID, str, tippos, timeval) {
 		at: "left bottom",
 		collision: "none"
 	});
+	if(tipdiv.css("z-index") < jQuery(domID).css("z-index"))
+		tipdiv.css("z-index", parseInt(jQuery(domID).css("z-index"))+1);
 	jQuery(domID).focus();
 	timeID = setTimeout("destroyTip()", timeval);
 };
@@ -179,6 +181,7 @@ var ajax_getdataparam = function(aData, force) {
 	if(force) {
 		for(var name in aData)
 			tmparr.push(name);
+		bajax = true;
 	} else {
 		var i = 1;
 		for (var name in aData) {

@@ -36,6 +36,8 @@ var set_default = function(type){
 	jQuery("#richcategory").val('');
 	jQuery("#richname").val('');
 	jQuery("#message").val('').blur();
+
+	ac_setSelvalue("richtype");
 	
 	switch(type){
 		case 1:
@@ -68,28 +70,28 @@ var set_default = function(type){
 			
 		case 4:
 			jQuery("#l_1").html("负债日期：");
-			jQuery("#l_2").html("负债账户：");
+			jQuery("#l_2").html("债权账户：");
 			jQuery("#l_3").html("负债金额：");
 			jQuery("#l_4").html("存入归属：");
 			break;
 			
 		case 5:
 			jQuery("#l_1").html("借出日期：");
-			jQuery("#l_2").html("债权账户：");
+			jQuery("#l_2").html("负债账户：");
 			jQuery("#l_3").html("借出金额：");
 			jQuery("#l_4").html("借出归属：");
 			break;
 			
 		case 6:
 			jQuery("#l_1").html("还债日期：");
-			jQuery("#l_2").html("负债账户：");
+			jQuery("#l_2").html("债权账户：");
 			jQuery("#l_3").html("还债金额：");
 			jQuery("#l_4").html("还债归属：");
 			break;
 			
 		case 7:
 			jQuery("#l_1").html("收债日期：");
-			jQuery("#l_2").html("债权账户：");
+			jQuery("#l_2").html("负债账户：");
 			jQuery("#l_3").html("收债金额：");
 			jQuery("#l_4").html("存入归属：");
 			break;
@@ -417,7 +419,7 @@ jQuery(document).ready(function($) {
 					return ;
 				dataobj.richcategory = $("#richcategory").val();
 				dataobj.richname = $("#richname").val();
-				dataobj.richtype = $("#richtype").html();
+				dataobj.richtype = $("#richtype").attr("selecti");
 				break;
 				
 			case "li.earn":
@@ -427,7 +429,7 @@ jQuery(document).ready(function($) {
 					return ;
 				dataobj.richcategory = $("#richcategory").val();
 				dataobj.richname = $("#richname").val();
-				dataobj.richtype = $("#richtype").html();
+				dataobj.richtype = $("#richtype").attr("selecti");
 				break;
 				
 			case "li.transfer":
@@ -436,8 +438,8 @@ jQuery(document).ready(function($) {
 					return ;
 				}
 				dataobj.curstatus = "transfer";
-				dataobj.richtype_out = $("#richtype_out").val();
-				dataobj.richtype = $("#richtype").html();
+				dataobj.richtype_out = $("#richtype_out").attr("selecti");
+				dataobj.richtype = $("#richtype").attr("selecti");
 				break;
 				
 			case "li.loandebt":
@@ -458,8 +460,8 @@ jQuery(document).ready(function($) {
 						alert("未知错误3");
 						return;
 				}
-				dataobj.loandebt = $("#richtype_out").html();
-				dataobj.richtype = $("#richtype").html();
+				dataobj.loandebt = $("#richtype_out").attr("selecti");
+				dataobj.richtype = $("#richtype").attr("selecti");
 				break;
 				
 			default:

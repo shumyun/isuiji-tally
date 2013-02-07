@@ -129,7 +129,7 @@
 				<em>您正在修改数据中...</em>
 				<span><a id="modify_aclose" class="flbc" title="关闭">关闭</a></span>
 			</h3>
-			<form action="" method="" enctype="multipart/form-data" autocomplete="off" onsubmit="">
+			<form enctype="multipart/form-data" autocomplete="off">
 			<input type="hidden" value="{FORMHASH}" name="formhash" />
 		  	<div class="ac_winmodify" style="margin-top: 1px;"  id="richaddlist">
 		    	<table cellspacing="0" cellpadding="0">
@@ -147,7 +147,7 @@
 		          	<input id="richdate" type="text" readonly="readonly" onclick="showcalendar(event, this)" class="px"  tabindex="4" />
 		          	<label id="l_2">账单名称：</label>
 		          	<span class="ftid" style="margin-right: 0;">
-		          		<a id="richtype_out" tabindex="4" style="width: 80px; display: none;"></a>
+		          		<a id="richtype_out" tabindex="4" style="width: 90px; display: none;"></a>
 		            </span>
 		           	<input id="richcategory" type="hidden" value="" />
 		            <input id="richname" class="px" style="width: 80px;" tabindex="1" />
@@ -169,11 +169,14 @@
 		          </ul>
 		        </td>
 		        <td>
-		        	<ul class="ul-2" style="cursor: default;"></ul>
-		        	<ul class="ul-2">
-		          	<img src="{IMGDIR}/mood_input_btn.png" class="aimg" id="richaddbtn" />
-		          	<label class="txtlabel" >当前金额<br/>单位：元(￥)</label>
-		          </ul>
+		          <ul class="ul-2" style="cursor: default;"></ul>
+		          <ul class="ul-1">
+                    <label class="winmodify_txtlabel" >当前单位：元(￥)</label>
+                  </ul>
+                  <ul class="ul-1">
+                    <button id="modify_submit" class="pn pnc" style="float: left; margin-left: 10px; margin-top: 7px;" type="button"><strong>修改</strong></button>
+                    <button id="modify_cancel" class="pn" style="float: left; margin-top: 7px;" type="button"><strong>取消</strong></button>
+                  </ul>
 		        </td>
 		      </table>
 		    </div>
