@@ -1132,21 +1132,8 @@
 				dataobj.data1 = trData.children(":eq(1)").html();
 				dataobj.data2 = trData.children(":eq(2)").html();
 				Setwinmodify(dataobj, this);
-				trData.children(":eq(0)").html("");
 				$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
-				/*
-				var trData = $(this).closest("tr");
-				var dataobj = new Object();
-				dataobj.onlyid = trData.attr("id");
-				dataobj.isort = trData.attr("sort");
-				$.post("plugin.php?id=account:ajax&func=modifydata&way=g", $.param(dataobj), function(data) {
-					_fnHidePrompt(0);
-					alert(data);
-				}).error(function() {
-					_fnHidePrompt(0);
-					alert("未知错误4");
-				});
-				*/
+				trData.children(":eq(0)").children().detach();
 			});
 
 			var dPrompt = $('<div style="position: absolute;" >\
@@ -1197,7 +1184,6 @@
 		}
 		
 		function _fnModifyData(adata) {
-			
 			var oOperate = DataTable.ext.oOperate;
 			$("tbody > tr[sort]", $(DataTable.ext.oTable))
 			.bind("mouseenter.DT", function () {

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-06
+ *    Last Updated: 2013-02-07
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -16,21 +16,23 @@ var Setwinmodify = function (data, ctl) {
 	var aData = new Array();
 	switch(data["type"]) {
 		case '支出':
-			aData["pay"] = "richname";
 		case '收入':
-			if(data['type'] == '收入')
-				aData["earn"] = "richname";
-			ajax_getdataparam(aData, false);
+			jQuery("#richtype_out").hide();
 			jQuery("#l_1").html("账单日期：");
 			jQuery("#l_2").html("账单名称：");
 			jQuery("#l_3").html("账单金额：");
 			jQuery("#l_4").html("账单归属：");
+			if(data['type'] == '支出')
+				aData["pay"] = "richname";
+			else
+				aData["earn"] = "richname";
+			ajax_getdataparam(aData, false);
 			jQuery("#richname").val(data["data1"]);
 			jQuery("#richcategory").val(data["data2"]);
 			jQuery("#richnum").val(data["amount"]);
 			jQuery("#message").val(data["msg"]);
-			if(jQuery("#richtype_out_ctrl").length)
-				jQuery("#richtype_out_ctrl").hide();
+			jQuery("#message").val(data["msg"]);
+			ac_setSelvalue("richtype", data["account"]);
 			jQuery("#richnamebtn").show();
 			break;
 		case '转账':

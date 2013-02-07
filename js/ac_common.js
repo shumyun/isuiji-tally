@@ -11,19 +11,18 @@
 /*
  * 模仿common.js 中 simulateSelect 函数
  */
-function setSelvalue(selectId, aVal, val){
+function ac_setSelect(selectId, aVal){
 	var selectObj = $(selectId);
 	var ul = document.createElement('ul');
-	var bSelect = false;
 	for(var i = 0; i < aVal.length; i++) {
 		var li = document.createElement('li');
 		li.innerHTML = aVal[i];
 		li.k_id = i;
 		li.k_value = i;
-		if(!(val===undefined) && !bSelect && (val == aVal[i])){
+		if(!i) {
 			li.className = 'current';
 			selectObj.setAttribute('selecti', i);
-			bSelect = true;
+			selectObj.innerHTML = aVal[i];
 		}
 		li.onclick = function() {
 			var menuObj = $(selectId + '_menu');
@@ -39,12 +38,26 @@ function setSelvalue(selectId, aVal, val){
 		};
 		ul.appendChild(li);
 	}
-	if(!bSelect) {
-		ul.getElementsByTagName('li')[0].className = 'current';
-		selectObj.setAttribute('selecti', 0);
-		selectObj.innerHTML = aVal[0];
-	}
 	return ul;
+}
+
+function ac_setSelvalue(selectId, val) {
+	var menuObj = $(selectId + '_menu');
+	var selectObj = $(selectId);
+	for(var i = 0; i< menuObj.getElementsByTagName('li').length; i++) {
+		var li = menuObj.getElementsByTagName('li')[i];
+		li.className = '';
+		if(!(val===undefined) && (val == li.innerHTML)) {
+			li.className = 'current';
+			selectObj.setAttribute('selecti', i);
+			selectObj.innerHTML = li.innerHTML;
+			return true;
+		}
+	}
+	menuObj.getElementsByTagName('li')[0].className = 'current';
+	selectObj.setAttribute('selecti', 0);
+	selectObj.innerHTML = menuObj.getElementsByTagName('li')[0].innerHTML;
+	return true;
 }
 
 function ac_fnSimulateSelect(selectId, aVal) {
@@ -53,11 +66,11 @@ function ac_fnSimulateSelect(selectId, aVal) {
 	if($(selectId + '_menu')){
 		var menuObj = $(selectId + '_menu');
 		if(!menuObj.removeChild(menuObj.lastChild)) return;
-		var ul = setSelvalue(selectId, aVal, selectObj.innerHTML);
+		var ul = ac_setSelect(selectId, aVal);
 		menuObj.appendChild(ul);
 	} else {
 		var menuObj = document.createElement('div');
-		var ul = setSelvalue(selectId, aVal, selectObj.innerHTML);
+		var ul = ac_setSelect(selectId, aVal);
 		var handleKeyDown = function(e) {
 			e = BROWSER.ie ? event : e;
 			if(e.keyCode == 40 || e.keyCode == 38) doane(e);
