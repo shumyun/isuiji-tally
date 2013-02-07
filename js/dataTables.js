@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-06
+ *    Last Updated: 2013-02-07
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1122,7 +1122,6 @@
 			});
 
 			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
-				//$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
 				var trData = $(this).closest("tr");
 				var dataobj = new Object();
 				dataobj.type = trData.children(":eq(5)").html();
@@ -1132,7 +1131,9 @@
 				dataobj.msg = trData.children(":eq(6)").html();
 				dataobj.data1 = trData.children(":eq(1)").html();
 				dataobj.data2 = trData.children(":eq(2)").html();
-				Setwinmodify(dataobj);
+				Setwinmodify(dataobj, this);
+				trData.children(":eq(0)").html("");
+				$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
 				/*
 				var trData = $(this).closest("tr");
 				var dataobj = new Object();
@@ -1195,8 +1196,24 @@
 						msec);
 		}
 		
-		function _fnModifyData() {
-			;
+		function _fnModifyData(adata) {
+			
+			var oOperate = DataTable.ext.oOperate;
+			$("tbody > tr[sort]", $(DataTable.ext.oTable))
+			.bind("mouseenter.DT", function () {
+				$(this).children(":eq(0)").html("")
+				.append(oOperate.DelCtl).append('<span class="pipe">|</span>').append(oOperate.ChangeCtl);})
+			.bind("mouseleave.DT", function () {
+				$(this).children(":eq(0)").children().detach();
+				if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
+					var date=new Date($(this).children(":eq(0)").attr("date"));
+					var month = parseInt(date.getMonth()) + 1;
+					var idate = parseInt(date.getDate());
+					$(this).children(":eq(0)")
+					.html(date.getFullYear()+"."
+								+(month<10 ? ("0"+month):month)+"."
+								+(idate<10 ? ("0"+idate):idate));
+				}});
 		}
 		
 		function _fnDelData(sId, sSort, sname) {

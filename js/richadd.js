@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-06
+ *    Last Updated: 2013-02-07
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  *    未知错误使用已经到 3
@@ -41,8 +41,7 @@ var set_default = function(type){
 		case 1:
 			jQuery("#l_1").html("账单日期：");
 			jQuery("#l_2").html("账单名称：");
-			if(jQuery("#richtype_out_ctrl").length)
-				jQuery("#richtype_out_ctrl").hide();
+			jQuery("#richtype_out").hide();
 			jQuery("#richname").show();
 			jQuery("#richnamebtn").show();
 			jQuery("#s_help").show();
@@ -56,6 +55,7 @@ var set_default = function(type){
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
 			jQuery("#s_help").hide();
+			jQuery("#richtype_out").show();
 			jQuery("#l_3").html("转账金额：");
 			jQuery("#l_4").html("转入归属：");
 			break;
@@ -64,6 +64,7 @@ var set_default = function(type){
 			jQuery("#richname").hide();
 			jQuery("#richnamebtn").hide();
 			jQuery("#s_help").hide();
+			jQuery("#richtype_out").show();
 			
 		case 4:
 			jQuery("#l_1").html("负债日期：");
@@ -394,6 +395,10 @@ jQuery(document).ready(function($) {
 			errTip("#richnum", "金额不能为空", 1, 2500);
 			return ;
 		}
+		if($("#richtype").html() == '') {
+			errTip("#richtype", "无数据请刷新页面", 1, 2500);
+			return ;
+		}
 		/*
 		var pyarr = pinyin($("#richname").val(), true);
 		var pystr = '';
@@ -412,7 +417,7 @@ jQuery(document).ready(function($) {
 					return ;
 				dataobj.richcategory = $("#richcategory").val();
 				dataobj.richname = $("#richname").val();
-				dataobj.richtype = $("#richtype").val();
+				dataobj.richtype = $("#richtype").html();
 				break;
 				
 			case "li.earn":
@@ -422,17 +427,17 @@ jQuery(document).ready(function($) {
 					return ;
 				dataobj.richcategory = $("#richcategory").val();
 				dataobj.richname = $("#richname").val();
-				dataobj.richtype = $("#richtype").val();
+				dataobj.richtype = $("#richtype").html();
 				break;
 				
 			case "li.transfer":
-				if($("#richtype").val() == $("#richtype_out").val()) {
-					errTip("#richtype_out_ctrl", "转出和转入的归属不能相同", 1, 2500);
+				if($("#richtype").html() == $("#richtype_out").html()) {
+					errTip("#richtype_out", "转出和转入的归属不能相同", 1, 2500);
 					return ;
 				}
 				dataobj.curstatus = "transfer";
 				dataobj.richtype_out = $("#richtype_out").val();
-				dataobj.richtype = $("#richtype").val();
+				dataobj.richtype = $("#richtype").html();
 				break;
 				
 			case "li.loandebt":
@@ -453,8 +458,8 @@ jQuery(document).ready(function($) {
 						alert("未知错误3");
 						return;
 				}
-				dataobj.loandebt = $("#richtype_out").val();
-				dataobj.richtype = $("#richtype").val();
+				dataobj.loandebt = $("#richtype_out").html();
+				dataobj.richtype = $("#richtype").html();
 				break;
 				
 			default:
@@ -504,13 +509,13 @@ jQuery(document).ready(function($) {
 			  				errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
 			  				break;
 			  			case "richtype":
-			  				errTip("#richtype_ctrl", "归属不存在，请重选或添加该名称", 1, 2500);
+			  				errTip("#richtype", "归属不存在，请重选或添加该名称", 1, 2500);
 			  				break;
 			  			case "richtype_out":
-			  				errTip("#richtype_out_ctrl", "归属不存在，请重选或添加该名称", 1, 2500);
+			  				errTip("#richtype_out", "归属不存在，请重选或添加该名称", 1, 2500);
 			  				break;
 			  			case "richtype_same":
-								errTip("#richtype_out_ctrl", "转出和转入的归属不能相同", 1, 2500);
+								errTip("#richtype_out", "转出和转入的归属不能相同", 1, 2500);
 			  				break;
 			  			case "no_login":
 			  				showWindow('login', 'plugin.php?id=account:index');

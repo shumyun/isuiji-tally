@@ -8,7 +8,7 @@
 jQuery.noConflict();
 
 
-var Setwinmodify = function (data) {
+var Setwinmodify = function (data, ctl) {
 
 	var ac_date = new Date(data["date"]);
 	jQuery("#richdate").val(ac_date.getFullYear()+'-'+(ac_date.getMonth()+1)+'-'+ac_date.getDate());
@@ -75,7 +75,14 @@ var Setwinmodify = function (data) {
 			break;
 		default:break;
 	}
-	jQuery("#ac_dmodify").show();
+	jQuery(document).ready(function($) {
+		$("#ac_dmodify").show().position({
+			my: "left center",
+			at: "center center",
+			of: $(ctl),
+			offset: "-50 0"
+		});
+	});
 	return true;
 }
 
@@ -133,11 +140,6 @@ jQuery(document).ready(function($) {
 	});
 	
 	//整个控件的初始化
-	$("#ac_dmodify").detach().appendTo("body").position({
-		my: "center center",
-		at: "center center",
-		of: $("body"),
-		offset: "0 -50"
-	});
+	$("#ac_dmodify").detach().appendTo("body");
 
 });

@@ -50,20 +50,11 @@ function setSelvalue(selectId, aVal, val){
 function ac_fnSimulateSelect(selectId, aVal) {
 	var selectObj = $(selectId);
 	if(!selectObj || !aVal) return;
-	/*
-	if(BROWSER.other) {
-		if(selectObj.getAttribute('change')) {
-			selectObj.onchange = function () {eval(selectObj.getAttribute('change'));}
-		}
-		return;
-	}
-	*/
 	if($(selectId + '_menu')){
 		var menuObj = $(selectId + '_menu');
 		if(!menuObj.removeChild(menuObj.lastChild)) return;
 		var ul = setSelvalue(selectId, aVal, selectObj.innerHTML);
 		menuObj.appendChild(ul);
-		selectObj.style.display = 'block';
 	} else {
 		var menuObj = document.createElement('div');
 		var ul = setSelvalue(selectId, aVal, selectObj.innerHTML);
@@ -79,8 +70,8 @@ function ac_fnSimulateSelect(selectId, aVal) {
 		menuObj.appendChild(ul);
 		$('append_parent').appendChild(menuObj);
 
-		$(selectId).onclick = function(e) {
-			$(selectId + '_menu').style.width = selectObj.style.width;
+		selectObj.onclick = function(e) {
+			$(selectId + '_menu').style.width = this.style.width;
 			showMenu({'ctrlid':(selectId == 'loginfield' ? 'account' : selectId),'menuid':selectId + '_menu','evt':'click','pos':'43'});
 			doane(e);
 		};
@@ -199,7 +190,7 @@ var ajax_getdataparam = function(aData, force) {
 					case "richtype_out":
 					case "loan":
 					case "debt":
-						acc_simulateSel(aData[name], titledata[tmpstr]);
+						ac_fnSimulateSelect(aData[name], titledata[tmpstr]);
 						break;
 						
 					default:break;
