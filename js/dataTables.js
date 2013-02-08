@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-07
+ *    Last Updated: 2013-02-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1124,13 +1124,15 @@
 			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
 				var trData = $(this).closest("tr");
 				var dataobj = new Object();
-				dataobj.type = trData.children(":eq(5)").html();
-				dataobj.date = trData.children(":eq(0)").attr("date");
+				dataobj.onlyid  = trData.attr("id");
+				dataobj.isort   = trData.attr("sort");
+				dataobj.type    = trData.children(":eq(5)").html();
+				dataobj.date    = trData.children(":eq(0)").attr("date");
 				dataobj.account = trData.children(":eq(4)").html();
-				dataobj.amount = trData.children(":eq(3)").html();
-				dataobj.msg = trData.children(":eq(6)").html();
-				dataobj.data1 = trData.children(":eq(1)").html();
-				dataobj.data2 = trData.children(":eq(2)").html();
+				dataobj.amount  = trData.children(":eq(3)").html();
+				dataobj.msg     = trData.children(":eq(6)").html();
+				dataobj.data1   = trData.children(":eq(1)").html();
+				dataobj.data2   = trData.children(":eq(2)").html();
 				Setwinmodify(dataobj, this);
 				$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
 				trData.children(":eq(0)").children().detach();

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-07
+ *    Last Updated: 2013-02-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -143,7 +143,7 @@ var errTip = function(domID, str, tippos, timeval) {
 	if(tipdiv != null) {
 		destroyTip();
 	}
-	tipdiv = jQuery('<div class="acc_tip"><div class="acc_tip_' +tippos+ '"><div class="acc_tip_horn"></div>' +str+ '</div></div>')
+	tipdiv = jQuery('<div class="acc_tip" style="position: absolute; z-index: 301;"><div class="acc_tip_' +tippos+ '"><div class="acc_tip_horn"></div>' +str+ '</div></div>')
 	.appendTo("body")
 	.position({
 		of: jQuery(domID),
@@ -151,8 +151,6 @@ var errTip = function(domID, str, tippos, timeval) {
 		at: "left bottom",
 		collision: "none"
 	});
-	if(tipdiv.css("z-index") < jQuery(domID).css("z-index"))
-		tipdiv.css("z-index", parseInt(jQuery(domID).css("z-index"))+1);
 	jQuery(domID).focus();
 	timeID = setTimeout("destroyTip()", timeval);
 };
@@ -250,4 +248,30 @@ var ajax_getdataparam = function(aData, force) {
 			}
 		}
 	});
+};
+
+
+/*
+ * 测试支出和收入数据
+ * return  :  false  出现错误数据
+ *         :  true   正确
+ */
+var fncatcompletetest = function(catcompletedata, fData, fId, sData){
+	var berr = true;
+	var tempstr = "";
+	for (x in catcompletedata) {
+		if( catcompletedata[x].label.match(sData)) {
+			if( catcompletedata[x].category == fData) {
+				tempstr = catcompletedata[x].category;
+				berr = false;
+				break;
+			} else {
+				tempstr = catcompletedata[x].category;
+				berr = false;
+			}
+		}
+	}
+	if(berr) return false;
+	jQuery("#"+fId).val(tempstr);
+	return true;
 };

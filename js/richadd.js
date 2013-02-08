@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-07
+ *    Last Updated: 2013-02-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  *    未知错误使用已经到 3
@@ -281,41 +281,6 @@ var addamount = function(dataobj, chart){
 };
 
 
-/*
- * 支出/收入时测试数据状况
- * return  :  false  出现错误数据
- *         :  true   正确
- */
-var test_earnpay = function(catcompletedata){
-	
-	if ( jQuery("#richname").val() == '' ) {
-		errTip("#richname", "名称不能为空", 1, 2500);
-		return false;
-	}
-
-	var berr = true;
-	var tempstr = "";
-	for (x in catcompletedata) {
-		if( catcompletedata[x].label.match(jQuery("#richname").val())) {
-			if( catcompletedata[x].category == jQuery("#richcategory").val()) {
-				tempstr = catcompletedata[x].category;
-				berr = false;
-				break;
-			} else {
-				tempstr = catcompletedata[x].category;
-				berr = false;
-			}
-		}
-	}
-	if(berr) {
-		errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
-		return false;
-	}
-	jQuery("#richcategory").val(tempstr);
-	return true;
-};
-
-
 jQuery(document).ready(function($) {
 	
 	/*
@@ -393,43 +358,50 @@ jQuery(document).ready(function($) {
 				  offset: "-50 -50"
 				}).hide();
 	$("#richaddbtn").click( function() {
+		
 		if( $("#richnum").val() == '' ) {
 			errTip("#richnum", "金额不能为空", 1, 2500);
 			return ;
 		}
+		dataobj.richnum  = $("#richnum").val();
+		
 		if($("#richtype").html() == '') {
 			errTip("#richtype", "无数据请刷新页面", 1, 2500);
 			return ;
 		}
-		/*
-		var pyarr = pinyin($("#richname").val(), true);
-		var pystr = '';
-		for (x in pyarr){
-			pystr = pystr + pyarr[x].substring(0, 1).toLowerCase();
-		}
-		*/
-		var catcompletedata = "";
+		dataobj.richtype = $("#richtype").attr("selecti");
 		
+		var catcompletedata = "";
 		var dataobj = new Object();
 		switch( $("ul.tb.cl").attr("curstatus") ) {
 			case "li.pay":
 				dataobj.curstatus = "pay";
 				catcompletedata = titledata["pay"];
-				if(!test_earnpay(catcompletedata))
+				if($("#richname").val() == '') {
+					errTip("#richname", "名称不能为空", 1, 2500);
 					return ;
+				}
+				if(!fncatcompletetest(catcompletedata, $("#richcategory").val(), "richcategory", $("#richname").val())) {
+					errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
+					return ;
+				}
 				dataobj.richcategory = $("#richcategory").val();
 				dataobj.richname = $("#richname").val();
-				dataobj.richtype = $("#richtype").attr("selecti");
 				break;
 				
 			case "li.earn":
 				dataobj.curstatus = "earn";
 				catcompletedata = titledata["earn"];
-				if(!test_earnpay(catcompletedata))
+				if($("#richname").val() == '') {
+					errTip("#richname", "名称不能为空", 1, 2500);
 					return ;
+				}
+				if(!fncatcompletetest(catcompletedata, $("#richcategory").val(), "richcategory", $("#richname").val())) {
+					errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
+					return ;
+				}
 				dataobj.richcategory = $("#richcategory").val();
 				dataobj.richname = $("#richname").val();
-				dataobj.richtype = $("#richtype").attr("selecti");
 				break;
 				
 			case "li.transfer":
@@ -439,7 +411,6 @@ jQuery(document).ready(function($) {
 				}
 				dataobj.curstatus = "transfer";
 				dataobj.richtype_out = $("#richtype_out").attr("selecti");
-				dataobj.richtype = $("#richtype").attr("selecti");
 				break;
 				
 			case "li.loandebt":
@@ -461,7 +432,6 @@ jQuery(document).ready(function($) {
 						return;
 				}
 				dataobj.loandebt = $("#richtype_out").attr("selecti");
-				dataobj.richtype = $("#richtype").attr("selecti");
 				break;
 				
 			default:
@@ -470,7 +440,6 @@ jQuery(document).ready(function($) {
 		}
 		
 		dataobj.richdate = $("#richdate").val();
-		dataobj.richnum  = $("#richnum").val();
 		dataobj.message = ($("#message").val() == msgstr ? '':$("#message").val());
 		
 		ac_ajax

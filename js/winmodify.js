@@ -1,15 +1,15 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-07
+ *    Last Updated: 2013-02-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 jQuery.noConflict();
 
-
+var dataobj = {};
 var Setwinmodify = function (data, ctl) {
-
+	dataobj = {};
 	var ac_date = new Date(data["date"]);
 	jQuery("#richdate").val(ac_date.getFullYear()+'-'+(ac_date.getMonth()+1)+'-'+ac_date.getDate());
 
@@ -120,6 +120,7 @@ var Setwinmodify = function (data, ctl) {
 		of: jQuery(ctl),
 		offset: "-50 0"
 	});
+	dataobj = data;
 	return true;
 }
 
@@ -167,7 +168,8 @@ jQuery(document).ready(function($) {
 	
 	//移动控件
 	$("#h3_move").mousedown(function(e){
-		$('#richname').blur();
+		$("#richname").blur();
+		destroyTip();
 		dragMenu($("#ac_dmodify")[0], e, 1);
 	});
 	
@@ -185,9 +187,61 @@ jQuery(document).ready(function($) {
 	$("#ac_dmodify").detach().appendTo("body");
 
 	$("#modify_submit").click(function() {
+		var odata = {};
+		
+		odata.onlyid = dataobj.onlyid;
+		odata.isort  = dataobj.isort;
+		
 		if( $("#richnum").val() == '' ) {
 			errTip("#richnum", "金额不能为空", 1, 2500);
 			return ;
 		}
+		odata.richnum  = $("#richnum").val();
+		
+		switch(dataobj["type"]) {
+			case '支出':
+			case '收入':
+			if(dataobj["type"] == '支出')
+				catcompletedata = titledata["pay"];
+			else
+				catcompletedata = titledata["earn"];
+				if($("#richname").val() == '') {
+					errTip("#richname", "名称不能为空", 1, 2500);
+					return ;
+				}
+				if(!fncatcompletetest(catcompletedata, $("#richcategory").val(), "richcategory", $("#richname").val())) {
+					errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
+					return ;
+				}
+				odata.richcategory = $("#richcategory").val();
+				odata.richname = $("#richname").val();
+				break;
+				
+			case '转账':
+				if($("#richtype").html() == $("#richtype_out").html()) {
+					errTip("#richtype_out", "转出和转入的归属不能相同", 1, 2500);
+					return ;
+				}
+				odata.richtype_out = $("#richtype_out").attr("selecti");
+				break;
+				
+			case '借入':
+			case '借出':
+			case '收债':
+			case '还债':
+				odata.loandebt = $("#richtype_out").attr("selecti");
+				break;
+		}
+	
+		odata.richdate = $("#richdate").val();
+		odata.richtype = $("#richtype").attr("selecti");
+		odata.message  = $("#message").val();
+		
+		
+		$.post("plugin.php?id=account:ajax&func=modifydata", $.param(odata), function(data) {
+			;
+		},"json").error(function() {
+			alert("未知错误1");
+		});
 	});
 });
