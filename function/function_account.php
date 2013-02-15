@@ -175,6 +175,34 @@ function catetype_arrtojs($array) {
 	return $str;
 }
 
+
+/**
+ * 检查账单名称
+ */
+function ac_array_str_exists($richcategory, $richname, $typearr) {
+	if($richname === "")
+		return false;
+	if($richcategory === "") {
+		foreach($typearr as $category) {
+			if(array_key_exists($richname, $category)) {
+				return true;
+			}
+		}
+	} else {
+		foreach($typearr as $category) {
+			if(array_key_exists($richcategory, $category)) {
+				if(is_array($category[$richcategory])){
+					foreach($category[$richcategory] as $label) {
+						if(array_key_exists($richname, $label))
+							return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
 class class_parsertitle {
 	public  $array;
 	public  $str;

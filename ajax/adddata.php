@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-07
+ *    Last Updated: 2013-02-15
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -220,32 +220,5 @@ switch ( $_POST['curstatus'] ) {
 }
 
 echo json_encode($ac_response);
-
-/**
- * 检查账单名称
- */
-function ac_array_str_exists($richcategory, $richname, $typearr) {
-	if($richname === "")
-		return false;
-	if($richcategory === "") {
-		foreach($typearr as $category) {
-			if(array_key_exists($richname, $category)) {
-				return true;
-			}
-		}
-	} else {
-		foreach($typearr as $category) {
-			if(array_key_exists($richcategory, $category)) {
-				if(is_array($category[$richcategory])){
-					foreach($category[$richcategory] as $label) {
-						if(array_key_exists($richname, $label))
-							return true;
-					}
-				}
-			}
-		}
-	}
-	return false;
-}
 
 ?>

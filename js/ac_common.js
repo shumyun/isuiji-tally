@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-08
+ *    Last Updated: 2013-02-15
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -44,6 +44,11 @@ function ac_setSelect(selectId, aVal){
 function ac_setSelvalue(selectId, val) {
 	var menuObj = $(selectId + '_menu');
 	var selectObj = $(selectId);
+	
+	var lis = menuObj.getElementsByTagName('li');
+	var selecti = selectObj.getAttribute('selecti');
+	lis[selecti].className = '';
+	
 	for(var i = 0; i< menuObj.getElementsByTagName('li').length; i++) {
 		var li = menuObj.getElementsByTagName('li')[i];
 		li.className = '';
@@ -54,9 +59,9 @@ function ac_setSelvalue(selectId, val) {
 			return true;
 		}
 	}
-	menuObj.getElementsByTagName('li')[0].className = 'current';
+	lis[0].className = 'current';
 	selectObj.setAttribute('selecti', 0);
-	selectObj.innerHTML = menuObj.getElementsByTagName('li')[0].innerHTML;
+	selectObj.innerHTML = lis[0].innerHTML;
 	return true;
 }
 
