@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-08
+ *    Last Updated: 2013-02-17
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  *    未知错误使用已经到 3
@@ -358,6 +358,7 @@ jQuery(document).ready(function($) {
 				  offset: "-50 -50"
 				}).hide();
 	$("#richaddbtn").click( function() {
+		var dataobj = new Object();
 		
 		if( $("#richnum").val() == '' ) {
 			errTip("#richnum", "金额不能为空", 1, 2500);
@@ -372,7 +373,6 @@ jQuery(document).ready(function($) {
 		dataobj.richtype = $("#richtype").attr("selecti");
 		
 		var catcompletedata = "";
-		var dataobj = new Object();
 		switch( $("ul.tb.cl").attr("curstatus") ) {
 			case "li.pay":
 				dataobj.curstatus = "pay";

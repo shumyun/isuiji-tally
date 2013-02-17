@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-16
+ *    Last Updated: 2013-02-17
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -120,7 +120,7 @@ switch ($tableID) {
 			//echo "请选择已存在的账单名称";
 			break;
 		}
-		if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype']) ){
+		if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype'])){
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype';
 			//echo "请选择正确的归属";
@@ -174,6 +174,41 @@ switch ($tableID) {
 		break;
 
 	case AC_TRANSFER:
+		if( !$account->run_ajaxadd($_G['uid'], 'transfer')) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype';
+			//echo "请选择已存在的账户名称";
+			break;
+		}
+		if(!isset($_POST['richtype_out']) || $_POST['richtype_out'] >= count($account->account_config['catetype'])) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype_out';
+		} else if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype'])){
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype';
+		}  else if($_POST['richtype'] == $_POST['richtype_out']){
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype_same';
+		} else {
+			$aUpdata = array(
+				'amount' => $_POST['richnum'],
+				'icategory' => $account->account_config['catetype'][$_POST['richtype']],
+				'ocategory' => $account->account_config['catetype'][$_POST['richtype_out']],
+				'info' => $_POST['message'],
+				'datatime' => $timestamp,
+				'recordtime' => $_G['timestamp']
+			);
+			$aCond = array(
+				'cid' => $cid,
+				'uid' => $_G['uid'],
+				'recordtime' => $_POST['isort']
+				);
+			if( !DB::update('account_transfer', $aUpdata, $aCond)) {
+				$ac_aresponse['state'] = 'err';
+				$ac_aresponse['curerr'] = 'Dont';
+				//echo "操作失败";
+			}
+		}
 		break;
 
 	case AC_LOANDEBT:
