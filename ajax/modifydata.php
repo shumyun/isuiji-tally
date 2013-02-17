@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-15
+ *    Last Updated: 2013-02-16
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -113,6 +113,64 @@ switch ($tableID) {
 		break;
 
 	case AC_EARN:
+		if( !$account->run_ajaxadd($_G['uid'], 'earn') ||
+			!ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['earntype'])) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richname';
+			//echo "请选择已存在的账单名称";
+			break;
+		}
+		if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype']) ){
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype';
+			//echo "请选择正确的归属";
+			break;
+		}
+		$sqlstr = "SELECT datatime, amount FROM ".DB::table('account_earndata')." WHERE uid='$_G[uid]' AND cid='$cid' AND recordtime='$_POST[isort]'";
+		$aUpdata = array(
+			'amount' => $_POST['richnum'],
+			'onelv' => $_POST['richcategory'],
+			'seclv' => $_POST['richname'],
+			'category' => $account->account_config['catetype'][$_POST['richtype']],
+			'info' => $_POST['message'],
+			'datatime' => $timestamp,
+			'recordtime' => $_G['timestamp']
+			);
+		$aCond = array(
+			'cid' => $cid,
+			'uid' => $_G['uid'],
+			'recordtime' => $_POST['isort']
+			);
+		if( !($data = DB::fetch_first($sqlstr)) || !DB::update('account_earndata', $aUpdata, $aCond)) {
+			$ac_aresponse['state'] = 'err';
+			$ac_aresponse['curerr'] = 'Dont';
+			//echo "操作失败";
+			break;
+		}
+		
+		if($timestamp == $data[datatime]) {
+			$sqlstr = "UPDATE ".DB::table('account_daytotal').
+						" SET earnmoney = earnmoney - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
+		} else {
+			DB::query("UPDATE ".DB::table('account_daytotal')." SET earnmoney = earnmoney + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$timestamp'");
+			if (!DB::affected_rows()) {
+				$insarr = array(
+						'uid' => $_G['uid'],
+						'paymoney' => 0,
+						'earnmoney' => $_POST['richnum'],
+						'datadate' => $timestamp
+						);
+				DB::insert('account_daytotal', $insarr);
+			}
+			$sqlstr = "UPDATE ".DB::table('account_daytotal').
+						" SET earnmoney = earnmoney - '$data[amount]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
+		}
+		if(!DB::query($sqlstr)
+			|| !DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]'")) {
+			$ac_aresponse['state'] = 'err';
+			$ac_aresponse['curerr'] = 'Dont';
+			//echo "操作失败";
+		}
 		break;
 
 	case AC_TRANSFER:
