@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-08
+ *    Last Updated: 2013-02-18
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -308,7 +308,7 @@
 				$("#sort", oldth).remove();
 				$("span", oldth).removeClass("ac_colblue");
 				$("span", newth).addClass("ac_colblue");
-				newth.append($('<span id="sort" style="font-size: 15px; color:#00F;">&darr;</span>'));
+				newth.append($('<span id="sort" class="ac_colblue ac_sortby">&darr;</span>'));
 			} else {
 				if(sortby === "asc"){
 					$("#sort", newth).html("&uarr;");

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-07
+ *    Last Updated: 2013-02-18
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -120,13 +120,14 @@
 		.ac_dt thead th { border-width: 0 1px; border-color: #FFF; border-style: solid; text-align: center; font-weight: 700; }
 		.ac_dt .th_1 { width: 9%; }
 		.ac_dt .th_2 { width: 12%; }
+		.ac_dt .th_2_other { width: 12%; }
 		.ac_dt .th_3 { width: 13%; }		
 		.ac_dt .th_4 { width: 14%; }
 		.ac_dt .th_4_left { width: 14%; }
 		.ie6 .th_4_left, .ie7 .th_4_left { text-align: left; }
-		.ac_dt .th_1 .ac_colblue, .ac_dt .th_2 .ac_colblue, .ac_dt .th_3 .ac_colblue, .ac_dt .th_4 .ac_colblue, .ac_dt .th_4_left .ac_colblue { color:#00F; }
-		.ac_dt .th_2_left .ac_sortby { font-size: 15px; color: #00F; }
-		.ie6 .ac_dt .th_2_left .ac_sortby, .ie7 .ac_dt .th_2_left .ac_sortby { font-size: 12px; }
+		.ac_dt .th_1 .ac_colblue, .ac_dt .th_2 .ac_colblue, .ac_dt .th_2_other .ac_colblue, .ac_dt .th_3 .ac_colblue, .ac_dt .th_4 .ac_colblue, .ac_dt .th_4_left .ac_colblue { color:#00F; }
+		.ac_dt .th_1 .ac_sortby, .ac_dt .th_2 .ac_sortby, .ac_dt .th_2_other .ac_sortby, .ac_dt .th_3 .ac_sortby, .ac_dt .th_4 .ac_sortby, .ac_dt .th_4_left .ac_sortby { font-size: 15px; }
+		.ie6 .ac_dt .th_2_other .ac_sortby, .ie7 .ac_dt .th_2_other .ac_sortby { font-size: 12px; }
 		.ac_dt td { cursor: default; border-width: 0px 1px; border-color: {COMMONBG}; border-style: solid; line-height: 25px; }
 		.ac_dt td:hover { background-color: {SPECIALBG}; }
 		.tr_null td:hover { background-color: transparent; }
