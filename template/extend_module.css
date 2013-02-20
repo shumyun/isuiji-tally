@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-18
+ *    Last Updated: 2013-02-20
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -140,8 +140,8 @@
 		.td_rsecond {padding-right: 5px; text-align: right; }
 		.td_lfirst { padding-left: 5px; text-align: left; }
 		.td_linehide { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; word-break: keep-all; word-wrap: normal; }
-		.tr_sum td ul li span { font-family: Georgia; padding-left: 1px; }
-		.tr_sum .ac_datenum { color: #0F675E; font-size: 16px; font-weight: bold; padding-left: 0 !important; padding-right: 2px; }
+		.tr_sum td ul li span { padding-left: 1px; }
+		.tr_sum .ac_datenum { color: #0F675E; font-size: 14px; font-weight: bold; padding-left: 0 !important; padding-right: 2px; }
 		.tr_sum .ac_datefloat { float: right; }
 	/* 参照 .pgs  ac_pgb -->返回首页, ac_nxt -->下一页 */
 	.ac_pgs {}

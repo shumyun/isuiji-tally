@@ -1,16 +1,29 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-18
+ *    Last Updated: 2013-02-20
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 (function($, window, document, undefined) {
 	var DataTable = function (odata) {
+		
+		/**
+		 * 获取table控件ID,包括"#"
+		 *  @return {string} sId
+		 */
+		function _fnGetDataTablesId() {
+			var othis = DataTable.ext.oTable;
+			return "#"+$(othis).attr("id");
+		}
+		
+		/**
+		 * 初始化数据
+		 *  @returns {Boolean}
+		 */
 		function _fnInit(odata, othis)
 		{
-			//初始化数据
 			$.extend(true, DataTable.ext, {"oTable": othis});
 			DataTable.ext.optdata = _fnExtend( $.extend(true, {}, DataTable.defaults), odata );
 			
@@ -21,7 +34,7 @@
 			_fnInitOperate();
 			
 			if( DataTable.ext.optdata["Ajax"] === null) {
-				return ;
+				return true;
 			} else {
 				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajParam"],
 					function(data) {
@@ -32,7 +45,7 @@
 				});
 			}
 			
-			return ;
+			return true;
 		}
 		
 		/**
@@ -119,10 +132,10 @@
 		
 		/**
 		 * 设置table的ajax的参数，并开始查询
-		 * @param {string} sParam 参数
-		 * @returns boolean
+		 *  @param {string} sParam 参数
+		 *  @returns {Boolean}
 		 */
-		function _fnAjaxSetParam(sParam){
+		function _fnAjaxSetParamSend(sParam){
 			if(DataTable.ext.optdata["ajParam"] === sParam)
 				return true;
 			DataTable.ext.optdata["ajParam"] = sParam;
@@ -138,11 +151,12 @@
 		}
 		
 		/**
-		 * 存储ajax数据
-		 *  @returns boolean
+		 * 存储ajax数据，创建table数据
+		 *  @param {json} ajaxdata
+		 *  @returns {Boolean}
 		 */
 		function _fnAjaxSaveData(ajaxdata) {
-
+			//将回车键转变
 			ajaxdata = ajaxdata.replace(/\n/g, "<BR>");
 			var oReceive = $.parseJSON(ajaxdata);
 			if(oReceive["state"] == "error") {
@@ -232,8 +246,9 @@
 		}
 		
 		/**
-		 * 存储table数据
-		 *  @returns boolean
+		 * 按日期方式存储table数据
+		 *  @param {array} aData
+		 *  @returns {Boolean}
 		 */
 		function _fnSetDataDate(aData) {
 			//清空date数据
@@ -271,8 +286,8 @@
 		}
 
 		/**
-		 * 排序初始化
-		 * @returns {Boolean}
+		 * 初始化table的<thead>控件
+		 *  @returns {Boolean}
 		 */
 		function _fnInitTheadSort() {
 			if(!DataTable.ext.hasOwnProperty("oTable") || DataTable.ext["oTable"] === null) {
@@ -294,10 +309,10 @@
 		}
 		
 		/**
-		 * 排序
-		 * @param index   排序的列号，从零开始
-		 * @param sortby  排序
-		 * @returns {Boolean}
+		 * 改变排序后修改<thead>控件样式
+		 *  @param {int} index : 排序的列号，从零开始
+		 *  @param {string} sortby : 排序
+		 *  @returns {Boolean}
 		 */
 		function _fnSetTheadClass(index, sortby) {
 			var aSort = DataTable.DataCols["aSort"];
@@ -320,10 +335,10 @@
 		}
 		
 		/**
-		 * 排序
-		 * @param index 排序的列号，从零开始
-		 * @param type  排序的类型
-		 * @returns {Boolean}
+		 * 总排序
+		 *  @param {int} index : 排序的列号,从零开始
+		 *  @param {string} type : 排序的类型
+		 *  @returns {Boolean}
 		 */
 		function _fnSort(index, type){
 			var aSort = DataTable.DataCols["aSort"];
@@ -375,9 +390,9 @@
 		}
 		
 		/**
-		 * 日期总排序
-		 * @param sortby asc or desc
-		 * @returns boolean
+		 * 按日期的总排序
+		 *  @param {string} sortby : "asc" or "desc"
+		 *  @returns boolean
 		 */
 		function _fnSortDate( sortby ) {
 			var aNum = DataTable.DataCols["aDate"]["sortday"];
@@ -402,8 +417,8 @@
 		}
 		
 		/**
-		 * 日期单元数据排序
-		 *  @param sortby asc or desc
+		 * 日期按每天单元数据排序
+		 *  @param {string} sortby : "asc" or "desc"
 		 *  @returns boolean
 		 */
 		function _fnSortDateElement(sortby){
@@ -431,10 +446,10 @@
 		}
 		
 		/**
-		 * 字符排序
-		 * @param index   排序的列号，从零开始
-		 * @param sortby asc or desc
-		 * @returns boolean
+		 * 按字符总排序
+		 *  @param {int} index : 排序的列号,从零开始
+		 *  @param {string} sortby : asc or desc
+		 *  @returns boolean
 		 */
 		function _fnSortString( index, sortby ) {
 			var aData = DataTable.DataCols["aSort"];
@@ -464,12 +479,11 @@
 			return true;
 		}
 
-		
 		/**
-		 * 金额排序
-		 * @param index   排序的列号，从零开始
-		 * @param sortby asc or desc
-		 * @returns boolean
+		 * 按数字总排序
+		 *  @param {int} index : 排序的列号,从零开始
+		 *  @param {string} sortby : "asc" or "desc"
+		 *  @returns {Boolean}
 		 */
 		function _fnSortNumerical( index, sortby ) {
 			var aData = DataTable.DataCols["aSort"];
@@ -498,11 +512,12 @@
 			}
 			return true;
 		}
+		
 		/**
-		 * 按类型排序
-		 * @param type  排序的类型
-		 * @param num   显示的页数
-		 * @returns {boolean}
+		 * 输出显示
+		 *  @param {string} type : 排序的类型
+		 *  @param {int} num : 显示的页数
+		 *  @returns {boolean}
 		 */
 		function _fnOut(type, num) {
 			switch(type) {
@@ -524,7 +539,7 @@
 		
 		/**
 		 * 新数据按旧排序显示
-		 * @returns {Boolean}
+		 *  @returns {Boolean}
 		 */
 		function _fnAgainOut() {
 			var aSort = DataTable.DataCols["aSort"];
@@ -540,8 +555,8 @@
 		}
 		
 		/**
-		 * 数据输出
-		 * @returns {boolean}
+		 * 数据第一次输出显示
+		 *  @returns {boolean}
 		 */
 		function _fnDefaultOut() {
 			//$("#loading", othis).hide();
@@ -587,8 +602,8 @@
 		
 		/**
 		 * 筛选后存储需要显示的数据并返回
-		 * @param sName   要比对的数据名
-		 * @returns {Boolean}
+		 *  @param {string} sName : 要比对的数据名
+		 *  @returns {Boolean}
 		 */
 		function _fnSaveConditions(sName) {
 			
@@ -628,7 +643,7 @@
 		
 		/**
 		 * 获取新数据后，按旧条件选择数据
-		 * @returns {Boolean}
+		 *  @returns {Boolean}
 		 */
 		function _fnAgainSaveCond(){
 			var odata = DataTable.ext.oConditions.odata;
@@ -654,10 +669,10 @@
 		
 		/**
 		 * 每步的并交的处理
-		 * @param adata   该步骤要操作的对象合集名称
-		 * @param haddata 上步骤所得的对象数组
-		 * @param filtertype   并交集
-		 * @returns {Array} 返回这步骤的数据组
+		 *  @param {array} adata       : 该步骤要操作的对象合集名称
+		 *  @param {array} haddata     : 上步骤所得的对象数组
+		 *  @param {string} filtertype : 并交集
+		 *  @returns {Array} 返回这步骤的数据组
 		 */
 		function _fnCondStepSort(adata, haddata, filtertype) {
 			var odata = DataTable.ext.oConditions.odata;
@@ -725,12 +740,12 @@
 		
 		/**
 		 * 设置筛选参数
-		 * @param Data     : 筛选的数据
-		 * @param dataType : (筛选的结构)
-		 * 					{ condName: 筛选条件的名字,
-		 *					  FstCol: 查询的列号,
-		 *					  SecCol: 查询的列号 }
-		 * @returns {Boolean}
+		 *  @param {object} Data     : 筛选的数据
+		 *  @param {object} dataType : (筛选的结构)
+		 *                  {condName: 筛选条件的名字,
+		 *                     FstCol: 查询的列号,
+		 *                     SecCol: 查询的列号 }
+		 *  @returns {Boolean}
 		 */
 		function _fnSetConditions(Data, dataType) {
 			var toData = DataTable.ext.oConditions.odata;
@@ -791,8 +806,8 @@
 		
 		/**
 		 * 删除筛选条件
-		 * @param sType
-		 * @returns {Boolean}
+		 *  @param {string} sType
+		 *  @returns {Boolean}
 		 */
 		function _fnDelConditions(sType){
 			var oData = DataTable.ext.oConditions.odata;
@@ -847,6 +862,10 @@
 			return true;
 		}
 		
+		/**
+		 * 初始化页数控件
+		 *  @returns {Boolean}
+		 */
 		function _fnInitPages() {
 			if(!DataTable.ext.optdata.pagedivId)
 				return true;
@@ -857,6 +876,11 @@
 			return true;
 		}
 		
+		/**
+		 * 设置页数控件的类型
+		 *  @param {string} PagesType : "idayPages" or "iPages"
+		 *  @return {Boolean}
+		 */
 		function _fnSetPagesNum(PagesType) {
 			var oPages = DataTable.ext.oPages;
 			var divId = DataTable.ext.optdata.pagedivId;
@@ -897,6 +921,11 @@
 			return true;
 		}
 		
+		/**
+		 * 设置页数控件的样式
+		 *  @param {string} PagesType : "idayPages" or "iPages"
+		 *  @return {Boolean}
+		 */
 		function _fnSetPagesDiv(PagesType) {
 			oPages = DataTable.ext.oPages;
 			divId = DataTable.ext.optdata.pagedivId;
@@ -945,6 +974,11 @@
 			return true;
 		}
 		
+		/**
+		 * 当改变页数时,修改页数样式
+		 *  @param {string} PagesType : "idayPages" or "iPages"
+		 *  @return {Boolean}
+		 */
 		function _fnChangePagesDiv(iNum) {
 			var oPages = DataTable.ext.oPages;
 			$("#"+divId).show();
@@ -1008,6 +1042,11 @@
 			return true;
 		}
 		
+		/**
+		 * 按页数显示数据
+		 *  @param {int} iNum : 需要显示的页数
+		 *  @return {Boolean}
+		 */
 		function _fnPagesOut(iNum) {
 			var othis = DataTable.ext.oTable;
 			var oPages = DataTable.ext.oPages;
@@ -1110,6 +1149,9 @@
 			return _fnChangePagesDiv(iNum);
 		}
 		
+		/**
+		 * 初始化操作控件（删除和修改）
+		 */
 		function _fnInitOperate() {
 			var aDel = $('<a style="color: #f00; cursor: pointer;" title="删除">删除</a>').click(function(){
 				var trData = $(this).closest("tr");
@@ -1117,7 +1159,7 @@
 							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
 							trData.children(":eq(3)").html()+'</label>的记录吗?';
 				showDialog(msg, "confirm", "操作提示",
-						'jQuery("'+DataTable.ext.oApi.fnTransIdForStr()+'").DataTable.ext.oApi.fnDelData("'
+						'jQuery("'+DataTable.ext.oApi.fnGetDataTablesId()+'").DataTable.ext.oApi.fnDelData("'
 						+trData.attr("id")+'", "'+trData.attr("sort")+'", "'+trData.children(":eq(5)").html()+'")');
 			});
 
@@ -1154,15 +1196,24 @@
 			DataTable.ext.oOperate = {"DelCtl": aDel, "ChangeCtl": aChange, "PromptCtl": dPrompt};
 		}
 		
-		function _fnSetPrompt(html) {
-			$("#datatable_prompt").html(html);
+		/**
+		 * 设置提示控件的显示数据
+		 */
+		function _fnSetPrompt(shtml) {
+			$("#datatable_prompt").html(shtml);
 		}
 		
+		/**
+		 * 显示提示控件
+		 */
 		function _fnShowPrompt() {
 			$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
 			DataTable.ext.oOperate.PromptCtl.show();
 		}
 		
+		/**
+		 * 隐藏提示控件
+		 */
 		function _fnHidePrompt(msec) {
 			var oOperate = DataTable.ext.oOperate;
 			$("tbody > tr[sort]", $(DataTable.ext.oTable))
@@ -1180,11 +1231,15 @@
 								+(month<10 ? ("0"+month):month)+"."
 								+(idate<10 ? ("0"+idate):idate));
 				}});
-			setTimeout('jQuery("'+DataTable.ext.oApi.fnTransIdForStr()+
+			setTimeout('jQuery("'+DataTable.ext.oApi.fnGetDataTablesId()+
 						'").DataTable.ext.oOperate.PromptCtl.hide()',
 						msec);
 		}
 		
+		/**
+		 * 修改数据后更新table数据
+		 *  @param {array} adata : 数据
+		 */
 		function _fnModifyData(adata) {
 			var oOperate = DataTable.ext.oOperate;
 			$("tbody > tr[sort]", $(DataTable.ext.oTable))
@@ -1204,7 +1259,13 @@
 				}});
 		}
 		
-		function _fnDelData(sId, sSort, sname) {
+		/**
+		 * 删除数据,并更新table数据
+		 *  @param {string} sId   : 该行的属性
+		 *  @param {string} sSort : 该行的属性
+		 *  @param {string} sName : 数据类型（收入等）
+		 */
+		function _fnDelData(sId, sSort, sName) {
 			var dataobj = new Object();
 			dataobj.onlyid = sId;
 			dataobj.isort = sSort;
@@ -1219,7 +1280,7 @@
 				var adata = (new Function("return " + data))();
 				if(adata.state.toLowerCase() == 'ok') {
 					var string = '<img src="' + IMGDIR + '/check_right.gif"> 删除成功.';
-					_fnDelTRData(sname, sId);
+					_fnDelTRData(sName, sId);
 					_fnSetPrompt(string);
 					_fnHidePrompt(1000);
 				} else {
@@ -1240,6 +1301,11 @@
 			});
 		}
 		
+		/**
+		 * 删除table数据
+		 *  @param {string} sName : 数据类型（收入等）
+		 *  @param {string} sId
+		 */
 		function _fnDelTRData(sName, sId) {
 			
 			var ClassData = DataTable.DataCols.Data;
@@ -1289,6 +1355,9 @@
 			_fnOperateOut();
 		}
 		
+		/**
+		 * 操作table数据后显示
+		 */
 		function _fnOperateOut() {
 			var Cols = DataTable.ext.optdata.SortColumns.Cols;
 			var pageId = DataTable.ext.optdata.pagedivId;
@@ -1302,17 +1371,13 @@
 			}
 		}
 		
-		function _fnTransIdForStr() {
-			var othis = DataTable.ext.oTable;
-			return "#"+$(othis).attr("id");
-		}
-		
 		this.oApi = {
+			"fnGetDataTablesId"     : _fnGetDataTablesId,
 			"fnInit"                : _fnInit,
 			"_fnLog"                : _fnLog,
 			"_fnExtend"             : _fnExtend,
 			"_fntransition"         : _fntransition,
-			"fnAjaxSetParam"        : _fnAjaxSetParam,
+			"fnAjaxSetParamSend"    : _fnAjaxSetParamSend,
 			"_fnAjaxSaveData"       : _fnAjaxSaveData,
 			"_fnSetDataDate"        : _fnSetDataDate,
 			"_fnInitTheadSort"      : _fnInitTheadSort,
@@ -1344,8 +1409,7 @@
 			"fnModifyData"          : _fnModifyData,
 			"fnDelData"             : _fnDelData,
 			"_fnDelTRData"          : _fnDelTRData,
-			"_fnOperateOut"         : _fnOperateOut,
-			"fnTransIdForStr"       : _fnTransIdForStr
+			"_fnOperateOut"         : _fnOperateOut
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );
