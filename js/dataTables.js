@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-20
+ *    Last Updated: 2013-04-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -714,7 +714,7 @@
 		}
 		
 		/**
-		 * 筛选条件的排序输出
+		 * 筛选条件的数据排序
 		 */
 		function _fnSortConditions() {
 			var step = DataTable.ext.oConditions.Step;
@@ -735,7 +735,6 @@
 			var aSort = DataTable.DataCols["aSort"];
 			aSort["sortData"] = tmpdata;
 			_fnSetDataDate(tmpdata);
-			_fnAgainOut();
 		}
 		
 		/**
@@ -801,6 +800,7 @@
 				}
 			}
 			_fnSortConditions();
+			_fnAgainOut();
 			return true;
 		}
 		
@@ -843,6 +843,7 @@
 			for(var i in oData) {
 				if(oData[i]["isUsed"] != 'n') {	//存在y和a两种条件
 					_fnSortConditions();
+					_fnAgainOut();
 					return true;
 				}
 			}
