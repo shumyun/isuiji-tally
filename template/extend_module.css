@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-20
+ *    Last Updated: 2013-07-28
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -185,6 +185,11 @@
 		
 	/* 参考 .fl .bm_h */
 	.ac_thead {  } /* 提示：{TITLEBGCODE} 在module.css下调用会出现bug，即对单引号、双引号进行反编译 */
+
+/* 预算页面 */
+	.acb_h { width: 800px; }
+	.acb_a { background: url({IMGDIR}/icon_search.png) no-repeat 0 0; padding-left: 18px; }
+	
 /** end **/
 /*
  * .mi .moodfm_input { width: 350px; height: 58px; background: {COMMONBORDER} url({IMGDIR}/mood_input.png) no-repeat 0 0; }
