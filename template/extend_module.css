@@ -208,6 +208,9 @@
 	.acb_tul { margin-left: 100px; }
 	.acb_tli { float: left; width: 130px; }
 	.acb_t { margin-top: 0 !important; border-top: 0; }
+		.acb_tspan1 { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 -28px; width: 15px; height: 18px; float: left; }
+		.acb_collapsed { float: right; }
+			.acb_collapsed img { cursor: pointer; margin: 5px 5px 0 0; }
 /** end **/
 /*
  * .mi .moodfm_input { width: 350px; height: 58px; background: {COMMONBORDER} url({IMGDIR}/mood_input.png) no-repeat 0 0; }
