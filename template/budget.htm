@@ -20,9 +20,9 @@
                 <div class="bm_h">
                     <a href="#" class="acb_a">查看收支预算报表</a>
                     <div class="acb_year">
-                        <input class="acb_ytext" type="text" name="tally_yeah" value="2013" />
-                        <a id="prev_year" class="acb_yup" href="#"></a>
-                        <a id="next_year" class="acb_ydown" href="#"></a>
+                        <input class="acb_ytext" type="text" id="tally_year" value="2013" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" maxLength="4"/>
+                        <a id="prev_year" class="acb_yup" href="javascript:;"></a>
+                        <a id="next_year" class="acb_ydown" href="javascript:;"></a>
                     </div>
                     <div class="acb_month">
 						<a id="prev_month" class="acb_mprev" href="#"></a>
@@ -74,9 +74,32 @@
 					<td width="125x"><strong style="float: right; color: #f10000;">90%</strong></td>
 					<td width="120px"><span style="float: right;">0.00</span></td>
 					<td width="120px"><input style="float: right; width: 70px;" /></td>
-					<td> </td>
+					<td></td>
 				</tr>
-				<tr><td colspan="7"><div style=" width: 100px; height: 100px; "></div></td></tr>
+				<tr><td colspan="7" style="padding: 0;">
+				<div style="background: #F2F2F2; margin-left: 10px; width: 700px; padding: 5px 0;">
+					<table id="">
+					    <tbody>
+						    <tr>
+						        <td style="padding: 0 4px 0 12px; border-bottom: none; width: 72px;">食品</td>
+						        <td width="80px" style="padding: 0 4px; border-bottom: none;"><strong style="float: right;">0.00</strong></td>
+			                    <td width="120px" style="padding: 0 4px; border-bottom: none;"><span style="float: right;">0.00</span></td>
+			                    <td width="125px" style="padding: 0 4px; border-bottom: none;"><strong style="float: right; color: #f10000;">90%</strong></td>
+			                    <td width="120px" style="padding: 0 4px; border-bottom: none;"><span style="float: right;">0.00</span></td>
+			                    <td width="120px" style="padding: 0 4px; border-bottom: none;"><input style="float: right; width: 70px;" /></td>
+						    </tr>
+                            <tr>
+                                <td style="padding: 0 4px 0 12px; border-bottom: none; width: 72px;">家具物品</td>
+                                <td width="80px" style="padding: 0 4px; border-bottom: none;"><strong style="float: right;">0.00</strong></td>
+                                <td width="120px" style="padding: 0 4px; border-bottom: none;"><span style="float: right;">0.00</span></td>
+                                <td width="125px" style="padding: 0 4px; border-bottom: none;"><strong style="float: right; color: #f10000;">90%</strong></td>
+                                <td width="120px" style="padding: 0 4px; border-bottom: none;"><span style="float: right;">0.00</span></td>
+                                <td width="120px" style="padding: 0 4px; border-bottom: none;"><input style="float: right; width: 70px;" /></td>
+                            </tr>
+					    </tbody>
+					</table>
+				</div></td>
+				</tr>
 				</tbody>
 			</table>
 		</div>
@@ -98,4 +121,6 @@
 
 <!--[diy=diyaccountbottom]--><div id="diyaccountbottom" class="area"></div><!--[/diy]-->
 
+<script type="text/javascript" src="{$basedir}js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="{$basedir}js/budget.js"></script>
 <!--{template common/footer}-->
