@@ -20,20 +20,21 @@
                 <div class="bm_h">
                     <a href="#" class="acb_a">查看收支预算报表</a>
                     <div class="acb_year">
-                        <input class="acb_ytext" type="text" id="tally_year" value="2013" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" maxLength="4"/>
+                        <input class="acb_ytext" type="text" id="tally_year" value="{$richbudget_y}" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" maxLength="4"/>
                         <a id="prev_year" class="acb_yup" href="javascript:;"></a>
                         <a id="next_year" class="acb_ydown" href="javascript:;"></a>
                     </div>
+					<div id="div_loading" class="acb_dload"><img src="{IMGDIR}/loading.gif"/>请稍等…</div>
                     <div class="acb_month">
-						<a id="prev_month" class="acb_mprev" href="#"></a>
+						<a id="prev_month" class="acb_mprev" href="javascript:;"></a>
 						<ul class="acb_mul">
-						  <li class="acb_mli"><a id="a_m1">8月</a></li>
-                          <li class="acb_mli"><a id="a_m2">9月</a></li>
-                          <li class="acb_mli"><a id="a_m3">10月</a></li>
-                          <li class="acb_mli"><a id="a_m4">11月</a></li>
-                          <li class="acb_mli"><a id="a_m5">12月</a></li>
+						  <li class="acb_mli"><a id="a_m1"></a></li>
+                          <li class="acb_mli"><a id="a_m2"></a></li>
+                          <li class="acb_mli"><a id="a_m3" class="acb_msel">{$richbudget_m}月</a></li>
+                          <li class="acb_mli"><a id="a_m4"></a></li>
+                          <li class="acb_mli"><a id="a_m5"></a></li>
 						 </ul>
-						<a id="next_month" class="acb_mnext" href="#"></a>
+						<a id="next_month" class="acb_mnext" href="javascript:;"></a>
 					</div>
                 </div>
             </div>
@@ -56,8 +57,7 @@
 				<tbody>
 				<tr>
 					<th colspan="7">
-					   <div class="acb_tspan1"></div>
-					   支出预算表
+					   <div class="acb_tspan1">支出预算表</div>
 					   <span class="acb_collapsed">
 						  <a title="收起/展开" href="#"><img alt="收起/展开" src="{IMGDIR}/collapsed_no.gif" /></a>
 					   </span>

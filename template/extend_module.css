@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-07-31
+ *    Last Updated: 2013-08-02
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -195,11 +195,15 @@
 			a.acb_yup:hover { background-position: -15px -27px; }
 		.acb_ydown { background: url(../../source/plugin/account/images/time_y.png) no-repeat 0px -36px; cursor: pointer; width: 15px; height: 8px; position: absolute; right: 3px; top: 14px; }
 			a.acb_ydown:hover { background-position: -15px -36px; }
-	.acb_month { float: left; margin: 3px 0 0 200px; position: absolute; display: inline; }
+	.acb_dload { display: none; margin-left: 180px; position: absolute; }
+		.ie6 .acb_dload { margin-top: 8px; }
+		.acb_dload img { vertical-align: middle;}
+	.acb_month { float: left; margin: 3px 0 0 250px; position: absolute; display: inline; }
 		.acb_mul { background: #fff; position: absolute; width: 220px; height: 25px; margin-left: 15px; padding-right: 6px; }
 			.acb_mli { float: left; width: 38px; height: 25px; line-height: 25px; text-align: center; padding-left: 6px; }
                 .acb_mli a { cursor: pointer; display: block; width: 38px; height: 24px; text-decoration: none; }
 			        .acb_mli a:hover { background: url(../../source/plugin/account/images/time_t.png) no-repeat 0 0; }
+					.acb_msel { background: url(../../source/plugin/account/images/time_t.png) no-repeat 0 0; }
 		.acb_mprev { background: url(../../source/plugin/account/images/time_t.png) no-repeat -2px -27px; cursor: pointer; position: absolute; width: 15px; height: 25px; }
 			a.acb_mprev:hover { background-position: -2px -53px; }
         .acb_mnext { background: url(../../source/plugin/account/images/time_t.png) no-repeat -19px -27px; cursor: pointer; position: absolute; width: 15px; height: 25px; margin-left: 241px; }
@@ -208,7 +212,7 @@
 	.acb_tul { margin-left: 100px; }
 	.acb_tli { float: left; width: 130px; }
 	.acb_t { margin-top: 0 !important; border-top: 0; }
-		.acb_tspan1 { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 -28px; width: 15px; height: 18px; float: left; }
+		.acb_tspan1 { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 -28px; width: 70px; height: 18px; float: left; padding-left: 15px; margin-top: 2px; }
 		.acb_collapsed { float: right; }
 			.acb_collapsed img { cursor: pointer; margin: 5px 5px 0 0; }
 /** end **/
