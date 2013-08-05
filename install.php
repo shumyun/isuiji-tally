@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-28
+ *    Last Updated: 2013-08-05
  *    Author: shumyun
  *    Copyright (C) 2011 - forever jiashe.net Inc
  */
@@ -62,10 +62,10 @@ CREATE TABLE pre_account_daytotal (
 DROP TABLE IF EXISTS pre_account_budget;
 CREATE TABLE pre_account_budget (
   cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
-  uid mediumint(8) unsigned NOT NULL default '0',
-  datatime int(10) unsigned NOT NULL default '0',
+  uidtime bigint(16) unsigned NOT NULL default '0',
   recordtime int(10) unsigned NOT NULL default '0',
   budget decimal(14,2) unsigned NOT NULL default '0.00',
+  realcash decimal(14,2) unsigned NOT NULL default '0.00',
   PRIMARY KEY (cid)
 ) ENGINE=MyISAM;
 
