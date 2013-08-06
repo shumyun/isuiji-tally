@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-02
+ *    Last Updated: 2013-08-06
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -65,5 +65,15 @@ jQuery(document).ready(function($) {
 			}
 		});
 	});
+	
+});
+
+(function($, window, document, undefined) {
+	$.fn.budgetTable = function() {
+		;
+	};
+}(jQuery, window, document, undefined));
+
+jQuery(document).ready(function($){
 	
 });
