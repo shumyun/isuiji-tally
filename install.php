@@ -3,9 +3,9 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-05
+ *    Last Updated: 2013-08-07
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -64,6 +64,9 @@ CREATE TABLE pre_account_budget (
   cid mediumint(8) unsigned zerofill NOT NULL auto_increment,
   uidtime bigint(16) unsigned NOT NULL default '0',
   recordtime int(10) unsigned NOT NULL default '0',
+  onelv varchar(255) NOT NULL default '',
+  seclv varchar(255) NOT NULL default '',
+  category varchar(255) NOT NULL default '',
   budget decimal(14,2) unsigned NOT NULL default '0.00',
   realcash decimal(14,2) unsigned NOT NULL default '0.00',
   PRIMARY KEY (cid)

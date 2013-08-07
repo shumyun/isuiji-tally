@@ -70,7 +70,8 @@ jQuery(document).ready(function($) {
 
 (function($, window, document, undefined) {
 	$.fn.budgetTable = function() {
-		;
+		$.post("plugin.php?id=account:ajax&func=budget", $.param(dataobj),
+				function(data) {},"json");
 	};
 }(jQuery, window, document, undefined));
 
