@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-25
+ *    Last Updated: 2013-08-07
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -23,9 +23,12 @@ if ($operation == 'earning') {
 $titledata = htmlentities($titledata, ENT_QUOTES | ENT_IGNORE, "UTF-8");
 */
 
-if(!$account->run_modrichadd($_G['uid'])){
-	return ;
-}
+$ac_profile = DB::fetch_first("SELECT totalearn, totalpay FROM ".DB::table('account_profile')." WHERE uid ='$_G[uid]'");
+if (empty($ac_profile)) {
+	$account->Init($_GET['uid']);
+	$totalamount = 0;
+} else 
+	$totalamount = $ac_profile['totalearn'] - $ac_profile['totalpay'];
 
 $acc_datetime = dmktime($acc_date);
 $isoWeekStartDate = strtotime(date('o-\\WW', $_G['timestamp'])); //{isoYear}-W{isoWeekNumber}
@@ -42,7 +45,7 @@ $acc_amount = array(
 		'mem' => '0.00',
 		'mdm' => '-',
 		'remdm' => '-',
-		'totalamount' => $account->account_config['totalamount'],
+		'totalamount' => $totalamount,
 		'cattype' => $account->account_config['cattype']
 );
 $acc_tmp = DB::fetch_first("SELECT paymoney as dpm, earnmoney as dem FROM ".DB::table('account_daytotal')." WHERE uid = '$_G[uid]' AND datadate = '$acc_datetime'");

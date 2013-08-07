@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-12-06
+ *    Last Updated: 2013-08-07
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -23,34 +23,33 @@ class class_account {
 			'paytype'     => '',
 			'catetype'    => '',
 			'loandebt'    => '',
-			'seldata'     => '',
-			'totalamount' => 0);
+			'seldata'     => '');
 	
-	public function run_modrichadd($ac_uid) {
-		$ac_profile = DB::fetch_first("SELECT totalearn, totalpay FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
-		
-		if (empty($ac_profile)) {
-			$handle = @fopen(DISCUZ_ROOT."/source/plugin/account/prestore.data", "r");
-			if ($handle) {
-				$ac_profile = array();
-				$ac_profile['uid'] = $ac_uid;
-	        	$ac_profile['earntype'] = rtrim(fgets($handle, 4096));
-	        	$ac_profile['paytype'] = rtrim(fgets($handle, 4096));
-	        	$ac_profile['categorytype'] = rtrim(fgets($handle, 4096));
-	        	$ac_profile['loandebt'] = rtrim(fgets($handle, 4096));
-	        	$ac_profile['firstdate'] = 0;
-	        	$ac_profile['totalearn'] = 0;
-	        	$ac_profile['totalpay'] = 0;
-	        	DB::insert('account_profile', $ac_profile);
-	    		fclose($handle);
-			}
+	/**
+	 * 初始化用户理财属性
+	 * @param  $ac_uid 用户ID
+	 * @param  $force  强制清空数据
+	 */
+	public function Init($ac_uid, $force=false) {
+		$handle = @fopen(DISCUZ_ROOT."/source/plugin/account/prestore.data", "r");
+		if ($handle) {
+			$ac_profile = array();
+			$ac_profile['uid'] = $ac_uid;
+			$ac_profile['earntype'] = rtrim(fgets($handle, 4096));
+			$ac_profile['paytype'] = rtrim(fgets($handle, 4096));
+			$ac_profile['categorytype'] = rtrim(fgets($handle, 4096));
+			$ac_profile['loandebt'] = rtrim(fgets($handle, 4096));
+			$ac_profile['firstdate'] = 0;
+			$ac_profile['totalearn'] = 0;
+			$ac_profile['totalpay'] = 0;
+			DB::insert('account_profile', $ac_profile);
+			fclose($handle);
 		}
-		
-		require_once DISCUZ_ROOT."/source/plugin/account/function/function_account.php";
-		$this->account_config['totalamount'] = $ac_profile['totalearn'] - $ac_profile['totalpay'];
-		return true;
+		if($force) {
+			;
+		}
 	}
-	
+		
 	public function run_radata($ac_uid, $arr) {
 		require_once DISCUZ_ROOT."/source/plugin/account/function/function_account.php";
 		

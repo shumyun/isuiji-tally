@@ -24,7 +24,7 @@ define('AC_LOANDEBT', 4);
 $basedir = 'source/plugin/account/';
 
 if(empty($_G['uid'])) {
-	echo '{"state":"err", "curerr":"no_login"}';
+	echo '{"state":"err", "curerr":"no_login"}'; //出错端要提示“刷新页面，重新登录”
 	return ;
 }
 

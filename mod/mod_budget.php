@@ -17,7 +17,10 @@ $richbudget_m = date('n', $_G['timestamp']);
 
 $uidtime = $_G['uid'].date('Ym', $_G['timestamp']);
 
+/* 获取支出的预算数据 */
 $query = DB::query("SELECT * FROM ".DB::table('account_budget').
-		" WHERE uidtime='$uidtime' AND category = ");
+		" WHERE uidtime='$uidtime' AND category='P'");
+
+
 
 ?>
