@@ -50,9 +50,11 @@ if(!isset($_POST['richdate']) || !($timestamp = strtotime($_POST['richdate'])) )
 $tmp = $_POST['onlyid']/$_G['uid'];
 $tableID = $tmp%10;
 $cid = ($tmp-$tableID)/10;
+require_once DISCUZ_ROOT."/source/plugin/account/function/function_account.php";
 switch ($tableID) {
 	case AC_PAY:
-		if( !$account->run_ajaxadd($_G['uid'], 'pay') ||
+		$arr = UserParam_strtoarr('pay');
+		if( !$account->GetParam($_G['uid'], $arr) ||
 			!ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['paytype'])) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richname';
@@ -113,7 +115,8 @@ switch ($tableID) {
 		break;
 
 	case AC_EARN:
-		if( !$account->run_ajaxadd($_G['uid'], 'earn') ||
+		$arr = UserParam_strtoarr('earn');
+		if( !$account->GetParam($_G['uid'], $arr) ||
 			!ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['earntype'])) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richname';
@@ -174,7 +177,8 @@ switch ($tableID) {
 		break;
 
 	case AC_TRANSFER:
-		if( !$account->run_ajaxadd($_G['uid'], 'transfer')) {
+		$arr = UserParam_strtoarr('transfer');
+		if( !$account->GetParam($_G['uid'], $arr)) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype';
 			//echo "请选择已存在的账户名称";

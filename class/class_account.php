@@ -83,7 +83,7 @@ class class_account {
 		}
 		return true;
 	}
-	
+	/*
 	public function run_ajaxadd($ac_uid, $type) {
 		require_once DISCUZ_ROOT."/source/plugin/account/function/function_account.php";
 		switch ( $type ) {
@@ -121,7 +121,7 @@ class class_account {
 				return false;
 		}
 		return true;
-	}
+	}*/
 	
 	public function run_ajaxsel($ac_uid, $tables, $condition, $dur = "") {
 		$ac_seldata = DB::fetch("");
