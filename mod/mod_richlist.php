@@ -19,7 +19,7 @@ $arr = array(
 		3 => 'loandebt' 
 		);
 
-$account->run_radata($_G['uid'], $arr);
+$account->GetParam($_G['uid'], $arr);
 
 /*
  * 支出菜单

@@ -49,11 +49,16 @@ class class_account {
 			;
 		}
 	}
-		
-	public function run_radata($ac_uid, $arr) {
+	
+	/**
+	 * 获取用户类别信息
+	 * @param  $ac_uid 用户ID
+	 * @param  $arr    需要获取的类别名称
+	 */
+	public function GetParam($ac_uid, $arr) {
 		require_once DISCUZ_ROOT."/source/plugin/account/function/function_account.php";
+		$str = implode(',', array_unique($arr));
 		
-		$str = implode(',', $arr);		
 		$ac_profile = DB::fetch_first("SELECT ".$str." FROM ".DB::table('account_profile')." WHERE uid ='$ac_uid'");
 		
 		if (empty($ac_profile))	return false;

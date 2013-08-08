@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-15
+ *    Last Updated: 2013-08-08
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -221,7 +221,7 @@ var ajax_getdataparam = function(aData, force) {
 	if( !bajax )
 		return ;
 	
-	jQuery.post("plugin.php?id=account:ajax&func=getdataparam", jQuery.param(tmparr), function(data) {
+	jQuery.post("plugin.php?id=account:ajax&func=getparam", jQuery.param(tmparr), function(data) {
 		var aParams = (new Function("return " + data))(); //var ar_data = eval('('+data+')');
 		for(var x in aParams) {
 			for (var y in aParams[x]) {

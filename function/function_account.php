@@ -13,6 +13,36 @@ if(!defined('IN_DISCUZ')) {
 }
 
 /**
+ * 用户参数转换
+ */
+function UserParam_strtoarr($type) {
+	$arr = array();
+	switch($type) {
+		case 'pay':
+			$arr[0] = 'paytype';
+			$arr[1] = 'categorytype';
+			break;
+		case 'earn':
+			$arr[0] = 'earntype';
+			$arr[1] = 'categorytype';
+			break;
+		case 'transfer':
+			$arr[0] = 'categorytype';
+			break;
+		case "borrow":
+		case "loan":
+		case "repay":
+		case "debt":
+			$arr[0] = 'loandebt';
+			$arr[1] = 'categorytype';
+			break;
+		default:
+			return false;
+	}
+	return $arr;
+}
+ 
+/**
  * 账单名称转换(sqlstring <==> array)
  */
 define('TITLE_OBJ', 0);
@@ -174,7 +204,6 @@ function catetype_arrtojs($array) {
 	$str .= '"]';
 	return $str;
 }
-
 
 /**
  * 检查账单名称

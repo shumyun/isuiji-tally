@@ -11,21 +11,22 @@
 if(!defined('IN_DISCUZ')) {
 	exit('Access Denied');
 }
-
 define('NOROBOT', TRUE);
-
 
 $ac_response = array(
 		'state' => 'ok',
 		'curerr' => '');
 
-if(!isset($_POST['curstatus']) || !$account->run_ajaxadd($_G['uid'], $_POST['curstatus'])) {
+		
+require_once DISCUZ_ROOT."/source/plugin/account/function/function_account.php";
+if(!isset($_POST['curstatus']) || !$arrtype = UserParam_strtoarr($_POST['curstatus'])) {
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'no_type';
 	//echo "未知类型增加";
 	echo json_encode($ac_response);
 	return;
 }
+$account->GetParam($_G['uid'], $arrtype);
 
 if(!isset($_POST['richnum']) || !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
 	$ac_response['state'] = 'err';
