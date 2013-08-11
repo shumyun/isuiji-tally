@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-20
+ *    Last Updated: 2013-08-11
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
 								<input id="edate" type="text" readonly="readonly" onclick="showcalendar(event, this)" class="px" style="width: 65px;"/><br /></div>\
 							<button id="btn_date" class="pn pnc" style="margin: 2px 0px 6px 10px;"><strong>确定</strong></button>\
 						</div>\
-						<ul class="ac_ultime"><li id="time_m">最近一个月</li><li id="time_last">上一个月</li><li id="time_y">最近一年</li></ul>\
+						<ul class="ac_ultime"><li id="time_last">上一个月</li><li id="time_y">最近一年</li><li id="time_all">所有时间</li></ul>\
 					  </div>')
 	.appendTo("body")
 	.position({
@@ -50,17 +50,6 @@ jQuery(document).ready(function($) {
 		of: $("#li_popmenu"),
 		offset: "0 2"
 	}).hide();
-	$("#time_m").click(function(){
-		$("#a_popmenu").html(display_year);
-		$("#li_popmenu").toggleClass("ac_showm li_hidem");
-		pop_time.hide();
-		$("#tb_time").html(display_month).attr("tab_time", "undo").attr("title", "");
-		var ajaxparam = "bTime=" + parseInt(display_year) + "-" + parseInt(display_month) + "-1&eTime=-";
-		if(ajaxparam != $("#tb_time").attr("data")) {
-			$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam);
-			$("#tb_time").attr("data", ajaxparam);
-		}
-	});
 	$("#time_last").click(function(){
 		$("#li_popmenu").toggleClass("ac_showm li_hidem");
 		pop_time.hide();
@@ -89,6 +78,17 @@ jQuery(document).ready(function($) {
 		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
 		$("#tb_time").html(display_year+"全年").attr("tab_time", "use").attr("title", "关闭");
 		var ajaxparam = "bTime="+parseInt(display_year)+"-1-1&eTime="+parseInt(display_year)+"-12-31";
+		if(ajaxparam != $("#tb_time").attr("data")) {
+			$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam);
+			$("#tb_time").attr("data", ajaxparam);
+		}
+	});
+	$("#time_all").click(function(){
+		$("#li_popmenu").toggleClass("ac_showm li_hidem");
+		pop_time.hide();
+		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
+		$("#tb_time").html("所有时间").attr("tab_time", "use").attr("title", "关闭");
+		var ajaxparam = "bTime=-&eTime=-";
 		if(ajaxparam != $("#tb_time").attr("data")) {
 			$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam);
 			$("#tb_time").attr("data", ajaxparam);
@@ -554,6 +554,25 @@ jQuery(document).ready(function($) {
 	});
 	
 	/**
+	 * 当月所有数据
+	 */
+	$("#sel_curmonth").click(function(){
+		$("#sel_hother").attr("style", "display: none");
+		$("#ac_popother").attr("style", "display: none");
+		cur_popbtn = cur_pop = null;
+
+		$("[ac_tab='use']").each(function(){
+			$(this).attr("style", "display: none");
+		});
+		$("#s_input").val("");
+		$("#tb_time").html(display_month).attr("tab_time", "undo").attr("title", "");
+		
+		var ajaxparam = "bTime=" + parseInt(display_year) + "-" + parseInt(display_month) + "-1&eTime=-";
+		$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam, true);
+		$("#tb_time").attr("data", ajaxparam);
+	});
+	
+	/**
 	 * 全部条件清除
 	 */
 	$("#sel_clr").click(function(){
@@ -576,14 +595,18 @@ jQuery(document).ready(function($) {
 		$("#sel_hother").attr("style", "display: none");
 		$("#ac_popother").attr("style", "display: none");
 		cur_popbtn = cur_pop = null;
-		
+
+		$("[ac_tab='use']").each(function(){
+			$(this).attr("style", "display: none");
+		});
+		$("#s_input").val("");
 		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
 		$("#tb_time").html("全部数据").attr("tab_time", "use").attr("title", "关闭");
+		
 		var ajaxparam = "bTime=-&eTime=-";
-		if(ajaxparam != $("#tb_time").attr("data")) {
-			$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam);
-			$("#tb_time").attr("data", ajaxparam);
-		}
+		$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam, true);
+		$("#tb_time").attr("data", ajaxparam);
+		
 	});
 	
 	/**

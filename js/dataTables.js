@@ -1,10 +1,16 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-04-08
+ *    Last Updated: 2013-08-11
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
+
+function isEmpty(obj) {
+    for (var name in obj)
+        return false;
+    return true;
+};
 
 (function($, window, document, undefined) {
 	var DataTable = function (odata) {
@@ -22,16 +28,15 @@
 		 * 初始化数据
 		 *  @returns {Boolean}
 		 */
-		function _fnInit(odata, othis)
-		{
+		function _fnInit(odata, othis) {
 			$.extend(true, DataTable.ext, {"oTable": othis});
 			DataTable.ext.optdata = _fnExtend( $.extend(true, {}, DataTable.defaults), odata );
 			
 			_fnInitConditions();
 			
-			_fnInitPages();
+			_fnInitControls();
 			
-			_fnInitOperate();
+			_fnInitPages();
 			
 			if( DataTable.ext.optdata["Ajax"] === null) {
 				return true;
@@ -46,6 +51,19 @@
 			}
 			
 			return true;
+		}
+		
+		/**
+		 * 初始化控件
+		 */
+		function _fnInitControls() {
+			//初始化‘无数据‘控件
+			if(!DataTable.ext.optdata.noneCtrl)
+				DataTable.ext.optdata.noneCtrl = $('<tr id="nullData" class="tr_null"><td colspan="7">\
+					<div style=""><img style="padding:10px 200px;" src="source/plugin/account/js/images/aclist_null.png">\
+					</div></td></tr>').appendTo("tbody", DataTable.ext.oTable).hide();
+			
+			_fnInitOperate();
 		}
 		
 		/**
@@ -132,19 +150,29 @@
 		
 		/**
 		 * 设置table的ajax的参数，并开始查询
-		 *  @param {string} sParam 参数
+		 *  @param {string}  sParam   时间参数
+		 *  @param {Boolean} bClrCond 清除条件的开关
 		 *  @returns {Boolean}
 		 */
-		function _fnAjaxSetParamSend(sParam){
-			if(DataTable.ext.optdata["ajParam"] === sParam)
-				return true;
+		function _fnAjaxSetParamSend(sParam) {
+			var bClrCond = arguments[1] ? arguments[1] : false;
+			if(DataTable.ext.optdata["ajParam"] === sParam) {
+				if(bClrCond)
+					_fnDelConditions("all");
+				else 
+					return true;
+			}
 			DataTable.ext.optdata["ajParam"] = sParam;
 
 			$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajParam"],
 				function(data) {
-					if( _fnAjaxSaveData(data) ) {
-						_fnAgainSaveCond();
-						_fnAgainOut();
+					if( _fnAjaxSaveData(data)) {
+						if(bClrCond)
+							_fnDelConditions("all");
+						else {
+							_fnAgainSaveCond();
+							_fnAgainOut();
+						}
 					};
 				});
 			return true;
@@ -166,14 +194,24 @@
 			
 			var oTable = {};
 			if(!(oTable = oReceive["oTable"])) {
-				_fnLog( null, 0, "无数据显示");
+				//_fnLog( null, 0, "无数据显示");
+				var othis = $("tbody", DataTable.ext.oTable);
+				othis.children("[class!='tr_null']").remove();
+				$("#loading").hide();
+				_fnShowNoneCtrl();
+				
+				/*清空数据表*/
+				DataTable.DataCols["aDate"] = {"sortday" : null};
+				DataTable.DataCols["Data"] = {};
+				DataTable.DataCols["aSort"]["sortData"] = [];
+				DataTable.DataCols["aSort"]["doing"] = "n";
 				return false;
 			}
 			
-			var aDate = {"sortday" : null };
-			var aSortData = new Array();
-			var ClassData = new Array();
+			var aDate = {"sortday" : null};
 			aDate["sortday"] = new Array();
+			var aSortData = new Array();
+			var ClassData = {};
 			for (var oname in oTable) {
 				var aData = oTable[oname];
 				ClassData[oname] = new Array();
@@ -190,7 +228,7 @@
 						aDate[tmpTime]["oType"][oname] = {"sum": 0, "count": 0};
 						aDate[tmpTime]["adata"] = new Array();
 						aDate["sortday"].push(tmpTime);
-						//每日合计显示
+						//每日合计的控件
 						aDate[tmpTime]["trWidget"] = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
 	  													<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">\
 	  													<ul><li style="padding-left: 5px; float: left;"><span class="ac_datenum">'
@@ -267,7 +305,7 @@
 			
 			var iDate, sType, iMoney;
 			for(var i in aData) {
-				iDate = _fntransition(aData[i].children(":eq(0)").attr("date"), "date");
+				iDate  = _fntransition(aData[i].children(":eq(0)").attr("date"), "date");
 				iMoney = _fntransition(aData[i].children(":eq(3)").html(), "numerical");
 				sType = aData[i].children(":eq(5)").html();
 				aDate[iDate]["adata"].push(aData[i]);
@@ -342,7 +380,8 @@
 		 */
 		function _fnSort(index, type){
 			var aSort = DataTable.DataCols["aSort"];
-			if(aSort.doing === "n"){
+			var oData = DataTable.DataCols["Data"];
+			if((aSort.doing==="n") && !isEmpty(oData)){
 				aSort.doing = "y";
 				//var oSortCols = DataTable.ext.optdata["SortColumns"];
 				var sortby;
@@ -542,8 +581,15 @@
 		 *  @returns {Boolean}
 		 */
 		function _fnAgainOut() {
+			var oData = DataTable.DataCols["Data"];
+			if(isEmpty(oData)){
+				return false;
+			}
 			var aSort = DataTable.DataCols["aSort"];
 			aSort["sortby"] = (aSort["sortby"]==="asc" ? "desc":"asc");
+			if(aSort.sortID === null)
+				aSort.sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
+			
 			var Cols = DataTable.ext.optdata.SortColumns.Cols;
 			for(var i in Cols){
 				if(Cols[i][0] === aSort.sortID) {
@@ -1372,9 +1418,26 @@
 			}
 		}
 		
+		/**
+		 * 显示无数据
+		 */
+		function _fnHideNoneCtrl() {
+			if(DataTable.ext.optdata.noneCtrl)
+				DataTable.ext.optdata.noneCtrl.hide();
+		}
+		
+		/**
+		 * 隐藏无数据
+		 */
+		function _fnShowNoneCtrl() {
+			if(DataTable.ext.optdata.noneCtrl)
+				DataTable.ext.optdata.noneCtrl.show();
+		}
+		
 		this.oApi = {
 			"fnGetDataTablesId"     : _fnGetDataTablesId,
 			"fnInit"                : _fnInit,
+			"_fnInitControls"        : _fnInitControls,
 			"_fnLog"                : _fnLog,
 			"_fnExtend"             : _fnExtend,
 			"_fntransition"         : _fntransition,
@@ -1410,7 +1473,9 @@
 			"fnModifyData"          : _fnModifyData,
 			"fnDelData"             : _fnDelData,
 			"_fnDelTRData"          : _fnDelTRData,
-			"_fnOperateOut"         : _fnOperateOut
+			"_fnOperateOut"         : _fnOperateOut,
+			"_fnHideNoneCtrl"      : _fnHideNoneCtrl,
+			"_fnShowNoneCtrl"      : _fnShowNoneCtrl
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );
@@ -1429,14 +1494,14 @@
 	
 	/**
 	 * 
-	 * @aDate   : { "每天的时间": { "oType": {"类型名字":{"sum":该类型的数据总和, "count":该类型的记录个数}},
+	 * @aDate   : { "每天的时间": { "oType": {"类型名字(eg.支出)":{"sum":该类型的数据总和, "count":该类型的记录个数}},
 	 *                			  "adata": 当天的行数据组,
 	 *                		   "trWidget": 当天的tr},
 	 *               "sortday": 每天时间的排序
 	 *            }
-	 * @Data    : { "类型名字": [该类型的行数据组] }
+	 * @Data    : { "类型名字(eg.支出)": [该类型的行数据组] }
 	 * @aSort   : { doing  < 'n' or 'y' 默认为 y ,防止无数据及排序 >
-	 * 				sortID <列数从零开始>
+	 * 				sortID <列数从零开始，默认为 0 >
 	 * 				sortby <"asc" or "desc">
 	 *				OutType <"SortData" or "DateData">
 	 *              sortData <需要输出的数据>
@@ -1482,7 +1547,8 @@
 		"Ajax"        : null,
 		"ajParam"     : null,
 		"pagedivId"   : null,
-		"modifyId"    : null
+		"modifyId"    : null,
+		"noneCtrl"    : null
 	};
 	
 	$.fn.DataTable = DataTable;
