@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
 			ajaxparam = "bTime="+tmp_y+"-"+tmp_m+"-1&eTime="+tmp_y+"-"+tmp_m+"-"+day.getDate();
 		};
 		if(ajaxparam != $("#tb_time").attr("data")) {
-			$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam);
+			$("#datatable").DataTable.ext.oApi.fnSetAjaxParam(ajaxparam);
 			$("#tb_time").attr("data", ajaxparam);
 		}
 	});
@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
 		$("#tb_time").html(display_year+"全年").attr("tab_time", "use").attr("title", "关闭");
 		var ajaxparam = "bTime="+parseInt(display_year)+"-1-1&eTime="+parseInt(display_year)+"-12-31";
 		if(ajaxparam != $("#tb_time").attr("data")) {
-			$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam);
+			$("#datatable").DataTable.ext.oApi.fnSetAjaxParam(ajaxparam);
 			$("#tb_time").attr("data", ajaxparam);
 		}
 	});
@@ -90,7 +90,7 @@ jQuery(document).ready(function($) {
 		$("#tb_time").html("所有时间").attr("tab_time", "use").attr("title", "关闭");
 		var ajaxparam = "bTime=-&eTime=-";
 		if(ajaxparam != $("#tb_time").attr("data")) {
-			$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam);
+			$("#datatable").DataTable.ext.oApi.fnSetAjaxParam(ajaxparam);
 			$("#tb_time").attr("data", ajaxparam);
 		}
 	});
@@ -149,7 +149,7 @@ jQuery(document).ready(function($) {
 		$("#a_popmenu").html("<strong>条&nbsp;件&nbsp;</strong>");
 		if(ajaxparam != $("#tb_time1").attr("data")) {
 			$("#tb_time").html(str).attr("tab_time", "use").attr("title", "关闭").attr("data", ajaxparam);
-			$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam);
+			$("#datatable").DataTable.ext.oApi.fnSetAjaxParam(ajaxparam);
 		}
 	});
 	
@@ -178,7 +178,7 @@ jQuery(document).ready(function($) {
 			$(this).html(display_month).attr("tab_time", "undo").attr("title", "");
 			var ajaxparam = "bTime=" + parseInt(display_year) + "-" + parseInt(display_month) + "-1&eTime=-";
 			if(ajaxparam != $(this).attr("data"))
-				$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam);
+				$("#datatable").DataTable.ext.oApi.fnSetAjaxParam(ajaxparam);
 				$(this).attr("data", ajaxparam);
 		}
 	});
@@ -568,7 +568,7 @@ jQuery(document).ready(function($) {
 		$("#tb_time").html(display_month).attr("tab_time", "undo").attr("title", "");
 		
 		var ajaxparam = "bTime=" + parseInt(display_year) + "-" + parseInt(display_month) + "-1&eTime=-";
-		$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam, true);
+		$("#datatable").DataTable.ext.oApi.fnSetAjaxParam(ajaxparam, true);
 		$("#tb_time").attr("data", ajaxparam);
 	});
 	
@@ -604,7 +604,7 @@ jQuery(document).ready(function($) {
 		$("#tb_time").html("全部数据").attr("tab_time", "use").attr("title", "关闭");
 		
 		var ajaxparam = "bTime=-&eTime=-";
-		$("#datatable").DataTable.ext.oApi.fnAjaxSetParamSend(ajaxparam, true);
+		$("#datatable").DataTable.ext.oApi.fnSetAjaxParam(ajaxparam, true);
 		$("#tb_time").attr("data", ajaxparam);
 		
 	});

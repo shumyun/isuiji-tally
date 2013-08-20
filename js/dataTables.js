@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-11
+ *    Last Updated: 2013-08-20
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -36,34 +36,15 @@ function isEmpty(obj) {
 			
 			_fnInitControls();
 			
-			_fnInitPages();
-			
-			if( DataTable.ext.optdata["Ajax"] === null) {
-				return true;
-			} else {
-				$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajParam"],
-					function(data) {
-						if( _fnAjaxSaveData(data) ){
-							_fnInitTheadSort();
-							_fnDefaultOut();
-						};
+			$.post("plugin.php?id=account:ajax&func=aj_richlist", DataTable.ext.optdata["ajParam"],
+				function(data) {
+					if( _fnAjaxSaveData(data) ){
+						_fnIntegrateConditions();
+						_fnShowNewData();
+					}
 				});
-			}
 			
 			return true;
-		}
-		
-		/**
-		 * 初始化控件
-		 */
-		function _fnInitControls() {
-			//初始化‘无数据‘控件
-			if(!DataTable.ext.optdata.noneCtrl)
-				DataTable.ext.optdata.noneCtrl = $('<tr id="nullData" class="tr_null"><td colspan="7">\
-					<div style=""><img style="padding:10px 200px;" src="source/plugin/account/js/images/aclist_null.png">\
-					</div></td></tr>').appendTo("tbody", DataTable.ext.oTable).hide();
-			
-			_fnInitOperate();
 		}
 		
 		/**
@@ -154,7 +135,7 @@ function isEmpty(obj) {
 		 *  @param {Boolean} bClrCond 清除条件的开关
 		 *  @returns {Boolean}
 		 */
-		function _fnAjaxSetParamSend(sParam) {
+		function _fnSetAjaxParam(sParam) {
 			var bClrCond = arguments[1] ? arguments[1] : false;
 			if(DataTable.ext.optdata["ajParam"] === sParam) {
 				if(bClrCond)
@@ -164,14 +145,32 @@ function isEmpty(obj) {
 			}
 			DataTable.ext.optdata["ajParam"] = sParam;
 
-			$.post(DataTable.ext.optdata["Ajax"], DataTable.ext.optdata["ajParam"],
+			$.post("plugin.php?id=account:ajax&func=aj_richlist", DataTable.ext.optdata["ajParam"],
 				function(data) {
 					if( _fnAjaxSaveData(data)) {
 						if(bClrCond)
 							_fnDelConditions("all");
 						else {
-							_fnAgainSaveCond();
-							_fnAgainOut();
+							//获取新数据后，按旧条件选择数据
+							var odata = DataTable.ext.oConditions.odata;
+							for(var i in odata) {
+								if(odata[i]["isUsed"] == 'a' && DataTable.DataCols["Data"].hasOwnProperty(i))
+									odata[i]["data"] = DataTable.DataCols["Data"][i];
+								else if(odata[i]["isUsed"] == 'y') {
+									if(odata[i].hasOwnProperty("data")) {
+										if(DataTable.DataCols["Data"].hasOwnProperty(i)) {
+											if(odata[i]["cond"] == false)
+												odata[i]["data"] = DataTable.DataCols["Data"][i];
+											else {
+												if(!_fnSaveDataToCond(i))
+													return false;
+											}
+										}
+									}
+								}
+							}
+							_fnIntegrateConditions();
+							_fnShowNewData();
 						}
 					};
 				});
@@ -197,14 +196,13 @@ function isEmpty(obj) {
 				//_fnLog( null, 0, "无数据显示");
 				var othis = $("tbody", DataTable.ext.oTable);
 				othis.children("[class!='tr_null']").remove();
-				$("#loading").hide();
-				_fnShowNoneCtrl();
+				DataTable.ext.oCtrl.ReadingCtl.hide();
+				DataTable.ext.oCtrl.NoneCtl.show();
 				
 				/*清空数据表*/
 				DataTable.DataCols["aDate"] = {"sortday" : null};
 				DataTable.DataCols["Data"] = {};
 				DataTable.DataCols["aSort"]["sortData"] = [];
-				DataTable.DataCols["aSort"]["doing"] = "n";
 				return false;
 			}
 			
@@ -243,7 +241,7 @@ function isEmpty(obj) {
 							$.extend(true, aDate[tmpTime]["oType"], oType);
 						}
 					}
-					var oOperate = DataTable.ext.oOperate;
+					var oCtrl = DataTable.ext.oCtrl;
 					var oCol = $('<tr id="'+ oData[0] +'" sort="'+ oData[1]
 								+'"><td date="'+ oData[2] +'" class="td_left"></td>'
 								+'<td class="td_rsecond td_linehide" title="'+oData[3]+'">'+ oData[3]
@@ -255,7 +253,7 @@ function isEmpty(obj) {
 								+(oData[7]?oData[7].replace(/<BR>/g, "\r\n"):'')+'</td></tr>')
 								.bind("mouseenter.DT", function () {
 											$(this).children(":eq(0)").html("")
-											.append(oOperate.DelCtl).append('<span class="pipe">|</span>').append(oOperate.ChangeCtl);})
+											.append(oCtrl.DelCtl).append('<span class="pipe">|</span>').append(oCtrl.ChangeCtl);})
 								.bind("mouseleave.DT", function () {
 											$(this).children(":eq(0)").children().detach();
 											if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
@@ -322,55 +320,6 @@ function isEmpty(obj) {
 			
 			return true;
 		}
-
-		/**
-		 * 初始化table的<thead>控件
-		 *  @returns {Boolean}
-		 */
-		function _fnInitTheadSort() {
-			if(!DataTable.ext.hasOwnProperty("oTable") || DataTable.ext["oTable"] === null) {
-				_fnLog( null, 0, "找不到相应的table控件。");
-				return false;
-			}
-			var othis = DataTable.ext.oTable;
-			var oSortCols = DataTable.ext.optdata["SortColumns"];
-			var aCols = oSortCols.Cols;
-			for(var i = 0; i<aCols.length; i++) {
-				var th = null;
-				if(th = $("thead > tr", othis).children('":eq('+aCols[i][0]+')"')) {
-					th.bind("click.DT", {index: aCols[i][0], type: aCols[i][1], fn: DataTable.ext.oApi.fnSort}, function(e){
-						e.data.fn(e.data.index, e.data.type);
-					}).css("cursor", "pointer");
-				}
-			}
-			return true;
-		}
-		
-		/**
-		 * 改变排序后修改<thead>控件样式
-		 *  @param {int} index : 排序的列号，从零开始
-		 *  @param {string} sortby : 排序
-		 *  @returns {Boolean}
-		 */
-		function _fnSetTheadClass(index, sortby) {
-			var aSort = DataTable.DataCols["aSort"];
-			var othis = DataTable.ext.oTable;
-			newth = $("thead > tr", othis).children('":eq('+index+')"');
-			if( aSort.sortID != index ){
-				oldth = $("thead > tr", othis).children('":eq('+aSort.sortID+')"');
-				$("#sort", oldth).remove();
-				$("span", oldth).removeClass("ac_colblue");
-				$("span", newth).addClass("ac_colblue");
-				newth.append($('<span id="sort" class="ac_colblue ac_sortby">&darr;</span>'));
-			} else {
-				if(sortby === "asc"){
-					$("#sort", newth).html("&uarr;");
-				} else {
-					$("#sort", newth).html("&darr;");
-				}
-			}
-			return true;
-		}
 		
 		/**
 		 * 总排序
@@ -381,8 +330,9 @@ function isEmpty(obj) {
 		function _fnSort(index, type){
 			var aSort = DataTable.DataCols["aSort"];
 			var oData = DataTable.DataCols["Data"];
-			if((aSort.doing==="n") && !isEmpty(oData)){
-				aSort.doing = "y";
+			
+			if(!aSort.doing && !isEmpty(oData)){
+				aSort.doing = true;
 				//var oSortCols = DataTable.ext.optdata["SortColumns"];
 				var sortby;
 				if( aSort.sortID === index ) {		//相同列的排序
@@ -418,11 +368,11 @@ function isEmpty(obj) {
 						}
 						break;
 					default:
-						aSort.doing ="n";
+						aSort.doing = false;
 						_fnLog( null, 0, "排序的类型未知。");
 						return false;
 				}
-				aSort.doing ="n";
+				aSort.doing = false;
 				return true;
 			}
 			return false;
@@ -580,15 +530,19 @@ function isEmpty(obj) {
 		 * 新数据按旧排序显示
 		 *  @returns {Boolean}
 		 */
-		function _fnAgainOut() {
+		function _fnShowNewData() {
 			var oData = DataTable.DataCols["Data"];
 			if(isEmpty(oData)){
 				return false;
 			}
 			var aSort = DataTable.DataCols["aSort"];
 			aSort["sortby"] = (aSort["sortby"]==="asc" ? "desc":"asc");
-			if(aSort.sortID === null)
+			if(aSort.sortID === null){
 				aSort.sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
+				newth = $("thead > tr", DataTable.ext.oTable).children('":eq('+aSort.sortID+')"');
+				$("span", newth).addClass("ac_colblue");
+				newth.append($('<span id="sort" class="ac_colblue ac_sortby">&darr;</span>'));
+			}
 			
 			var Cols = DataTable.ext.optdata.SortColumns.Cols;
 			for(var i in Cols){
@@ -597,28 +551,6 @@ function isEmpty(obj) {
 					break;
 				}
 			}
-			return true;
-		}
-		
-		/**
-		 * 数据第一次输出显示
-		 *  @returns {boolean}
-		 */
-		function _fnDefaultOut() {
-			//$("#loading", othis).hide();
-			var aSort = DataTable.DataCols["aSort"];
-			aSort.doing = "y";
-
-			_fnSortDate("desc");
-			_fnOut("date", 1);
-
-			var othis = DataTable.ext.oTable;
-			th = $("thead > tr", othis).children('":eq('+DataTable.ext.optdata["SortColumns"]["defCol"]+')"');
-			$("span", th).addClass("ac_colblue");
-			th.append($('<span id="sort" class="ac_sortby ac_colblue">&darr;</span>'));
-			aSort.doing = "n";
-			aSort.sortID = DataTable.ext.optdata["SortColumns"]["defCol"];
-			aSort.sortby = "desc";
 			return true;
 		}
 		
@@ -647,11 +579,11 @@ function isEmpty(obj) {
 		}
 		
 		/**
-		 * 筛选后存储需要显示的数据并返回
-		 *  @param {string} sName : 要比对的数据名
+		 * 筛选并存储成功匹配的数据
+		 *  @param {string} sName : 要比对的数据名(eg."收入")
 		 *  @returns {Boolean}
 		 */
-		function _fnSaveConditions(sName) {
+		function _fnSaveDataToCond(sName) {
 			
 			var toData = new Array();
 			
@@ -684,32 +616,6 @@ function isEmpty(obj) {
 			if(DataTable.ext.oConditions.odata[sName]["isUsed"] === 'n')
 				DataTable.ext.oConditions.iCount++;
 			DataTable.ext.oConditions.odata[sName]["isUsed"] = 'y';	//有可能是'a'条件
-			return true;
-		}
-		
-		/**
-		 * 获取新数据后，按旧条件选择数据
-		 *  @returns {Boolean}
-		 */
-		function _fnAgainSaveCond(){
-			var odata = DataTable.ext.oConditions.odata;
-			for(var i in odata) {
-				if(odata[i]["isUsed"] == 'a' && DataTable.DataCols["Data"].hasOwnProperty(i))
-					odata[i]["data"] = DataTable.DataCols["Data"][i];
-				else if(odata[i]["isUsed"] == 'y') {
-					if(odata[i].hasOwnProperty("data")) {
-						if(DataTable.DataCols["Data"].hasOwnProperty(i)) {
-							if(odata[i]["cond"] == false)
-								odata[i]["data"] = DataTable.DataCols["Data"][i];
-							else {
-								if(!_fnSaveConditions(i))
-									return false;
-							}
-						}
-					}
-				}
-			}
-			_fnSortConditions();
 			return true;
 		}
 		
@@ -760,9 +666,10 @@ function isEmpty(obj) {
 		}
 		
 		/**
-		 * 筛选条件的数据排序
+		 * 整合每个筛选条件中的数据并存储符合的数据(此数据将要显示)
 		 */
-		function _fnSortConditions() {
+		function _fnIntegrateConditions() {
+			var oData = DataTable.ext.oConditions.odata;
 			var step = DataTable.ext.oConditions.Step;
 			var tmpdata = [];
 			//当只有筛选账户和借贷账户时
@@ -841,12 +748,12 @@ function isEmpty(obj) {
 							toData[condName]["cond"]["two"].push([i, dataType["FstCol"], aThrData, dataType["SecCol"]]);
 						}
 					}
-					if(!_fnSaveConditions(condName))
+					if(!_fnSaveDataToCond(condName))
 						return false;
 				}
 			}
-			_fnSortConditions();
-			_fnAgainOut();
+			_fnIntegrateConditions();
+			_fnShowNewData();
 			return true;
 		}
 		
@@ -886,26 +793,121 @@ function isEmpty(obj) {
 				}
 			}
 			
-			for(var i in oData) {
-				if(oData[i]["isUsed"] != 'n') {	//存在y和a两种条件
-					_fnSortConditions();
-					_fnAgainOut();
-					return true;
+			_fnIntegrateConditions();
+				
+			_fnShowNewData();
+			
+			return true;
+		}
+		
+		/**
+		 * 初始化控件
+		 */
+		function _fnInitControls() {
+
+			var tNoneCtl = $('<tr id="nullData" class="tr_null"><td colspan="7">\
+				<div style=""><img style="padding:10px 200px;" src="source/plugin/account/js/images/aclist_null.png">\
+				</div></td></tr>').appendTo($("tbody", DataTable.ext.oTable)).hide();
+			
+			var tLoadingCtl = $('<tr id="loading" class="tr_null"><td colspan="7">\
+				<div id="container" style="width: 100%; height: 100%; margin: 0 auto">\
+					<img style="padding:65px 0 70px 130px;vertical-align:middle" src="source/plugin/account/js/images/LoadingBlue.gif">\
+					<font style="font-size: 1.2em;">&nbsp;正在为您加载相关信息...</font>\
+				</div></td></tr>').appendTo($("tbody", DataTable.ext.oTable));
+			
+			var aDel = $('<a style="color: #f00; cursor: pointer;" title="删除">删除</a>').click(function(){
+				var trData = $(this).closest("tr");
+				var msg = '您确定要删除于<label style="color: #f00;">'+trData.children(":eq(0)").attr("title")+
+							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
+							trData.children(":eq(3)").html()+'</label>的记录吗?';
+				showDialog(msg, "confirm", "操作提示",
+						'jQuery("'+DataTable.ext.oApi.fnGetDataTablesId()+'").DataTable.ext.oApi.fnDelData("'
+						+trData.attr("id")+'", "'+trData.attr("sort")+'", "'+trData.children(":eq(5)").html()+'")');
+			});
+			
+			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
+				var trData = $(this).closest("tr");
+				var dataobj = new Object();
+				dataobj.onlyid  = trData.attr("id");
+				dataobj.isort   = trData.attr("sort");
+				dataobj.type    = trData.children(":eq(5)").html();
+				dataobj.date    = trData.children(":eq(0)").attr("date");
+				dataobj.account = trData.children(":eq(4)").html();
+				dataobj.amount  = trData.children(":eq(3)").html();
+				dataobj.msg     = trData.children(":eq(6)").html();
+				dataobj.data1   = trData.children(":eq(1)").html();
+				dataobj.data2   = trData.children(":eq(2)").html();
+				Setwinmodify(dataobj, this);
+				$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
+				trData.children(":eq(0)").children().detach();
+			});
+
+			var dPrompt = $('<div style="position: absolute;" >\
+				<table cellpadding="0" cellspacing="0" class="fwin">\
+					<tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
+					<tr><td class="m_l">&nbsp;&nbsp;</td>\
+						<td class="m_c"><h3 class="flb"><em id="datatable_prompt"></em></td>\
+						<td class="m_r"></td></tr>\
+					<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table></div>')
+				.appendTo("body")
+				.position({ my: "center center",
+							at: "center center",
+							of: DataTable.ext.oTable,
+							offset: "-50 -50"}).hide();
+							
+			DataTable.ext.oCtrl = {"DelCtl": aDel, "ChangeCtl": aChange, "PromptCtl": dPrompt, "NoneCtl": tNoneCtl, "ReadingCtl": tLoadingCtl};
+			
+			_fnInitSortThead();
+			
+			_fnInitPages();
+		}
+
+		/**
+		 * 初始化table的<thead>控件
+		 *  @returns {Boolean}
+		 */
+		function _fnInitSortThead() {
+			if(!DataTable.ext.hasOwnProperty("oTable") || DataTable.ext["oTable"] === null) {
+				_fnLog( null, 0, "找不到相应的table控件。");
+				return false;
+			}
+			var othis = DataTable.ext.oTable;
+			var oSortCols = DataTable.ext.optdata["SortColumns"];
+			var aCols = oSortCols.Cols;
+			for(var i = 0; i<aCols.length; i++) {
+				var th = null;
+				if(th = $("thead > tr", othis).children('":eq('+aCols[i][0]+')"')) {
+					th.bind("click.DT", {index: aCols[i][0], type: aCols[i][1], fn: DataTable.ext.oApi.fnSort}, function(e){
+						e.data.fn(e.data.index, e.data.type);
+					}).css("cursor", "pointer");
 				}
 			}
-			
-			//显示所有数据
-			var alldata = DataTable.DataCols["Data"];
-			var tmpdata = [];
-			for(var i in alldata) {
-				tmpdata = tmpdata.concat(alldata[i]);
-			}
+			return true;
+		}
+		
+		/**
+		 * 改变排序后修改<thead>控件样式
+		 *  @param {int} index : 排序的列号，从零开始
+		 *  @param {string} sortby : 排序
+		 *  @returns {Boolean}
+		 */
+		function _fnSetTheadClass(index, sortby) {
 			var aSort = DataTable.DataCols["aSort"];
-			aSort["sortData"] = tmpdata;
-			_fnSetDataDate(tmpdata);
-			
-			_fnAgainOut();
-			
+			var othis = DataTable.ext.oTable;
+			newth = $("thead > tr", othis).children('":eq('+index+')"');
+			if( aSort.sortID != index ){
+				oldth = $("thead > tr", othis).children('":eq('+aSort.sortID+')"');
+				$("#sort", oldth).remove();
+				$("span", oldth).removeClass("ac_colblue");
+				$("span", newth).addClass("ac_colblue");
+				newth.append($('<span id="sort" class="ac_colblue ac_sortby">&darr;</span>'));
+			} else {
+				if(sortby === "asc"){
+					$("#sort", newth).html("&uarr;");
+				} else {
+					$("#sort", newth).html("&darr;");
+				}
+			}
 			return true;
 		}
 		
@@ -1197,53 +1199,6 @@ function isEmpty(obj) {
 		}
 		
 		/**
-		 * 初始化操作控件（删除和修改）
-		 */
-		function _fnInitOperate() {
-			var aDel = $('<a style="color: #f00; cursor: pointer;" title="删除">删除</a>').click(function(){
-				var trData = $(this).closest("tr");
-				var msg = '您确定要删除于<label style="color: #f00;">'+trData.children(":eq(0)").attr("title")+
-							'</label>发生的<br/>一笔金额为<label style="color: #f00;">'+
-							trData.children(":eq(3)").html()+'</label>的记录吗?';
-				showDialog(msg, "confirm", "操作提示",
-						'jQuery("'+DataTable.ext.oApi.fnGetDataTablesId()+'").DataTable.ext.oApi.fnDelData("'
-						+trData.attr("id")+'", "'+trData.attr("sort")+'", "'+trData.children(":eq(5)").html()+'")');
-			});
-
-			var aChange = $('<a style="color:#f00; cursor: pointer;" title="修改">修改</a>').click(function(){
-				var trData = $(this).closest("tr");
-				var dataobj = new Object();
-				dataobj.onlyid  = trData.attr("id");
-				dataobj.isort   = trData.attr("sort");
-				dataobj.type    = trData.children(":eq(5)").html();
-				dataobj.date    = trData.children(":eq(0)").attr("date");
-				dataobj.account = trData.children(":eq(4)").html();
-				dataobj.amount  = trData.children(":eq(3)").html();
-				dataobj.msg     = trData.children(":eq(6)").html();
-				dataobj.data1   = trData.children(":eq(1)").html();
-				dataobj.data2   = trData.children(":eq(2)").html();
-				Setwinmodify(dataobj, this);
-				$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
-				trData.children(":eq(0)").children().detach();
-			});
-
-			var dPrompt = $('<div style="position: absolute;" >\
-								<table cellpadding="0" cellspacing="0" class="fwin">\
-									<tr><td class="t_l"></td><td class="t_c"></td><td class="t_r"></td></tr>\
-									<tr><td class="m_l">&nbsp;&nbsp;</td>\
-										<td class="m_c"><h3 class="flb"><em id="datatable_prompt"></em></td>\
-										<td class="m_r"></td></tr>\
-									<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table></div>')
-							.appendTo("body")
-							.position({ my: "center center",
-										at: "center center",
-										of: DataTable.ext.oTable,
-										offset: "-50 -50"}).hide();
-
-			DataTable.ext.oOperate = {"DelCtl": aDel, "ChangeCtl": aChange, "PromptCtl": dPrompt};
-		}
-		
-		/**
 		 * 设置提示控件的显示数据
 		 */
 		function _fnSetPrompt(shtml) {
@@ -1255,18 +1210,18 @@ function isEmpty(obj) {
 		 */
 		function _fnShowPrompt() {
 			$("tbody > tr[sort]", $(DataTable.ext.oTable)).unbind("mouseenter.DT mouseleave.DT");
-			DataTable.ext.oOperate.PromptCtl.show();
+			DataTable.ext.oCtrl.PromptCtl.show();
 		}
 		
 		/**
 		 * 隐藏提示控件
 		 */
 		function _fnHidePrompt(msec) {
-			var oOperate = DataTable.ext.oOperate;
+			var oCtrl = DataTable.ext.oCtrl;
 			$("tbody > tr[sort]", $(DataTable.ext.oTable))
 			.bind("mouseenter.DT", function () {
 				$(this).children(":eq(0)").html("")
-				.append(oOperate.DelCtl).append('<span class="pipe">|</span>').append(oOperate.ChangeCtl);})
+				.append(oCtrl.DelCtl).append('<span class="pipe">|</span>').append(oCtrl.ChangeCtl);})
 			.bind("mouseleave.DT", function () {
 				$(this).children(":eq(0)").children().detach();
 				if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
@@ -1279,7 +1234,7 @@ function isEmpty(obj) {
 								+(idate<10 ? ("0"+idate):idate));
 				}});
 			setTimeout('jQuery("'+DataTable.ext.oApi.fnGetDataTablesId()+
-						'").DataTable.ext.oOperate.PromptCtl.hide()',
+						'").DataTable.ext.oCtrl.PromptCtl.hide()',
 						msec);
 		}
 		
@@ -1288,11 +1243,11 @@ function isEmpty(obj) {
 		 *  @param {array} adata : 数据
 		 */
 		function _fnModifyData(adata) {
-			var oOperate = DataTable.ext.oOperate;
+			var oCtrl = DataTable.ext.oCtrl;
 			$("tbody > tr[sort]", $(DataTable.ext.oTable))
 			.bind("mouseenter.DT", function () {
 				$(this).children(":eq(0)").html("")
-				.append(oOperate.DelCtl).append('<span class="pipe">|</span>').append(oOperate.ChangeCtl);})
+				.append(oCtrl.DelCtl).append('<span class="pipe">|</span>').append(oCtrl.ChangeCtl);})
 			.bind("mouseleave.DT", function () {
 				$(this).children(":eq(0)").children().detach();
 				if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
@@ -1418,64 +1373,43 @@ function isEmpty(obj) {
 			}
 		}
 		
-		/**
-		 * 显示无数据
-		 */
-		function _fnHideNoneCtrl() {
-			if(DataTable.ext.optdata.noneCtrl)
-				DataTable.ext.optdata.noneCtrl.hide();
-		}
-		
-		/**
-		 * 隐藏无数据
-		 */
-		function _fnShowNoneCtrl() {
-			if(DataTable.ext.optdata.noneCtrl)
-				DataTable.ext.optdata.noneCtrl.show();
-		}
-		
 		this.oApi = {
 			"fnGetDataTablesId"     : _fnGetDataTablesId,
 			"fnInit"                : _fnInit,
-			"_fnInitControls"        : _fnInitControls,
 			"_fnLog"                : _fnLog,
 			"_fnExtend"             : _fnExtend,
 			"_fntransition"         : _fntransition,
-			"fnAjaxSetParamSend"    : _fnAjaxSetParamSend,
+			"fnSetAjaxParam"        : _fnSetAjaxParam,
 			"_fnAjaxSaveData"       : _fnAjaxSaveData,
 			"_fnSetDataDate"        : _fnSetDataDate,
-			"_fnInitTheadSort"      : _fnInitTheadSort,
-			"_fnSetTheadClass"      : _fnSetTheadClass,
 			"fnSort"                : _fnSort,
 			"_fnSortDate"           : _fnSortDate,
 			"_fnSortDateElement"    : _fnSortDateElement,
 			"_fnSortString"         : _fnSortString,
 			"_fnSortNumerical"      : _fnSortNumerical,
 			"_fnOut"                : _fnOut,
-			"_fnAgainOut"           : _fnAgainOut,
-			"fnDefaultOut"          : _fnDefaultOut,
+			"_fnShowNewData"        : _fnShowNewData,
 			"_fnInitConditions"     : _fnInitConditions,
-			"_fnSaveConditions"     : _fnSaveConditions,
-			"_fnAgainSaveCond"      : _fnAgainSaveCond,
+			"_fnSaveDataToCond"     : _fnSaveDataToCond,
 			"_fnCondStepSort"       : _fnCondStepSort,
-			"_fnSortConditions"     : _fnSortConditions,
+			"_fnIntegrateConditions": _fnIntegrateConditions,
 			"fnSetConditions"       : _fnSetConditions,
 			"fnDelConditions"       : _fnDelConditions,
+			"_fnInitControls"       : _fnInitControls,
+			"_fnInitSortThead"      : _fnInitSortThead,
+			"_fnSetTheadClass"      : _fnSetTheadClass,
 			"_fnInitPages"          : _fnInitPages,
 			"_fnSetPagesNum"        : _fnSetPagesNum,
 			"_fnSetPagesDiv"        : _fnSetPagesDiv,
 			"_fnChangePagesDiv"     : _fnChangePagesDiv,
 			"_fnPagesOut"           : _fnPagesOut,
-			"_fnInitOperate"        : _fnInitOperate,
 			"_fnSetPrompt"          : _fnSetPrompt,
 			"_fnShowPrompt"         : _fnShowPrompt,
 			"_fnHidePrompt"         : _fnHidePrompt,
 			"fnModifyData"          : _fnModifyData,
 			"fnDelData"             : _fnDelData,
 			"_fnDelTRData"          : _fnDelTRData,
-			"_fnOperateOut"         : _fnOperateOut,
-			"_fnHideNoneCtrl"      : _fnHideNoneCtrl,
-			"_fnShowNoneCtrl"      : _fnShowNoneCtrl
+			"_fnOperateOut"         : _fnOperateOut
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );
@@ -1500,7 +1434,7 @@ function isEmpty(obj) {
 	 *               "sortday": 每天时间的排序
 	 *            }
 	 * @Data    : { "类型名字(eg.支出)": [该类型的行数据组] }
-	 * @aSort   : { doing  < 'n' or 'y' 默认为 y ,防止无数据及排序 >
+	 * @aSort   : { doing <boolean 默认为 false ,防止无数据及排序 >
 	 * 				sortID <列数从零开始，默认为 0 >
 	 * 				sortby <"asc" or "desc">
 	 *				OutType <"SortData" or "DateData">
@@ -1514,7 +1448,7 @@ function isEmpty(obj) {
 	DataTable.DataCols = {
 		"aDate"     : {},
 		"Data"      : {},
-		"aSort"     : {"doing": "y", "sortID": null, "sortby": null, "OutType":null, "sortData": null},
+		"aSort"     : {"doing": false, "sortID": null, "sortby": null, "OutType":null, "sortData": null},
 		"TrClass"   : {"cClass": [null, "notrans_td"], "hClass": "notrans_td"},
 		"aClassData": {},
 		"PageCols"  : 30
@@ -1526,29 +1460,26 @@ function isEmpty(obj) {
 		"oApi"        : {},
 		"oConditions" : {},
 		"oPages"      : {},
-		"oOperate"    : {}
+		"oCtrl"       : {}
 	};
 	
 	/**
 	 * 默认数据
 	 * @SortColumns : 含2个数据的对象,包括1、需要排列的列数：{列数(从0开始计算)，该列的数据类型("date","string","numerical")}
 	 * 									2、默认排列的列号
-	 * @OperateCols : 操作列的列数(从0开始计算)
 	 * @CountRows   : 按照时间进行统计，对象包括3个数据
 	 *                {iOrderByTime: 时间所在列, iOrderByType: 统计时的类型, iOrderByTotal: 统计时的数据, trClass: 统计行的css类, tdCount: 合并的td个数}
-	 * @Ajax        : ajax的地址
 	 * @ajParam     : ajax传送的参数
 	 * @pagedivId   : pageDIV的ID号
+	 * @modifyId    : 修改数据的窗口ID号
+	 * @Ctrl        : table的子控件对象
 	 */
 	DataTable.defaults = {
 		"SortColumns" : {"Cols": null, "defCol": null},
-		"OperateCols" : null,
 		"CountRows"   : {},
-		"Ajax"        : null,
 		"ajParam"     : null,
 		"pagedivId"   : null,
-		"modifyId"    : null,
-		"noneCtrl"    : null
+		"modifyId"    : null
 	};
 	
 	$.fn.DataTable = DataTable;
@@ -1560,10 +1491,8 @@ jQuery(document).ready(function($) {
 		"SortColumns" : {"Cols":[[0, "date"],[1, "string"],[2, "string"],
 		                         [3, "numerical"],[4, "string"],[5, "string"]],
 		                 "defCol" : 0},
-		"OperateCols" : 0,
 		"CountRows"   : {"iOrderByTime": 0, "iOrderByType": 1, "iOrderByTotal": 3, "trClass": "tr_sum", "tdCount": 7},
-		"Ajax"		  : "plugin.php?id=account:ajax&func=aj_richlist",
-		"ajParam"	  : $("#tb_time").attr("data"),
+		"ajParam"	    : $("#tb_time").attr("data"),
 		"pagedivId"   : "tb_page",
 		"modifyId"    : "ac_dmodify"
 	});
