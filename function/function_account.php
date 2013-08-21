@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-15
+ *    Last Updated: 2013-08-21
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -29,10 +29,10 @@ function UserParam_strtoarr($type) {
 		case 'transfer':
 			$arr[0] = 'categorytype';
 			break;
-		case "borrow":
-		case "loan":
-		case "repay":
-		case "debt":
+		case 'borrow':
+		case 'loan':
+		case 'repay':
+		case 'debt':
 			$arr[0] = 'loandebt';
 			$arr[1] = 'categorytype';
 			break;

@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-20
+ *    Last Updated: 2013-08-21
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1106,6 +1106,10 @@ function isEmpty(obj) {
 			switch(oPages.curType) {
 				case "idayPages":
 					var aOutData = DataTable.DataCols["aDate"];
+					if( !oPages.idayPages && !aOutData["sortday"].length) {
+						DataTable.ext.oCtrl.NoneCtl.show();
+						return false;
+					}
 					if(iPageCols) {
 						iNum = iNum>oPages.idayPages ? oPages.idayPages:iNum;
 						x = oPages.adays[iNum-1];
@@ -1167,6 +1171,10 @@ function isEmpty(obj) {
 					
 				case "iPages":
 					var aOutData = DataTable.DataCols["aSort"]["sortData"];
+					if( !oPages.iPages && !aOutData.length) {
+						DataTable.ext.oCtrl.NoneCtl.show();
+						return false;
+					}
 					if(iPageCols) {
 						iNum = iNum>oPages.iPages ? oPages.iPages:iNum;
 						x = iPageCols*(iNum-1);

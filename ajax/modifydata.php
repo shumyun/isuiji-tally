@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-17
+ *    Last Updated: 2013-08-21
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -178,19 +178,16 @@ switch ($tableID) {
 
 	case AC_TRANSFER:
 		$arr = UserParam_strtoarr('transfer');
-		if( !$account->GetParam($_G['uid'], $arr)) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richtype';
-			//echo "请选择已存在的账户名称";
-			break;
-		}
+		$account->GetParam($_G['uid'], $arr);
+		
 		if(!isset($_POST['richtype_out']) || $_POST['richtype_out'] >= count($account->account_config['catetype'])) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype_out';
 		} else if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype'])){
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype';
-		}  else if($_POST['richtype'] == $_POST['richtype_out']){
+			//echo "请选择已存在的账户名称";
+		} else if($_POST['richtype'] == $_POST['richtype_out']){
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype_same';
 		} else {
@@ -216,6 +213,36 @@ switch ($tableID) {
 		break;
 
 	case AC_LOANDEBT:
+		$arr = UserParam_strtoarr('borrow');
+		$account->GetParam($_G['uid'], $arr);
+		
+		if(!isset($_POST['richtype_out']) || $_POST['richtype_out'] >= count($account->account_config['loandebt'])) {
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype_out';
+		} else if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype'])){
+			$ac_response['state'] = 'err';
+			$ac_response['curerr'] = 'richtype';
+			//echo "请选择已存在的账户名称";
+		} else {
+			$aUpdata = array(
+				'amount' => $_POST['richnum'],
+				'category' => $account->account_config['catetype'][$_POST['richtype']],
+				'loandebt' => $account->account_config['loandebt'][$_POST['richtype_out']],
+				'info' => $_POST['message'],
+				'datatime' => $timestamp,
+				'recordtime' => $_G['timestamp']
+			);
+			$aCond = array(
+				'cid' => $cid,
+				'uid' => $_G['uid'],
+				'recordtime' => $_POST['isort']
+				);
+			if( !DB::update('account_loandebt', $aUpdata, $aCond)) {
+				$ac_aresponse['state'] = 'err';
+				$ac_aresponse['curerr'] = 'Dont';
+				//echo "操作失败";
+			}
+		}
 		break;
 
 	default:
