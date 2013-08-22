@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-21
+ *    Last Updated: 2013-08-22
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1248,25 +1248,40 @@ function isEmpty(obj) {
 		
 		/**
 		 * 修改数据后更新table数据
-		 *  @param {array} adata : 数据
+		 *  @param {string} sname : 数据类型（收入等）
+		 *  @param {array}  adata : 数据
 		 */
-		function _fnModifyData(adata) {
-			var oCtrl = DataTable.ext.oCtrl;
-			$("tbody > tr[sort]", $(DataTable.ext.oTable))
-			.bind("mouseenter.DT", function () {
-				$(this).children(":eq(0)").html("")
-				.append(oCtrl.DelCtl).append('<span class="pipe">|</span>').append(oCtrl.ChangeCtl);})
-			.bind("mouseleave.DT", function () {
-				$(this).children(":eq(0)").children().detach();
-				if(DataTable.DataCols["aSort"]["OutType"] == "SortData"){
-					var date=new Date($(this).children(":eq(0)").attr("date"));
-					var month = parseInt(date.getMonth()) + 1;
-					var idate = parseInt(date.getDate());
-					$(this).children(":eq(0)")
-					.html(date.getFullYear()+"."
-								+(month<10 ? ("0"+month):month)+"."
-								+(idate<10 ? ("0"+idate):idate));
-				}});
+		function _fnModifyData(sname, adata) {
+			if(adata) {
+				var string = '<img src="' + IMGDIR + '/loading.gif"> 正在修改...';
+				_fnSetPrompt(string);
+				_fnShowPrompt();
+				$.post("plugin.php?id=account:ajax&func=modifydata", $.param(adata), function(odata) {
+					if(odata.state == 'ok'){
+						_fnModifyTRData(sname, adata);
+					} else {
+						;
+					}
+					_fnHidePrompt(0);
+				},"json").error(function() {
+					_fnHidePrompt(0);
+					alert("未知错误3");
+				});
+			} else {
+				_fnHidePrompt(0);
+			}
+		}
+		
+		/**
+		 * 修改数据
+		 *  @param {string} sname : 数据类型（收入等）
+		 *  @param {array}  adata : 数据
+		 */
+		function _fnModifyTRData(sname, adata) {
+			var typedata = DataTable.DataCols.Data;
+			for(var i in typedata[sname]) {
+				;
+			}
 		}
 		
 		/**

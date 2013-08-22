@@ -90,6 +90,8 @@ switch ($tableID) {
 		}
 		
 		if($timestamp == $data[datatime]) {
+			if($data[amount] == $_POST[richnum])	//防止update语句返回false
+				break;
 			$sqlstr = "UPDATE ".DB::table('account_daytotal').
 						" SET paymoney = paymoney - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
 		} else {
@@ -103,14 +105,20 @@ switch ($tableID) {
 						);
 				DB::insert('account_daytotal', $insarr);
 			}
+			
+			if($data[amount] != $_POST[richnum]) {	//防止update语句返回false
+				if(!DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]'")) {
+					$ac_aresponse['state'] = 'err';
+					$ac_aresponse['curerr'] = 'Dont';
+				}
+			}
+			
 			$sqlstr = "UPDATE ".DB::table('account_daytotal').
 						" SET paymoney = paymoney - '$data[amount]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
 		}
-		if(!DB::query($sqlstr)
-			|| !DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]'")) {
+		if(!DB::query($sqlstr)) {
 			$ac_aresponse['state'] = 'err';
 			$ac_aresponse['curerr'] = 'Dont';
-			//echo "操作失败";
 		}
 		break;
 
@@ -152,6 +160,8 @@ switch ($tableID) {
 		}
 		
 		if($timestamp == $data[datatime]) {
+			if($data[amount] == $_POST[richnum])	//防止update语句返回false
+				break;
 			$sqlstr = "UPDATE ".DB::table('account_daytotal').
 						" SET earnmoney = earnmoney - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
 		} else {
@@ -165,11 +175,18 @@ switch ($tableID) {
 						);
 				DB::insert('account_daytotal', $insarr);
 			}
+			
+			if($data[amount] != $_POST[richnum]) {	//防止update语句返回false
+				if(!DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]'")) {
+					$ac_aresponse['state'] = 'err';
+					$ac_aresponse['curerr'] = 'Dont';
+				}
+			}
+			
 			$sqlstr = "UPDATE ".DB::table('account_daytotal').
 						" SET earnmoney = earnmoney - '$data[amount]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
 		}
-		if(!DB::query($sqlstr)
-			|| !DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]'")) {
+		if(!DB::query($sqlstr)) {
 			$ac_aresponse['state'] = 'err';
 			$ac_aresponse['curerr'] = 'Dont';
 			//echo "操作失败";

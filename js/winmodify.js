@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-08
+ *    Last Updated: 2013-08-22
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -201,10 +201,10 @@ jQuery(document).ready(function($) {
 		switch(dataobj["type"]) {
 			case '支出':
 			case '收入':
-			if(dataobj["type"] == '支出')
-				catcompletedata = titledata["pay"];
-			else
-				catcompletedata = titledata["earn"];
+				if(dataobj["type"] == '支出')
+					catcompletedata = titledata["pay"];
+				else
+					catcompletedata = titledata["earn"];
 				if($("#richname").val() == '') {
 					errTip("#richname", "名称不能为空", 1, 2500);
 					return ;
@@ -237,11 +237,7 @@ jQuery(document).ready(function($) {
 		odata.richtype = $("#richtype").attr("selecti");
 		odata.message  = $("#message").val();
 		
-		
-		$.post("plugin.php?id=account:ajax&func=modifydata", $.param(odata), function(data) {
-			;
-		},"json").error(function() {
-			alert("未知错误1");
-		});
+		jQuery("#datatable").DataTable.ext.oApi.fnModifyData(dataobj["type"], odata);
+		$("#ac_dmodify").hide();
 	});
 });
