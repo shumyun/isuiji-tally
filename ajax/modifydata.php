@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-21
+ *    Last Updated: 2013-08-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -16,12 +16,12 @@ define('NOROBOT', TRUE);
 
 $ac_aresponse = array(
 		'state' => 'ok',
-		'curerr' => '');
+		'sdata' => $_G['timestamp']);
 
 if(!isset($_POST['isort']) || !is_numeric($_POST['isort'])
 	|| !isset($_POST['onlyid']) || !is_numeric($_POST['onlyid'])) {
 	$ac_aresponse['state'] = 'err';
-	$ac_aresponse['curerr'] = 'datetype';
+	$ac_aresponse['sdata'] = 'datetype';
 	//echo "记录时间错误或者ID错误";
 	echo json_encode($ac_aresponse);
 	return;
@@ -29,7 +29,7 @@ if(!isset($_POST['isort']) || !is_numeric($_POST['isort'])
 
 if(!isset($_POST['richnum']) || !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
 	$ac_response['state'] = 'err';
-	$ac_response['curerr'] = 'richnum';
+	$ac_response['sdata'] = 'richnum';
 	//echo "请填写大于零且最多两位小数的金额";
 	echo json_encode($ac_response);
 	return;
@@ -37,7 +37,7 @@ if(!isset($_POST['richnum']) || !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POS
 
 if(!isset($_POST['richdate']) || !($timestamp = strtotime($_POST['richdate'])) ) {
 	$ac_response['state'] = 'err';
-	$ac_response['curerr'] = 'richdate';
+	$ac_response['sdata'] = 'richdate';
 	//echo "请选择正确的日期";
 	echo json_encode($ac_response);
 	return;
@@ -57,13 +57,13 @@ switch ($tableID) {
 		if( !$account->GetParam($_G['uid'], $arr) ||
 			!ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['paytype'])) {
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richname';
+			$ac_response['sdata'] = 'richname';
 			//echo "请选择已存在的账单名称";
 			break;
 		}
 		if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype']) ){
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richtype';
+			$ac_response['sdata'] = 'richtype';
 			//echo "请选择正确的归属";
 			break;
 		}
@@ -75,7 +75,7 @@ switch ($tableID) {
 			'category' => $account->account_config['catetype'][$_POST['richtype']],
 			'info' => $_POST['message'],
 			'datatime' => $timestamp,
-			'recordtime' => $_G['timestamp']
+			'recordtime' => $ac_response['sdata']
 			);
 		$aCond = array(
 			'cid' => $cid,
@@ -84,7 +84,7 @@ switch ($tableID) {
 			);
 		if( !($data = DB::fetch_first($sqlstr)) || !DB::update('account_paydata', $aUpdata, $aCond)) {
 			$ac_aresponse['state'] = 'err';
-			$ac_aresponse['curerr'] = 'Dont';
+			$ac_aresponse['sdata'] = 'Dont';
 			//echo "操作失败";
 			break;
 		}
@@ -109,7 +109,7 @@ switch ($tableID) {
 			if($data[amount] != $_POST[richnum]) {	//防止update语句返回false
 				if(!DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]'")) {
 					$ac_aresponse['state'] = 'err';
-					$ac_aresponse['curerr'] = 'Dont';
+					$ac_aresponse['sdata'] = 'Dont';
 				}
 			}
 			
@@ -118,7 +118,7 @@ switch ($tableID) {
 		}
 		if(!DB::query($sqlstr)) {
 			$ac_aresponse['state'] = 'err';
-			$ac_aresponse['curerr'] = 'Dont';
+			$ac_aresponse['sdata'] = 'Dont';
 		}
 		break;
 
@@ -127,13 +127,13 @@ switch ($tableID) {
 		if( !$account->GetParam($_G['uid'], $arr) ||
 			!ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['earntype'])) {
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richname';
+			$ac_response['sdata'] = 'richname';
 			//echo "请选择已存在的账单名称";
 			break;
 		}
 		if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype'])){
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richtype';
+			$ac_response['sdata'] = 'richtype';
 			//echo "请选择正确的归属";
 			break;
 		}
@@ -145,7 +145,7 @@ switch ($tableID) {
 			'category' => $account->account_config['catetype'][$_POST['richtype']],
 			'info' => $_POST['message'],
 			'datatime' => $timestamp,
-			'recordtime' => $_G['timestamp']
+			'recordtime' => $ac_response['sdata']
 			);
 		$aCond = array(
 			'cid' => $cid,
@@ -154,7 +154,7 @@ switch ($tableID) {
 			);
 		if( !($data = DB::fetch_first($sqlstr)) || !DB::update('account_earndata', $aUpdata, $aCond)) {
 			$ac_aresponse['state'] = 'err';
-			$ac_aresponse['curerr'] = 'Dont';
+			$ac_aresponse['sdata'] = 'Dont';
 			//echo "操作失败";
 			break;
 		}
@@ -179,7 +179,7 @@ switch ($tableID) {
 			if($data[amount] != $_POST[richnum]) {	//防止update语句返回false
 				if(!DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]'")) {
 					$ac_aresponse['state'] = 'err';
-					$ac_aresponse['curerr'] = 'Dont';
+					$ac_aresponse['sdata'] = 'Dont';
 				}
 			}
 			
@@ -188,7 +188,7 @@ switch ($tableID) {
 		}
 		if(!DB::query($sqlstr)) {
 			$ac_aresponse['state'] = 'err';
-			$ac_aresponse['curerr'] = 'Dont';
+			$ac_aresponse['sdata'] = 'Dont';
 			//echo "操作失败";
 		}
 		break;
@@ -199,14 +199,14 @@ switch ($tableID) {
 		
 		if(!isset($_POST['richtype_out']) || $_POST['richtype_out'] >= count($account->account_config['catetype'])) {
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richtype_out';
+			$ac_response['sdata'] = 'richtype_out';
 		} else if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype'])){
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richtype';
+			$ac_response['sdata'] = 'richtype';
 			//echo "请选择已存在的账户名称";
 		} else if($_POST['richtype'] == $_POST['richtype_out']){
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richtype_same';
+			$ac_response['sdata'] = 'richtype_same';
 		} else {
 			$aUpdata = array(
 				'amount' => $_POST['richnum'],
@@ -214,7 +214,7 @@ switch ($tableID) {
 				'ocategory' => $account->account_config['catetype'][$_POST['richtype_out']],
 				'info' => $_POST['message'],
 				'datatime' => $timestamp,
-				'recordtime' => $_G['timestamp']
+				'recordtime' => $ac_response['sdata']
 			);
 			$aCond = array(
 				'cid' => $cid,
@@ -223,7 +223,7 @@ switch ($tableID) {
 				);
 			if( !DB::update('account_transfer', $aUpdata, $aCond)) {
 				$ac_aresponse['state'] = 'err';
-				$ac_aresponse['curerr'] = 'Dont';
+				$ac_aresponse['sdata'] = 'Dont';
 				//echo "操作失败";
 			}
 		}
@@ -235,10 +235,10 @@ switch ($tableID) {
 		
 		if(!isset($_POST['richtype_out']) || $_POST['richtype_out'] >= count($account->account_config['loandebt'])) {
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richtype_out';
+			$ac_response['sdata'] = 'richtype_out';
 		} else if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype'])){
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'richtype';
+			$ac_response['sdata'] = 'richtype';
 			//echo "请选择已存在的账户名称";
 		} else {
 			$aUpdata = array(
@@ -247,7 +247,7 @@ switch ($tableID) {
 				'loandebt' => $account->account_config['loandebt'][$_POST['richtype_out']],
 				'info' => $_POST['message'],
 				'datatime' => $timestamp,
-				'recordtime' => $_G['timestamp']
+				'recordtime' => $ac_response['sdata']
 			);
 			$aCond = array(
 				'cid' => $cid,
@@ -256,7 +256,7 @@ switch ($tableID) {
 				);
 			if( !DB::update('account_loandebt', $aUpdata, $aCond)) {
 				$ac_aresponse['state'] = 'err';
-				$ac_aresponse['curerr'] = 'Dont';
+				$ac_aresponse['sdata'] = 'Dont';
 				//echo "操作失败";
 			}
 		}
@@ -264,7 +264,7 @@ switch ($tableID) {
 
 	default:
 		$ac_aresponse['state'] = 'err';
-		$ac_aresponse['curerr'] = 'Dont';
+		$ac_aresponse['sdata'] = 'Dont';
 		//echo "无此表";
 		break;
 }

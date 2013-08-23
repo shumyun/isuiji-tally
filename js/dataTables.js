@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-22
+ *    Last Updated: 2013-08-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1248,17 +1248,17 @@ function isEmpty(obj) {
 		
 		/**
 		 * 修改数据后更新table数据
-		 *  @param {string} sname : 数据类型（收入等）
-		 *  @param {array}  adata : 数据
+		 *  @param {string} oparam : ajax的数据
+		 *  @param {array}  odata  : 行数据
 		 */
-		function _fnModifyData(sname, adata) {
-			if(adata) {
+		function _fnModifyData(oparam, odata) {
+			if(oparam) {
 				var string = '<img src="' + IMGDIR + '/loading.gif"> 正在修改...';
 				_fnSetPrompt(string);
 				_fnShowPrompt();
-				$.post("plugin.php?id=account:ajax&func=modifydata", $.param(adata), function(odata) {
-					if(odata.state == 'ok'){
-						_fnModifyTRData(sname, adata);
+				$.post("plugin.php?id=account:ajax&func=modifydata", $.param(oparam), function(data) {
+					if(data.state == 'ok'){
+						_fnModifyTRData(odata, data.data);
 					} else {
 						;
 					}
@@ -1274,13 +1274,23 @@ function isEmpty(obj) {
 		
 		/**
 		 * 修改数据
-		 *  @param {string} sname : 数据类型（收入等）
-		 *  @param {array}  adata : 数据
+		 *  @param {object} odata : 修改的数据
+		 *  @param {int}    isort : sort的ID
 		 */
-		function _fnModifyTRData(sname, adata) {
-			var typedata = DataTable.DataCols.Data;
-			for(var i in typedata[sname]) {
-				;
+		function _fnModifyTRData(odata, isort) {
+			var typeData = DataTable.DataCols.Data;
+			for(var i in typeData[odata.six]) {
+				if(typeData[sName][i].attr("id") == odata.id) {
+					var trWidget = typeData[sName][i];
+					trWidget.attr("sort", isort);
+					trWidget.children(":eq(0)").attr("date", odata.one);
+					trWidget.children(":eq(1)").attr("title", odata.two).html(odata.two);
+					trWidget.children(":eq(2)").attr("title", odata.three).html(odata.three);
+					trWidget.children(":eq(3)").html(odata.four);
+					trWidget.children(":eq(4)").attr("title", odata.five).html(odata.five);
+					var str = odata.seven ? odata.seven.replace(/<BR>/g, "\r\n") : '';
+					trWidget.children(":eq(6)").attr("title", str).html(str);
+				}
 			}
 		}
 		

@@ -187,9 +187,9 @@ jQuery(document).ready(function($) {
 	$("#ac_dmodify").detach().appendTo("body");
 
 	$("#modify_submit").click(function() {
-		var odata = {};
+		var oparam = odata = {};
 		
-		odata.onlyid = dataobj.onlyid;
+		oparam.id = odata.onlyid = dataobj.onlyid;
 		odata.isort  = dataobj.isort;
 		
 		if( $("#richnum").val() == '' ) {
@@ -197,6 +197,8 @@ jQuery(document).ready(function($) {
 			return ;
 		}
 		odata.richnum  = $("#richnum").val();
+		var num = new Number(odata.richnum);
+		oparam.four = num.toFixed(2);
 		
 		switch(dataobj["type"]) {
 			case '支出':
@@ -213,8 +215,8 @@ jQuery(document).ready(function($) {
 					errTip("#richname", "名称不在列表中，请重选或添加该名称", 1, 2500);
 					return ;
 				}
-				odata.richcategory = $("#richcategory").val();
-				odata.richname = $("#richname").val();
+				oparam.three = odata.richcategory = $("#richcategory").val();
+				oparam.two   = odata.richname     = $("#richname").val();
 				break;
 				
 			case '转账':
@@ -223,21 +225,25 @@ jQuery(document).ready(function($) {
 					return ;
 				}
 				odata.richtype_out = $("#richtype_out").attr("selecti");
-				break;
+				oparam.three = $("#richtype_out").html();
+				break;s
 				
 			case '借入':
 			case '借出':
 			case '收债':
 			case '还债':
-				odata.loandebt = $("#richtype_out").attr("selecti");
+				oparam.three = odata.loandebt = $("#richtype_out").attr("selecti");
+				oparam.three = $("#richtype_out").html();
 				break;
 		}
 	
 		odata.richdate = $("#richdate").val();
-		odata.richtype = $("#richtype").attr("selecti");
-		odata.message  = $("#message").val();
+		oparam.one   = odata.richdate.replace(/-/g, "/");
+		oparam.five  = odata.richtype = $("#richtype").attr("selecti");
+		oparam.seven = odata.message  = $("#message").val();
+		oparam.six   = dataobj["type"];
 		
-		jQuery("#datatable").DataTable.ext.oApi.fnModifyData(dataobj["type"], odata);
+		$("#datatable").DataTable.ext.oApi.fnModifyData(odata, oparam);
 		$("#ac_dmodify").hide();
 	});
 });
