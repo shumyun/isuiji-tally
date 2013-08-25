@@ -1280,7 +1280,9 @@ function isEmpty(obj) {
 		function _fnModifyTRData(odata, isort) {
 			var typeData = DataTable.DataCols.Data;
 			var oldTime = null, oldmount = null, tmpTime = _fntransition(odata.one, "date");
-			var nMonth = parseInt(tmpTime.getMonth()) + 1;
+			var tmpDate = new Date();
+			tmpDate.setTime(tmpTime);
+			var nMonth = parseInt(tmpDate.getMonth()) + 1;
 			var sName = odata.six;
 			var trWidget = null;
 			var mount = 0;
@@ -1290,8 +1292,8 @@ function isEmpty(obj) {
 				if(typeData[sName][i].attr("id") == odata.id) {
 					trWidget = typeData[sName][i];
 					trWidget.attr("sort", isort);
-					oldtime = _fntransition(trWidget.children(":eq(0)").attr("date"), "date");
-					trWidget.children(":eq(0)").attr("date", odata.one).attr("title", tmpTime.getFullYear()+"年"+nMonth+"月"+tmpTime.getDate()+"日");
+					oldTime = _fntransition(trWidget.children(":eq(0)").attr("date"), "date");
+					trWidget.children(":eq(0)").attr("date", odata.one).attr("title", tmpDate.getFullYear()+"年"+nMonth+"月"+tmpDate.getDate()+"日");
 					trWidget.children(":eq(1)").attr("title", odata.two).html(odata.two);
 					trWidget.children(":eq(2)").attr("title", odata.three).html(odata.three);
 					oldmount = trWidget.children(":eq(3)").html();
@@ -1327,31 +1329,31 @@ function isEmpty(obj) {
 							break;
 						}
 					}
-					aDate[tmpTime]["trWidget"].remove();
-					delete aDate[tmpTime];
+					aDate[oldTime]["trWidget"].remove();
+					delete aDate[oldTime];
 				}
 				if( !aDate.hasOwnProperty(tmpTime) ) {
 					aDate[tmpTime] = {"oType": {}, "adata": null, "trWidget": null};
-					aDate[tmpTime]["oType"][oname] = {"sum": 0, "count": 0};
+					aDate[tmpTime]["oType"][sName] = {"sum": 0, "count": 0};
 					aDate[tmpTime]["adata"] = new Array();
 					aDate["sortday"].push(tmpTime);
 					//每日合计的控件
 					aDate[tmpTime]["trWidget"] = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
   													<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">\
   													<ul><li style="padding-left: 5px; float: left;"><span id="span_year" class="ac_datenum">'
-  													+tmpTime.getFullYear()+'</span>年<span id="span_month" class="ac_datenum">'
+  													+tmpDate.getFullYear()+'</span>年<span id="span_month" class="ac_datenum">'
   													+nMonth+'</span>月<span id="span_day" class="ac_datenum">'
-  													+tmpTime.getDate()+'</span>日</li></ul></td></tr>');
+  													+tmpDate.getDate()+'</span>日</li></ul></td></tr>');
 					oType = aDate[tmpTime]["oType"];
 				} else {
 					oType = aDate[tmpTime]["oType"];
 					if( !oType.hasOwnProperty(oname)) {
-						oType[oname] = {"sum": 0, "count": 0};
+						oType[sName] = {"sum": 0, "count": 0};
 						$.extend(true, aDate[tmpTime]["oType"], oType);
 					}
 				}
-				oType[oname]["sum"] += mount;
-				oType[oname]["count"]++;
+				oType[sName]["sum"] += mount;
+				oType[sName]["count"]++;
 				aDate[tmpTime]["adata"].push(trWidget);
 			}
 			_fnOperateOut();
