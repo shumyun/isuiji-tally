@@ -187,7 +187,7 @@ jQuery(document).ready(function($) {
 	$("#ac_dmodify").detach().appendTo("body");
 
 	$("#modify_submit").click(function() {
-		var oparam = odata = {};
+		var oparam = {}, odata = {};
 		
 		oparam.id = odata.onlyid = dataobj.onlyid;
 		odata.isort  = dataobj.isort;
@@ -238,10 +238,11 @@ jQuery(document).ready(function($) {
 		}
 	
 		odata.richdate = $("#richdate").val();
-		oparam.one   = odata.richdate.replace(/-/g, "/");
-		oparam.five  = odata.richtype = $("#richtype").attr("selecti");
-		oparam.seven = odata.message  = $("#message").val();
-		oparam.six   = dataobj["type"];
+		oparam.one     = odata.richdate.replace(/-/g, "/");
+		odata.richtype = $("#richtype").attr("selecti");
+		oparam.five    = $("#richtype").html();
+		oparam.seven   = odata.message  = $("#message").val();
+		oparam.six     = dataobj["type"];
 		
 		$("#datatable").DataTable.ext.oApi.fnModifyData(odata, oparam);
 		$("#ac_dmodify").hide();

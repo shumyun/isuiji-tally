@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-23
+ *    Last Updated: 2013-08-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -229,9 +229,9 @@ function isEmpty(obj) {
 						//每日合计的控件
 						aDate[tmpTime]["trWidget"] = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
 	  													<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">\
-	  													<ul><li style="padding-left: 5px; float: left;"><span class="ac_datenum">'
-	  													+tmpdate.getFullYear()+'</span>年<span class="ac_datenum">'
-	  													+nMonth+'</span>月<span class="ac_datenum">'
+	  													<ul><li style="padding-left: 5px; float: left;"><span id="span_year" class="ac_datenum">'
+	  													+tmpdate.getFullYear()+'</span>年<span id="span_month" class="ac_datenum">'
+	  													+nMonth+'</span>月<span id="span_day" class="ac_datenum">'
 	  													+tmpdate.getDate()+'</span>日</li></ul></td></tr>');
 						oType = aDate[tmpTime]["oType"];
 					} else {
@@ -1258,7 +1258,7 @@ function isEmpty(obj) {
 				_fnShowPrompt();
 				$.post("plugin.php?id=account:ajax&func=modifydata", $.param(oparam), function(data) {
 					if(data.state == 'ok'){
-						_fnModifyTRData(odata, data.data);
+						_fnModifyTRData(odata, data.sdata);
 					} else {
 						;
 					}
@@ -1279,19 +1279,82 @@ function isEmpty(obj) {
 		 */
 		function _fnModifyTRData(odata, isort) {
 			var typeData = DataTable.DataCols.Data;
-			for(var i in typeData[odata.six]) {
+			var oldTime = null, oldmount = null, tmpTime = _fntransition(odata.one, "date");
+			var nMonth = parseInt(tmpTime.getMonth()) + 1;
+			var sName = odata.six;
+			var trWidget = null;
+			var mount = 0;
+			if((mount = _fntransition(odata.four, "numerical")) === false)
+				return false;
+			for(var i in typeData[sName]) {
 				if(typeData[sName][i].attr("id") == odata.id) {
-					var trWidget = typeData[sName][i];
+					trWidget = typeData[sName][i];
 					trWidget.attr("sort", isort);
-					trWidget.children(":eq(0)").attr("date", odata.one);
+					oldtime = _fntransition(trWidget.children(":eq(0)").attr("date"), "date");
+					trWidget.children(":eq(0)").attr("date", odata.one).attr("title", tmpTime.getFullYear()+"年"+nMonth+"月"+tmpTime.getDate()+"日");
 					trWidget.children(":eq(1)").attr("title", odata.two).html(odata.two);
 					trWidget.children(":eq(2)").attr("title", odata.three).html(odata.three);
+					oldmount = trWidget.children(":eq(3)").html();
 					trWidget.children(":eq(3)").html(odata.four);
 					trWidget.children(":eq(4)").attr("title", odata.five).html(odata.five);
 					var str = odata.seven ? odata.seven.replace(/<BR>/g, "\r\n") : '';
 					trWidget.children(":eq(6)").attr("title", str).html(str);
+					break;
 				}
 			}
+			
+			var aDate = DataTable.DataCols["aDate"];
+			var oType = aDate[oldTime]["oType"];
+			if(oldTime == tmpTime) {
+				oType[sName]["sum"] += mount - oldmount;
+			} else {
+				for(var i in aDate[oldTime]["adata"]) {
+					if(aDate[oldTime]["adata"][i].attr("id") == odata.id) {
+						aDate[oldTime]["adata"].splice(i,1);
+						break;
+					}
+				}
+				if(aDate[oldTime]["adata"].length) {
+					if( !(--oType[sName]["count"]) ) {
+						delete oType[sName];
+					} else {
+						oType[sName]["sum"] -= oldmount;
+					}
+				} else {
+					for(var i in aDate["sortday"]) {
+						if(aDate["sortday"][i] == tmpTime){
+							aDate["sortday"].splice(i,1);
+							break;
+						}
+					}
+					aDate[tmpTime]["trWidget"].remove();
+					delete aDate[tmpTime];
+				}
+				if( !aDate.hasOwnProperty(tmpTime) ) {
+					aDate[tmpTime] = {"oType": {}, "adata": null, "trWidget": null};
+					aDate[tmpTime]["oType"][oname] = {"sum": 0, "count": 0};
+					aDate[tmpTime]["adata"] = new Array();
+					aDate["sortday"].push(tmpTime);
+					//每日合计的控件
+					aDate[tmpTime]["trWidget"] = $('<tr class="' + DataTable.ext["optdata"]["CountRows"]["trClass"] + '">\
+  													<td colspan="' + DataTable.ext["optdata"]["CountRows"]["tdCount"] + '">\
+  													<ul><li style="padding-left: 5px; float: left;"><span id="span_year" class="ac_datenum">'
+  													+tmpTime.getFullYear()+'</span>年<span id="span_month" class="ac_datenum">'
+  													+nMonth+'</span>月<span id="span_day" class="ac_datenum">'
+  													+tmpTime.getDate()+'</span>日</li></ul></td></tr>');
+					oType = aDate[tmpTime]["oType"];
+				} else {
+					oType = aDate[tmpTime]["oType"];
+					if( !oType.hasOwnProperty(oname)) {
+						oType[oname] = {"sum": 0, "count": 0};
+						$.extend(true, aDate[tmpTime]["oType"], oType);
+					}
+				}
+				oType[oname]["sum"] += mount;
+				oType[oname]["count"]++;
+				aDate[tmpTime]["adata"].push(trWidget);
+			}
+			_fnOperateOut();
 		}
 		
 		/**
