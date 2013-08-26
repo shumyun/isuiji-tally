@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-25
+ *    Last Updated: 2013-08-26
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -1324,7 +1324,7 @@ function isEmpty(obj) {
 					}
 				} else {
 					for(var i in aDate["sortday"]) {
-						if(aDate["sortday"][i] == tmpTime){
+						if(aDate["sortday"][i] == oldTime){
 							aDate["sortday"].splice(i,1);
 							break;
 						}
@@ -1356,7 +1356,42 @@ function isEmpty(obj) {
 				oType[sName]["count"]++;
 				aDate[tmpTime]["adata"].push(trWidget);
 			}
-			_fnOperateOut();
+			_fnShowModifyData();
+		}
+		
+		/**
+		 * 修改table数据后显示
+		 */
+		function _fnShowModifyData() {			
+			var Cols = DataTable.ext.optdata.SortColumns.Cols;
+			var pageId = DataTable.ext.optdata.pagedivId;
+			var aSort = DataTable.DataCols["aSort"];
+			var iNum = parseInt($("#"+pageId).children("strong").length ? $("#"+pageId).children("strong").html():1);
+			var type = '';
+			for(var i in Cols){
+				if(Cols[i][0] === aSort.sortID) {
+					type = Cols[i][1];
+					break;
+				}
+			}
+			switch(type) {
+				case "date":
+					if(_fnSortDate(aSort.sortby))
+						_fnOut(type, iNum);
+					break;
+				case "string":
+					if(_fnSortString(index, aSort.sortby))
+						_fnOut(type, iNum);
+					break;
+				case "numerical":
+					if(_fnSortNumerical(index, aSort.sortby))
+						_fnOut(type, iNum);
+					break;
+				default:
+					_fnLog( null, 0, "排序的类型未知。");
+					return false;
+			}
+			return true;
 		}
 		
 		/**
@@ -1452,13 +1487,13 @@ function isEmpty(obj) {
 				delete aDate[tmpTime];
 			}
 			$("#"+sId).remove();
-			_fnOperateOut();
+			_fnShowDelData();
 		}
 		
 		/**
-		 * 操作table数据后显示
+		 * 删除table数据后显示
 		 */
-		function _fnOperateOut() {
+		function _fnShowDelData() {
 			var Cols = DataTable.ext.optdata.SortColumns.Cols;
 			var pageId = DataTable.ext.optdata.pagedivId;
 			var aSort = DataTable.DataCols["aSort"];
@@ -1505,9 +1540,11 @@ function isEmpty(obj) {
 			"_fnShowPrompt"         : _fnShowPrompt,
 			"_fnHidePrompt"         : _fnHidePrompt,
 			"fnModifyData"          : _fnModifyData,
+			"_fnModifyTRData"       : _fnModifyTRData,
+			"_fnShowModifyData"     : _fnShowModifyData,
 			"fnDelData"             : _fnDelData,
 			"_fnDelTRData"          : _fnDelTRData,
-			"_fnOperateOut"         : _fnOperateOut
+			"_fnShowDelData"         : _fnShowDelData
 		};
 		
 		$.extend( DataTable.ext.oApi, this.oApi );
