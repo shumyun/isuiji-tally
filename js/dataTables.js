@@ -1257,12 +1257,44 @@ function isEmpty(obj) {
 				_fnSetPrompt(string);
 				_fnShowPrompt();
 				$.post("plugin.php?id=account:ajax&func=modifydata", $.param(oparam), function(data) {
-					if(data.state == 'ok'){
-						_fnModifyTRData(odata, data.sdata);
+					if(data == null) {
+						_fnHidePrompt(0);
+						alert("未知错误4");
+					} else if(data.state == 'ok'){
+						var string = '<img src="' + IMGDIR + '/check_right.gif"> 修改成功.';
+						_fnModifyTRData(odata, data.curerr);
+						_fnSetPrompt(string);
+						_fnHidePrompt(1000);
 					} else {
-						;
+						switch( data.curerr ) {
+						case "no_login":
+							showWindow('login', 'plugin.php?id=account:index');
+							return;
+						case "richnum":
+							string = '<img src="' + IMGDIR + '/check_error.gif"> 失败:金额错误.';
+							break;
+						case "richdate":
+							string = '<img src="' + IMGDIR + '/check_error.gif"> 失败:日期错误.';
+							break;
+						case "richname":
+							string = '<img src="' + IMGDIR + '/check_error.gif"> 失败:账单名称错误.';
+							break;
+						case "richtype":
+						case "richtype_out":
+							string = '<img src="' + IMGDIR + '/check_error.gif"> 失败:归属错误.';
+							break;
+						case "richtype_same":
+							string = '<img src="' + IMGDIR + '/check_error.gif"> 失败:转出和转入的归属不能相同.';
+							break;
+						case "Dont":
+						case "datetype":
+						default:
+							string = '<img src="' + IMGDIR + '/check_error.gif"> 修改失败.';
+							break;
+						}
+						_fnSetPrompt(string);
+						_fnHidePrompt(1500);
 					}
-					_fnHidePrompt(0);
 				},"json").error(function() {
 					_fnHidePrompt(0);
 					alert("未知错误3");
@@ -1347,7 +1379,7 @@ function isEmpty(obj) {
 					oType = aDate[tmpTime]["oType"];
 				} else {
 					oType = aDate[tmpTime]["oType"];
-					if( !oType.hasOwnProperty(oname)) {
+					if( !oType.hasOwnProperty(sName)) {
 						oType[sName] = {"sum": 0, "count": 0};
 						$.extend(true, aDate[tmpTime]["oType"], oType);
 					}

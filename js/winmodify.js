@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-22
+ *    Last Updated: 2013-08-26
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -187,7 +187,7 @@ jQuery(document).ready(function($) {
 	$("#ac_dmodify").detach().appendTo("body");
 
 	$("#modify_submit").click(function() {
-		var oparam = {}, odata = {};
+		var odata = {}, oparam = {'one':'', 'two':'', 'three':'', 'four':'', 'five':'', 'six':'', 'seven':''};
 		
 		oparam.id = odata.onlyid = dataobj.onlyid;
 		odata.isort  = dataobj.isort;
@@ -226,7 +226,7 @@ jQuery(document).ready(function($) {
 				}
 				odata.richtype_out = $("#richtype_out").attr("selecti");
 				oparam.three = $("#richtype_out").html();
-				break;s
+				break;
 				
 			case '借入':
 			case '借出':

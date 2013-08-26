@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-11
+ *    Last Updated: 2013-08-26
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -349,6 +349,8 @@ jQuery(document).ready(function($) {
 			var oDatatype = {"condName": "支出", "FstCol": 2, "SecCol": 1};
 			$("#datatable").DataTable.ext.oApi.fnSetConditions(pData, oDatatype);
 			$("#tb_pay").attr("title", pTitle).attr("style", "display: block");
+			if($("#tb_time").html() == "全部数据")
+				$("#tb_time").html("全部时间");
 		} else {
 			$("#tb_pay").attr("style", "display: none");
 			$("#datatable").DataTable.ext.oApi.fnDelConditions("支出");
@@ -392,6 +394,8 @@ jQuery(document).ready(function($) {
 			var oDatatype = {"condName": "收入", "FstCol": 2, "SecCol": 1};
 			$("#datatable").DataTable.ext.oApi.fnSetConditions(eData, oDatatype);
 			$("#tb_earn").attr("title", eTitle).attr("style", "display: block");
+			if($("#tb_time").html() == "全部数据")
+				$("#tb_time").html("全部时间");
 		} else {
 			$("#datatable").DataTable.ext.oApi.fnDelConditions("收入");
 			$("#tb_earn").attr("style", "display: none");
@@ -435,6 +439,8 @@ jQuery(document).ready(function($) {
 			tData = fnArrayOfType(tData);
 			$("#datatable").DataTable.ext.oApi.fnSetConditions(tData, oDatatype);
 			$("#tb_type").attr("title", tTitle).attr("style", "display: block");
+			if($("#tb_time").html() == "全部数据")
+				$("#tb_time").html("全部时间");
 		} else {
 			$("#datatable").DataTable.ext.oApi.fnDelConditions("类型");
 			$("#tb_type").attr("style", "display: none");
@@ -479,6 +485,8 @@ jQuery(document).ready(function($) {
 			bData = fnArrayOfAccount(bData);
 			$("#datatable").DataTable.ext.oApi.fnSetConditions(bData, oDatatype);
 			$("#tb_category").attr("title", bTitle).attr("style", "display: block");
+			if($("#tb_time").html() == "全部数据")
+				$("#tb_time").html("全部时间");
 		} else {
 			$("#datatable").DataTable.ext.oApi.fnDelConditions("账户");
 			$("#tb_category").attr("style", "display: none");
@@ -523,6 +531,8 @@ jQuery(document).ready(function($) {
 			lData = fnArrayOfAccount(lData);
 			$("#datatable").DataTable.ext.oApi.fnSetConditions(lData, oDatatype);
 			$("#tb_debt").attr("title", lTitle).attr("style", "display: block");
+			if($("#tb_time").html() == "全部数据")
+				$("#tb_time").html("全部时间");
 		} else {
 			$("#datatable").DataTable.ext.oApi.fnDelConditions("借贷账户");
 			$("#tb_debt").attr("style", "display: none");

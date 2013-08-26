@@ -486,7 +486,7 @@ jQuery(document).ready(function($) {
 			  				errTip("#richtype_out", "归属不存在，请重选或添加该名称", 1, 2500);
 			  				break;
 			  			case "richtype_same":
-								errTip("#richtype_out", "转出和转入的归属不能相同", 1, 2500);
+							errTip("#richtype_out", "转出和转入的归属不能相同", 1, 2500);
 			  				break;
 			  			case "no_login":
 			  				showWindow('login', 'plugin.php?id=account:index');
