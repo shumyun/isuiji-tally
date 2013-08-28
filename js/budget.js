@@ -1,19 +1,22 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-06
+ *    Last Updated: 2013-08-28
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
+jQuery.noConflict(); //discuz 使用了'$'符号
 
-var func_prevm = function(imonth, sel=0) {
+var func_prevm = function(imonth) {
+	var sel = arguments[1] ? arguments[1] : false;
 	if(imonth <= 0) {
 		if(sel) jQuery("#tally_year").val(parseInt(jQuery("#tally_year").val())-1);
 		return imonth+12;
 	} else return imonth;
 };
 
-var func_nextm = function(imonth, sel=0) {
+var func_nextm = function(imonth) {
+	var sel = arguments[1] ? arguments[1] : false;
 	if(imonth > 12) {
 		if(sel) jQuery("#tally_year").val(parseInt(jQuery("#tally_year").val())+1);
 		return imonth-12;
@@ -41,7 +44,7 @@ jQuery(document).ready(function($) {
 		$("li.acb_mli > a[class!='acb_msel']").each(function(){
 			$(this).html(func_prevm(parseInt($(this).html())-1)+"月");
 		});
-		g_imonth = func_prevm(g_imonth-1, 1);
+		g_imonth = func_prevm(g_imonth-1, true);
 		$("a.acb_msel").html(g_imonth+"月");
 	});
 	
@@ -49,7 +52,7 @@ jQuery(document).ready(function($) {
 		$("li.acb_mli > a[class!='acb_msel']").each(function(){
 			$(this).html(func_nextm(parseInt($(this).html())+1)+"月");
 		});
-		g_imonth = func_nextm(g_imonth+1, 1);
+		g_imonth = func_nextm(g_imonth+1, true);
 		$("a.acb_msel").html(g_imonth+"月");
 	});
 
