@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-28
+ *    Last Updated: 2013-08-29
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -67,7 +67,7 @@ switch ($tableID) {
 			//echo "请选择正确的归属";
 			break;
 		}
-		$sqlstr = "SELECT datatime, amount FROM ".DB::table('account_paydata')." WHERE uid='$_G[uid]' AND cid='$cid' AND recordtime='$_POST[isort]'";
+		$sqlstr = "SELECT datatime, amount, onelv, seclv FROM ".DB::table('account_paydata')." WHERE uid='$_G[uid]' AND cid='$cid' AND recordtime='$_POST[isort]'";
 		$aUpdata = array(
 			'amount' => $_POST['richnum'],
 			'onelv' => $_POST['richcategory'],
@@ -89,8 +89,8 @@ switch ($tableID) {
 			break;
 		}
 		
-		if($timestamp == $data[datatime]) {
-			if($data[amount] == $_POST[richnum])	//防止update语句返回false
+		if($timestamp == $data['datatime']) {
+			if($data['amount'] == $_POST['richnum'])	//防止update语句返回false
 				break;
 			$sqlstr = "UPDATE ".DB::table('account_daytotal').
 						" SET paymoney = paymoney - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
@@ -106,7 +106,7 @@ switch ($tableID) {
 				DB::insert('account_daytotal', $insarr);
 			}
 			
-			if($data[amount] != $_POST[richnum]) {	//防止update语句返回false
+			if($data['amount'] != $_POST['richnum']) {	//防止update语句返回false
 				if(!DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]'")) {
 					$ac_aresponse['state'] = 'err';
 					$ac_aresponse['curerr'] = 'Dont';
@@ -120,6 +120,35 @@ switch ($tableID) {
 			$ac_aresponse['state'] = 'err';
 			$ac_aresponse['curerr'] = 'Dont';
 		}
+		
+		$old_time = date('Ym', $data['datatime']);
+		$new_time = date('Ym', $timestamp);
+		if($old_time!=$new_time || $data['onelv']!=$_POST['richcategory'] || $data['seclv']!=$_POST['richname']) {
+			$uidtime  = $_G['uid']*1000000+intval($old_time);
+			DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash - '$data[amount]', recordtime = '$_G[timestamp]' 
+						WHERE uidtime = '$uidtime' AND onelv = '$data[onelv]' AND seclv = '$data[seclv]' AND category = '支出'");
+			$uidtime  = $_G['uid']*1000000+intval($new_time);
+			DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash + '$_POST[richnum]', recordtime = '$_G[timestamp]' 
+						WHERE uidtime = '$uidtime' AND onelv = '$_POST[richcategory]' AND seclv = '$_POST[richname]' AND category = '支出'");
+			if(!DB::affected_rows()) {
+				$insarr = array(
+					'uidtime'    => $uidtime,
+					'onelv'      => $_POST['richcategory'],
+					'seclv'      => $_POST['richname'],
+					'category'   => '支出',
+					'budget'     => 0,
+					'realcash'   => $_POST['richnum'],
+					'recordtime' => $_G['timestamp']
+				);
+				DB::insert('account_budget', $insarr);
+			}
+		} else {
+			if($data['amount'] != $_POST['richnum'])
+				DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash + '$_POST[richnum]' - '$data[amount]',
+						recordtime = '$_G[timestamp]' WHERE uidtime = '$uidtime' AND
+						onelv = '$_POST[richcategory]' AND seclv = '$_POST[richname]' AND category = '支出'");
+		}
+		
 		break;
 
 	case AC_EARN:
@@ -137,7 +166,7 @@ switch ($tableID) {
 			//echo "请选择正确的归属";
 			break;
 		}
-		$sqlstr = "SELECT datatime, amount FROM ".DB::table('account_earndata')." WHERE uid='$_G[uid]' AND cid='$cid' AND recordtime='$_POST[isort]'";
+		$sqlstr = "SELECT datatime, amount, onelv, seclv FROM ".DB::table('account_earndata')." WHERE uid='$_G[uid]' AND cid='$cid' AND recordtime='$_POST[isort]'";
 		$aUpdata = array(
 			'amount' => $_POST['richnum'],
 			'onelv' => $_POST['richcategory'],
@@ -159,8 +188,8 @@ switch ($tableID) {
 			break;
 		}
 		
-		if($timestamp == $data[datatime]) {
-			if($data[amount] == $_POST[richnum])	//防止update语句返回false
+		if($timestamp == $data['datatime']) {
+			if($data['amount'] == $_POST['richnum'])	//防止update语句返回false
 				break;
 			$sqlstr = "UPDATE ".DB::table('account_daytotal').
 						" SET earnmoney = earnmoney - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$data[datatime]'";
@@ -176,7 +205,7 @@ switch ($tableID) {
 				DB::insert('account_daytotal', $insarr);
 			}
 			
-			if($data[amount] != $_POST[richnum]) {	//防止update语句返回false
+			if($data['amount'] != $_POST['richnum']) {	//防止update语句返回false
 				if(!DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn - '$data[amount]' + '$_POST[richnum]' WHERE uid = '$_G[uid]'")) {
 					$ac_aresponse['state'] = 'err';
 					$ac_aresponse['curerr'] = 'Dont';
@@ -191,6 +220,35 @@ switch ($tableID) {
 			$ac_aresponse['curerr'] = 'Dont';
 			//echo "操作失败";
 		}
+		
+		$old_time = date('Ym', $data['datatime']);
+		$new_time = date('Ym', $timestamp);
+		if($old_time!=$new_time || $data['onelv']!=$_POST['richcategory'] || $data['seclv']!=$_POST['richname']) {
+			$uidtime  = $_G['uid']*1000000+intval($old_time);
+			DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash - '$data[amount]', recordtime = '$_G[timestamp]'
+					WHERE uidtime = '$uidtime' AND onelv = '$data[onelv]' AND seclv = '$data[seclv]' AND category = '收入'");
+			$uidtime  = $_G['uid']*1000000+intval($new_time);
+			DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash + '$_POST[richnum]', recordtime = '$_G[timestamp]'
+					WHERE uidtime = '$uidtime' AND onelv = '$_POST[richcategory]' AND seclv = '$_POST[richname]' AND category = '收入'");
+			if(!DB::affected_rows()) {
+				$insarr = array(
+						'uidtime'    => $uidtime,
+						'onelv'      => $_POST['richcategory'],
+						'seclv'      => $_POST['richname'],
+						'category'   => '收入',
+						'budget'     => 0,
+						'realcash'   => $_POST['richnum'],
+						'recordtime' => $_G['timestamp']
+				);
+				DB::insert('account_budget', $insarr);
+			}
+		} else {
+			if($data['amount'] != $_POST['richnum'])
+				DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash + '$_POST[richnum]' - '$data[amount]',
+						recordtime = '$_G[timestamp]' WHERE uidtime = '$uidtime' AND
+						onelv = '$_POST[richcategory]' AND seclv = '$_POST[richname]' AND category = '收入'");
+		}
+		
 		break;
 
 	case AC_TRANSFER:

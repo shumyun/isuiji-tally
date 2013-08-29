@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-15
+ *    Last Updated: 2013-08-29
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -72,6 +72,7 @@ switch ( $_POST['curstatus'] ) {
 			'recordtime' => $_G['timestamp']
 			);
 		DB::insert('account_paydata', $insarr);
+		
 		DB::query("UPDATE ".DB::table('account_daytotal')." SET paymoney = paymoney + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$timestamp'");
 		if (!DB::affected_rows()) {
 			unset($insarr);
@@ -83,6 +84,24 @@ switch ( $_POST['curstatus'] ) {
 			);
 			DB::insert('account_daytotal', $insarr);
 		}
+		
+		$uidtime  = $_G['uid']*1000000+intval(date('Ym', $timestamp));
+		DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash + '$_POST[richnum]', recordtime = '$_G[timestamp]' 
+					WHERE uidtime = '$uidtime' AND onelv = '$_POST[richcategory]' AND seclv = '$_POST[richname]' AND category = '支出'");
+		if(!DB::affected_rows()) {
+			unset($insarr);
+			$insarr = array(
+				'uidtime'    => $uidtime,
+				'onelv'      => $_POST['richcategory'],
+				'seclv'      => $_POST['richname'],
+				'category'   => '支出',
+				'budget'     => 0,
+				'realcash'   => $_POST['richnum'],
+				'recordtime' => $_G['timestamp']
+			);
+			DB::insert('account_budget', $insarr);
+		}
+		
 		DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay + '$_POST[richnum]' WHERE uid = '$_G[uid]'");
 		break;
 		
@@ -105,6 +124,7 @@ switch ( $_POST['curstatus'] ) {
 			'recordtime' => $_G['timestamp']
 			);
 		DB::insert('account_earndata', $insarr);
+		
 		DB::query("UPDATE ".DB::table('account_daytotal')." SET earnmoney = earnmoney + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$timestamp'");
 		if (!DB::affected_rows()) {
 			unset($insarr);
@@ -116,6 +136,24 @@ switch ( $_POST['curstatus'] ) {
 			);
 			DB::insert('account_daytotal', $insarr);
 		}
+		
+		$uidtime  = $_G['uid']*1000000+intval(date('Ym', $timestamp));
+		DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash + '$_POST[richnum]', recordtime = '$_G[timestamp]' 
+					WHERE uidtime = '$uidtime' AND onelv = '$_POST[richcategory]' AND seclv = '$_POST[richname]' AND category = '收入'");
+		if(!DB::affected_rows()) {
+			unset($insarr);
+			$insarr = array(
+				'uidtime'    => $uidtime,
+				'onelv'      => $_POST['richcategory'],
+				'seclv'      => $_POST['richname'],
+				'category'   => '收入',
+				'budget'     => 0,
+				'realcash'   => $_POST['richnum'],
+				'recordtime' => $_G['timestamp']
+			);
+			DB::insert('account_budget', $insarr);
+		}
+		
 		DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn + '$_POST[richnum]' WHERE uid = '$_G[uid]'");
 		break;
 		
