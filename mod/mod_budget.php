@@ -17,10 +17,14 @@ $richbudget_m = date('n', $_G['timestamp']);
 
 $uidtime = $_G['uid'].date('Ym', $_G['timestamp']);
 
+$arr = Array("earntype", "paytype");
+$account->GetParam($_G['uid'], $arr);
+
 /* 获取支出的预算数据 */
 $query = DB::query("SELECT * FROM ".DB::table('account_budget').
 		" WHERE uidtime='$uidtime' AND category='P'");
-
-
+while($paydata = DB::fetch($query)){
+	
+}
 
 ?>

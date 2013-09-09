@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-21
+ *    Last Updated: 2013-09-09
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -176,6 +176,28 @@ function title_arrtojs($array) {
 	$str = substr_replace($str, "]", -1);
 	//$str .= ']';
 	return $str;
+}
+
+/**
+ * 变成预算需要的数组
+ * @param unknown_type $array
+ */
+function title_tobudget($array) {
+	$result = array();
+	foreach ($array as $category) { //print_r($category);
+		foreach ($category as $key => $label) {
+			if($label == '.') {
+				$result[$key] = $category[2];
+			} else if (is_array($label)) {
+				foreach ($label as $data) {
+					foreach ($data as $name => $detail) {
+						if($detail == '.')
+							$result[$key][$name] = $data[2];
+					}
+				}
+			}
+		}
+	}
 }
 
 /**
