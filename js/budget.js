@@ -70,7 +70,7 @@ jQuery(document).ready(function($) {
 	});
 	
 });
-
+/*
 (function($, window, document, undefined) {
 	$.fn.budgetTable = function() {
 		$.post("plugin.php?id=account:ajax&func=budget", $.param(dataobj),
@@ -79,5 +79,6 @@ jQuery(document).ready(function($) {
 }(jQuery, window, document, undefined));
 
 jQuery(document).ready(function($){
-	
+	;
 });
+*/
