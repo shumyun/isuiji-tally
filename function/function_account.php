@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-17
+ *    Last Updated: 2013-09-21
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -196,12 +196,13 @@ function title_tobudget($array) {
 				$result[$key]['state'] = $category[2];
 				foreach ($label as $data) {
 					foreach ($data as $name => $detail) {
-						if($detail == '.')
+						if($detail == '.') {
 							$result[$key]['children'][$name]['state']     = $data[2];
 							$result[$key]['children'][$name]['budget']    = 0;
 							$result[$key]['children'][$name]['realcash']  = 0;
 							$result[$key]['children'][$name]['_budget']   = 0;
 							$result[$key]['children'][$name]['_realcash'] = 0;
+						}
 					}
 				}
 			}
