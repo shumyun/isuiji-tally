@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-02
+ *    Last Updated: 2013-09-22
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -212,9 +212,11 @@
 	.acb_tul { margin-left: 100px; }
 	.acb_tli { float: left; width: 130px; }
 	.acb_t { margin-top: 0 !important; border-top: 0; }
-		.acb_tspan1 { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 -28px; width: 70px; height: 18px; float: left; padding-left: 15px; margin-top: 2px; }
+		.acb_pdiv { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 -28px; width: 70px; height: 18px; float: left; padding-left: 15px; margin-top: 2px; }
+		.acb_ediv { background-position: 0 2px; }
 		.acb_collapsed { float: right; }
 			.acb_collapsed img { cursor: pointer; margin: 5px 5px 0 0; }
+	.acb_div_sec { background: #F2F2F2; margin-left: 10px; width: 703px; }
 /** end **/
 /*
  * .mi .moodfm_input { width: 350px; height: 58px; background: {COMMONBORDER} url({IMGDIR}/mood_input.png) no-repeat 0 0; }

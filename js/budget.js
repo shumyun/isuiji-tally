@@ -69,6 +69,21 @@ jQuery(document).ready(function($) {
 		});
 	});
 	
+	$("#a_pay").toggle(function(){
+			$("[type='pay']").hide();
+			$("img", this).attr("src", "static/image/common/collapsed_yes.gif");
+		}, function(){
+			$("[type='pay']").show();
+			$("img", this).attr("src", "static/image/common/collapsed_no.gif");
+	});
+	
+	$("#a_earn").toggle(function(){
+			$("[type='earn']").hide();
+			$("img", this).attr("src", "static/image/common/collapsed_yes.gif");
+		}, function(){
+			$("[type='earn']").show();
+			$("img", this).attr("src", "static/image/common/collapsed_no.gif");
+	});
 });
 /*
 (function($, window, document, undefined) {
