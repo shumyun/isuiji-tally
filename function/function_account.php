@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-21
+ *    Last Updated: 2013-09-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -219,11 +219,14 @@ function budget_color($numerator, $denominator) {
 		return false;
 	$var = round($numerator*100/$denominator, 1);
 	$num_red = $var*255/50;
-	$num_red = $num_red>255 ? dechex(255) : dechex($num_red);
+	$num_red = $num_red>255 ? 'ff' : dechex($num_red);
+	$num_red = strlen($num_red)==1 ? '0'.$num_red : $num_red;
+	
 	$num_green = 510 - $var*255/50;
 	$num_green = $num_green>255 ? 255:$num_green;
-	$num_green = $num_green<0 ? 0:$num_green;
-	return $num_red.dechex($num_green).'00';
+	$num_green = $num_green<0 ? '00' : dechex($num_green);
+	$num_green = strlen($num_green)==1 ? '0'.$num_green : $num_green;
+	return $num_red.$num_green.'00';
 }
 
 /**

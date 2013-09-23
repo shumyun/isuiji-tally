@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-22
+ *    Last Updated: 2013-09-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -30,19 +30,19 @@ $query = DB::query("SELECT * FROM ".DB::table('account_budget').
 while($paydata = DB::fetch($query)) {
 	if($paydata['category'] == '支出') {
 		if($paydata['seclv'] == '') {
-			$apay[$paydata['onelv']]['_budget']   = $paydata['budget'];
-			$apay[$paydata['onelv']]['_realcash'] = $paydata['realcash'];
+			$apay[$paydata['onelv']]['_budget']   = floatval($paydata['budget']);
+			$apay[$paydata['onelv']]['_realcash'] = floatval($paydata['realcash']);
 		} else {
-			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['_budget']   = $paydata['budget'];
-			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['_realcash'] = $paydata['realcash'];
+			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['_budget']   = floatval($paydata['budget']);
+			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['_realcash'] = floatval($paydata['realcash']);
 		}
 	} else if($paydata['category'] == '收入') {
 		if($paydata['seclv'] == '') {
-			$aearn[$paydata['onelv']]['_budget']   = $paydata['budget'];
-			$aearn[$paydata['onelv']]['_realcash'] = $paydata['realcash'];
+			$aearn[$paydata['onelv']]['_budget']   = floatval($paydata['budget']);
+			$aearn[$paydata['onelv']]['_realcash'] = floatval($paydata['realcash']);
 		} else {
-			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['_budget']   = $paydata['budget'];
-			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['_realcash'] = $paydata['realcash'];
+			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['_budget']   = floatval($paydata['budget']);
+			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['_realcash'] = floatval($paydata['realcash']);
 		}
 	}
 }
@@ -54,30 +54,30 @@ $query = DB::query("SELECT * FROM ".DB::table('account_budget').
 while($paydata = DB::fetch($query)) {
 	if($paydata['category'] == '支出') {
 		if($paydata['seclv'] == '') {
-			$apay[$paydata['onelv']]['budget']   = $paydata['budget'];
-			$apay[$paydata['onelv']]['realcash'] = $paydata['realcash'];
+			$apay[$paydata['onelv']]['budget']   = floatval($paydata['budget']);
+			$apay[$paydata['onelv']]['realcash'] = floatval($paydata['realcash']);
 		} else {
-			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['budget']   = $paydata['budget'];
-			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['realcash'] = $paydata['realcash'];
+			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['budget']   = floatval($paydata['budget']);
+			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['realcash'] = floatval($paydata['realcash']);
 		}
 	} else if($paydata['category'] == '收入') {
 		if($paydata['seclv'] == '') {
 			$aearn[$paydata['onelv']]['budget']   = $paydata['budget'];
 			$aearn[$paydata['onelv']]['realcash'] = $paydata['realcash'];
 		} else {
-			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['budget']   = $paydata['budget'];
-			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['realcash'] = $paydata['realcash'];
+			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['budget']   = floatval($paydata['budget']);
+			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['realcash'] = floatval($paydata['realcash']);
 		}
 	}
 }
 
 $phtml = '';
-$budget = 0;
-$realcash = 0;
-$_budget = 0;
-$_realcash = 0;
 $inum = 0;
 foreach ($apay as $key => $label) {
+	$budget = 0;
+	$realcash = 0;
+	$_budget = 0;
+	$_realcash = 0;
 	$phtml .= '<tr type="pay"><td style="width:90px; padding: 4px 4px;"><span>';
 	if(array_key_exists('children', $label)){
 		$inum++;
@@ -143,12 +143,12 @@ foreach ($apay as $key => $label) {
 }
 
 $ehtml = '';
-$budget = 0;
-$realcash = 0;
-$_budget = 0;
-$_realcash = 0;
 $inum = 0;
 foreach ($aearn as $key => $label) {
+	$budget = 0;
+	$realcash = 0;
+	$_budget = 0;
+	$_realcash = 0;
 	$ehtml .= '<tr type="earn"><td style="width:90px; padding: 4px 4px;"><span>';
 	if(array_key_exists('children', $label)){
 		$inum++;
