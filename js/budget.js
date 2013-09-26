@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-28
+ *    Last Updated: 2013-09-26
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -77,13 +77,33 @@ jQuery(document).ready(function($) {
 			$("img", this).attr("src", "static/image/common/collapsed_no.gif");
 	});
 	
-	$("#a_earn").toggle(function(){
-			$("[type='earn']").hide();
+	$("#a_earn").toggle(
+		function() {
+			$("[type='earn']").hide("slow");
 			$("img", this).attr("src", "static/image/common/collapsed_yes.gif");
 		}, function(){
-			$("[type='earn']").show();
+			$("[type='earn']").show("slow");
 			$("img", this).attr("src", "static/image/common/collapsed_no.gif");
-	});
+		}
+	);
+	
+	$("[Steps]").hover(
+		function() {
+			$(this).addClass("acb_table_tr_hover");
+		}, function() {
+			$(this).removeClass("acb_table_tr_hover");
+		}
+	);
+	
+	$("[children_id]").toggle(
+		function() {
+			$("#"+$(this).attr("children_id")).hide("slow");
+			$("img", this).attr("src", "static/image/common/tree_plus.gif");
+		}, function() {
+			$("#"+$(this).attr("children_id")).show();
+			$("img", this).attr("src", "static/image/common/tree_minus.gif");
+		}
+	);
 });
 /*
 (function($, window, document, undefined) {

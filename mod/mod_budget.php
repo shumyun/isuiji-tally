@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-23
+ *    Last Updated: 2013-09-26
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -78,33 +78,29 @@ foreach ($apay as $key => $label) {
 	$realcash = 0;
 	$_budget = 0;
 	$_realcash = 0;
-	$phtml .= '<tr type="pay"><td style="width:90px; padding: 4px 4px;"><span>';
+	$phtml .= '<tr type="pay" Steps="1" class="acbt_tr"><td class="acbt_td_1"><span>';
 	if(array_key_exists('children', $label)){
 		$inum++;
-		$phtml .= '<a title="收起/展开" href="#" children_id="p_'
-				.$inum
-				.'"><img alt="收起/展开" src="static/image/common/tree_plus.gif" style="vertical-align: middle;"/>'
-				.$key.'</a></span></td>';
+		$phtml .= '<a title="收起/展开" href="javascript:;" children_id="p_'
+			.$inum.'"><img alt="收起/展开" src="static/image/common/tree_minus.gif" style="vertical-align: middle;"/>'
+			.$key.'</a></span></td>';
 		
-		$childrenhtml = '<tr type="pay"><td colspan="7" style="padding: 0;"><div id="p_'.$inum.'" class="acb_div_sec"><table><tbody>';
+		$childrenhtml = '<tr type="pay" class="acbt_tr"><td colspan="7" style="padding: 0;"><div id="p_'.$inum.'" class="acb_div_sec"><table><tbody>';
 		foreach ($label['children'] as $name => $val) {
-			$childrenhtml .= '<tr><td style="padding: 0 4px 0 12px; border-bottom: none; width: 82px;">'.$name.'</td>
-								<td style="padding: 0 4px; border-bottom: none; width: 80px;">
-									<strong style="float: right;">'.round($val['budget'], 2).'</strong></td>
-								<td style="padding: 0 4px; border-bottom: none; width: 120px;">
-									<span style="float: right;">'.round($val['realcash'], 2).'</span></td>';
+			$childrenhtml .= '<tr Steps="2"><td class="acbt_td_21">'.$name.'</td>
+				<td class="acbt_td_22"><strong style="float: right;">'.round($val['budget'], 2).'</strong></td>
+				<td class="acbt_td_23"><span style="float: right;">'.round($val['realcash'], 2).'</span></td>';
 			$res = budget_color($val['realcash'], $val['budget']);
 			if(!$res)
-				$childrenhtml .= '<td style="padding: 0 4px; border-bottom: none; width: 125px;">
-									<strong style="float: right; color: #0;">-';
+				$childrenhtml .= '<td class="acbt_td_24"><strong style="float: right; color: #0;">-';
 			else {
-				$childrenhtml .= '<td style="padding: 0 4px; border-bottom: none; width: 125px;">
-									<strong style="float: right; color: #'.$res.';">'.round($val['realcash']*100/$val['budget'], 1).'%';
+				$childrenhtml .= '<td class="acbt_td_24"><strong style="float: right; color: #'.$res.';">'
+					.round($val['realcash']*100/$val['budget'], 1).'%';
 			}
-			$childrenhtml .= '</strong></td><td style="padding: 0 4px; border-bottom: none; width: 120px;">
-												<span style="float: right;">'.$val['_budget'].'</span></td>
-											<td style="padding: 0 4px; border-bottom: none; width: 120px;">
-												<input style="float: right; width: 70px;" value="'.$val['_realcash'].'"/></td></tr>';
+			$childrenhtml .= '</strong></td><td class="acbt_td_25"><span style="float: right;">'.$val['_budget'].'</span></td>
+				<td class="acbt_td_26"><input class="acbt_input" value="'.$val['_realcash']
+				.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
+				</td></tr>';
 			
 			$budget    += $val['budget'];
 			$realcash  += $val['realcash'];
@@ -113,32 +109,35 @@ foreach ($apay as $key => $label) {
 		}
 		$childrenhtml .= '</tbody></table></div></td></tr>';
 		
-		$phtml .= '<td style="width:80px; padding: 2px 4px;"><strong style="float: right;">'.round($budget, 2).
-					'</strong></td><td style="width:120px; padding: 2px 4px;"><span style="float: right;">'.round($realcash, 2).
-					'</span></td><td style="width:125px; padding: 2px 4px;"><strong style="float: right; color: #';
+		$phtml .= '<td class="acbt_td_2"><strong style="float: right;">'.round($budget, 2)
+			.'</strong></td><td class="acbt_td_3"><span style="float: right;">'.round($realcash, 2)
+			.'</span></td><td class="acbt_td_4"><strong style="float: right; color: #';
 		$res = budget_color($realcash, $budget);
 		if(!$res)
 			$phtml .= '0;">-';
 		else {
 			$phtml .= $res.';">'.round($realcash*100/$budget, 1).'%';
 		}
-		$phtml .= '</strong></td><td style="width:120px; padding: 2px 4px;"><span style="float: right;">'.$_budget.
-					'</span></td><td style="width:120px; padding: 2px 4px;"><input style="float: right; width: 70px;" value="'.$_realcash.
-					'"/></td><td></td></tr>'.$childrenhtml;
+		$phtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.$_budget
+			.'</span></td><td class="acbt_td_6">
+			<input style="float: right; width: 70px; text-align:right;" value="'.$_realcash
+			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
+			</td><td></td></tr>'.$childrenhtml;
 	} else {
 		$phtml .= $key.'</span></td>';
-		$phtml .= '<td style="width:90px; padding: 2px 4px;"><strong style="float: right;">'.round($label['budget'], 2).
-					'</strong></td><td style="width:120px; padding: 2px 4px;"><span style="float: right;">'.round($label['realcash'], 2).
-					'</span></td><td style="width:125px; padding: 2px 4px;"><strong style="float: right; color: #';
+		$phtml .= '<td class="acbt_td_2"><strong style="float: right;">'.round($label['budget'], 2)
+			.'</strong></td><td class="acbt_td_3"><span style="float: right;">'.round($label['realcash'], 2)
+			.'</span></td><td class="acbt_td_4"><strong style="float: right; color: #';
 		$res = budget_color($label['realcash'], $label['budget']);
 		if(!$res)
 			$phtml .= '0;">-';
 		else {
 			$phtml .= $res.';">'.round($label['realcash']*100/$label['budget'], 1).'%';
 		}
-		$phtml .= '</strong></td><td style="width:120px; padding: 2px 4px;"><span style="float: right;">'.$label['_budget'].
-					'</span></td><td style="width:120px; padding: 2px 4px;"><input style="float: right; width: 70px;" value="'.$label['_realcash'].
-					'"/></td><td></td></tr>';
+		$phtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.$label['_budget']
+			.'</span></td><td class="acbt_td_6"><input style="float: right; width: 70px; text-align:right;" value="'.$label['_realcash']
+			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
+			</td><td></td></tr>';
 	}
 }
 
@@ -149,67 +148,66 @@ foreach ($aearn as $key => $label) {
 	$realcash = 0;
 	$_budget = 0;
 	$_realcash = 0;
-	$ehtml .= '<tr type="earn"><td style="width:90px; padding: 4px 4px;"><span>';
+	$ehtml .= '<tr type="earn" Steps="1" class="acbt_tr"><td class="acbt_td_1"><span>';
 	if(array_key_exists('children', $label)){
 		$inum++;
-		$ehtml .= '<a title="收起/展开" href="#" children_id="e_'
-		.$inum
-		.'"><img alt="收起/展开" src="static/image/common/tree_plus.gif" style="vertical-align: middle;"/>'
-		.$key.'</a></span></td>';
-
-		$childrenhtml = '<tr type="earn"><td colspan="7" style="padding: 0;"><div id="e_'.$inum.'" class="acb_div_sec"><table><tbody>';
+		$ehtml .= '<a title="收起/展开" href="javascript:;" children_id="e_'
+			.$inum.'"><img alt="收起/展开" src="static/image/common/tree_minus.gif" style="vertical-align: middle;"/>'
+			.$key.'</a></span></td>';
+		
+		$childrenhtml = '<tr type="earn" class="acbt_tr"><td colspan="7" style="padding: 0;"><div id="e_'.$inum.'" class="acb_div_sec"><table><tbody>';
 		foreach ($label['children'] as $name => $val) {
-			$childrenhtml .= '<tr><td style="padding: 0 4px 0 12px; border-bottom: none; width: 82px;">'.$name.'</td>
-			<td style="padding: 0 4px; border-bottom: none; width: 80px;">
-			<strong style="float: right;">'.round($val['budget'], 2).'</strong></td>
-			<td style="padding: 0 4px; border-bottom: none; width: 120px;">
-			<span style="float: right;">'.round($val['realcash'], 2).'</span></td>';
+			$childrenhtml .= '<tr Steps="2"><td class="acbt_td_21">'.$name.'</td>
+				<td class="acbt_td_22"><strong style="float: right;">'.round($val['budget'], 2).'</strong></td>
+				<td class="acbt_td_23"><span style="float: right;">'.round($val['realcash'], 2).'</span></td>';
 			$res = budget_color($val['realcash'], $val['budget']);
 			if(!$res)
-				$childrenhtml .= '<td style="padding: 0 4px; border-bottom: none; width: 125px;">
-				<strong style="float: right; color: #0;">-';
+				$childrenhtml .= '<td class="acbt_td_24"><strong style="float: right; color: #0;">-';
 			else {
-				$childrenhtml .= '<td style="padding: 0 4px; border-bottom: none; width: 125px;">
-				<strong style="float: right; color: #'.$res.';">'.round($val['realcash']*100/$val['budget'], 1).'%';
+				$childrenhtml .= '<td class="acbt_td_24"><strong style="float: right; color: #'.$res.';">'
+					.round($val['realcash']*100/$val['budget'], 1).'%';
 			}
-			$childrenhtml .= '</strong></td><td style="padding: 0 4px; border-bottom: none; width: 120px;">
-			<span style="float: right;">'.$val['_budget'].'</span></td>
-			<td style="padding: 0 4px; border-bottom: none; width: 120px;">
-			<input style="float: right; width: 70px;" value="'.$val['_realcash'].'"/></td></tr>';
-				
+			$childrenhtml .= '</strong></td><td class="acbt_td_25"><span style="float: right;">'.$val['_budget'].'</span></td>
+				<td class="acbt_td_26"><input class="acbt_input" value="'.$val['_realcash']
+				.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
+				</td></tr>';
+			
 			$budget    += $val['budget'];
 			$realcash  += $val['realcash'];
 			$_budget   += $val['_budget'];
 			$_realcash += $val['_realcash'];
 		}
 		$childrenhtml .= '</tbody></table></div></td></tr>';
-
-		$ehtml .= '<td style="width:80px; padding: 2px 4px;"><strong style="float: right;">'.round($budget, 2).
-		'</strong></td><td style="width:120px; padding: 2px 4px;"><span style="float: right;">'.round($realcash, 2).
-		'</span></td><td style="width:125px; padding: 2px 4px;"><strong style="float: right; color: #';
+		
+		$ehtml .= '<td class="acbt_td_2"><strong style="float: right;">'.round($budget, 2)
+			.'</strong></td><td class="acbt_td_3"><span style="float: right;">'.round($realcash, 2)
+			.'</span></td><td class="acbt_td_4"><strong style="float: right; color: #';
 		$res = budget_color($realcash, $budget);
 		if(!$res)
 			$ehtml .= '0;">-';
 		else {
 			$ehtml .= $res.';">'.round($realcash*100/$budget, 1).'%';
 		}
-		$ehtml .= '</strong></td><td style="width:120px; padding: 2px 4px;"><span style="float: right;">'.$_budget.
-		'</span></td><td style="width:120px; padding: 2px 4px;"><input style="float: right; width: 70px;" value="'.$_realcash.
-		'"/></td><td></td></tr>'.$childrenhtml;
+		$ehtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.$_budget
+			.'</span></td><td class="acbt_td_6">
+			<input style="float: right; width: 70px; text-align:right;" value="'.$_realcash
+			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
+			</td><td></td></tr>'.$childrenhtml;
 	} else {
 		$ehtml .= $key.'</span></td>';
-		$ehtml .= '<td style="width:90px; padding: 2px 4px;"><strong style="float: right;">'.round($label['budget'], 2).
-		'</strong></td><td style="width:120px; padding: 2px 4px;"><span style="float: right;">'.round($label['realcash'], 2).
-		'</span></td><td style="width:125px; padding: 2px 4px;"><strong style="float: right; color: #';
+		$ehtml .= '<td class="acbt_td_2"><strong style="float: right;">'.round($label['budget'], 2)
+			.'</strong></td><td class="acbt_td_3"><span style="float: right;">'.round($label['realcash'], 2)
+			.'</span></td><td class="acbt_td_4"><strong style="float: right; color: #';
 		$res = budget_color($label['realcash'], $label['budget']);
 		if(!$res)
 			$ehtml .= '0;">-';
 		else {
 			$ehtml .= $res.';">'.round($label['realcash']*100/$label['budget'], 1).'%';
 		}
-		$ehtml .= '</strong></td><td style="width:120px; padding: 2px 4px;"><span style="float: right;">'.$label['_budget'].
-		'</span></td><td style="width:120px; padding: 2px 4px;"><input style="float: right; width: 70px;" value="'.$label['_realcash'].
-		'"/></td><td></td></tr>';
+		$ehtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.$label['_budget']
+			.'</span></td><td class="acbt_td_6"><input style="float: right; width: 70px; text-align:right;" value="'.$label['_realcash']
+			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
+			</td><td></td></tr>';
 	}
 }
 
