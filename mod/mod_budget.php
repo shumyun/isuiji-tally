@@ -98,7 +98,8 @@ foreach ($apay as $key => $label) {
 					.round($val['realcash']*100/$val['budget'], 1).'%';
 			}
 			$childrenhtml .= '</strong></td><td class="acbt_td_25"><span style="float: right;">'.$val['_budget'].'</span></td>
-				<td class="acbt_td_26"><input class="acbt_input" value="'.$val['_realcash']
+				<td class="acbt_td_26"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
+				<input class="acbt_input" value="'.$val['_realcash']
 				.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
 				</td></tr>';
 			
@@ -119,7 +120,7 @@ foreach ($apay as $key => $label) {
 			$phtml .= $res.';">'.round($realcash*100/$budget, 1).'%';
 		}
 		$phtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.$_budget
-			.'</span></td><td class="acbt_td_6">
+			.'</span></td><td class="acbt_td_6"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
 			<input style="float: right; width: 70px; text-align:right;" value="'.$_realcash
 			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
 			</td><td></td></tr>'.$childrenhtml;
@@ -135,7 +136,8 @@ foreach ($apay as $key => $label) {
 			$phtml .= $res.';">'.round($label['realcash']*100/$label['budget'], 1).'%';
 		}
 		$phtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.$label['_budget']
-			.'</span></td><td class="acbt_td_6"><input style="float: right; width: 70px; text-align:right;" value="'.$label['_realcash']
+			.'</span></td><td class="acbt_td_6"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
+			<input style="float: right; width: 70px; text-align:right;" value="'.$label['_realcash']
 			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
 			</td><td></td></tr>';
 	}
@@ -168,7 +170,8 @@ foreach ($aearn as $key => $label) {
 					.round($val['realcash']*100/$val['budget'], 1).'%';
 			}
 			$childrenhtml .= '</strong></td><td class="acbt_td_25"><span style="float: right;">'.$val['_budget'].'</span></td>
-				<td class="acbt_td_26"><input class="acbt_input" value="'.$val['_realcash']
+				<td class="acbt_td_26"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
+				<input class="acbt_input" value="'.$val['_realcash']
 				.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
 				</td></tr>';
 			
@@ -189,7 +192,7 @@ foreach ($aearn as $key => $label) {
 			$ehtml .= $res.';">'.round($realcash*100/$budget, 1).'%';
 		}
 		$ehtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.$_budget
-			.'</span></td><td class="acbt_td_6">
+			.'</span></td><td class="acbt_td_6"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
 			<input style="float: right; width: 70px; text-align:right;" value="'.$_realcash
 			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
 			</td><td></td></tr>'.$childrenhtml;
@@ -205,7 +208,8 @@ foreach ($aearn as $key => $label) {
 			$ehtml .= $res.';">'.round($label['realcash']*100/$label['budget'], 1).'%';
 		}
 		$ehtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.$label['_budget']
-			.'</span></td><td class="acbt_td_6"><input style="float: right; width: 70px; text-align:right;" value="'.$label['_realcash']
+			.'</span></td><td class="acbt_td_6"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
+			<input style="float: right; width: 70px; text-align:right;" value="'.$label['_realcash']
 			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
 			</td><td></td></tr>';
 	}

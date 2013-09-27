@@ -211,8 +211,9 @@
 	.acb_fl { border: medium none; margin-top: 10px; }
 	.acb_tul { margin-left: 100px; }
 	.acb_tli { float: left; width: 130px; }
+	.acb_icopy { cursor: pointer; vertical-align: middle; margin-left: 3px; }
 	.acb_t { width: 800px; }
-		.acb_pdiv { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 -28px; width: 70px; height: 18px; float: left; padding-left: 15px; margin-top: 2px; }
+		.acb_pdiv { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 -28px; height: 18px; float: left; padding-left: 15px; margin-top: 2px; }
 		.acb_ediv { background-position: 0 2px; }
 		.acb_collapsed { float: right; }
 			.acb_collapsed img { cursor: pointer; margin: 5px 5px 0 0; }
@@ -222,15 +223,16 @@
             .acbt_td_2 { width: 70px; padding: 2px 4px; }
             .acbt_td_3, .acbt_td_5 { width: 120px; padding: 2px 4px; }
             .acbt_td_4 { width: 125px; padding: 2px 4px; }
-            .acbt_td_6 { width: 140px; padding: 2px 4px; }
+            .acbt_td_6 { width: 158px; padding: 2px 4px; }
 			
-	.acb_div_sec { background: #F2F2F2; margin-left: 10px; width: 703px; }
+	.acb_div_sec { background: #F2F2F2; margin-left: 10px; width: 721px; }
 		.acbt_td_21 { padding: 0 4px 0 12px; width: 82px; }
 		.acbt_td_22 { padding: 0 4px; width: 60px; }
         .acbt_td_23, .acbt_td_25 { padding: 0 4px; width: 120px; }
         .acbt_td_24 { padding: 0 4px; width: 125px; }
-        .acbt_td_26 { padding: 0 4px; width: 140px; }
+        .acbt_td_26 { padding: 0 4px; width: 158px; }
 		.acbt_input { float: right; width: 70px; text-align:right; }
+		.acbt_img { cursor: pointer; vertical-align: middle; margin: 4px 0 0 2px; float: right; }
 	.acb_table_tr_hover { border: 1px solid red; }
 /** end **/
 /*
