@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-26
+ *    Last Updated: 2013-09-27
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -211,7 +211,7 @@
 	.acb_fl { border: medium none; margin-top: 10px; }
 	.acb_tul { margin-left: 100px; }
 	.acb_tli { float: left; width: 130px; }
-	.acb_t { margin-top: 0 !important; border-top: 0; width: 800px;}
+	.acb_t { width: 800px; }
 		.acb_pdiv { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 -28px; width: 70px; height: 18px; float: left; padding-left: 15px; margin-top: 2px; }
 		.acb_ediv { background-position: 0 2px; }
 		.acb_collapsed { float: right; }
