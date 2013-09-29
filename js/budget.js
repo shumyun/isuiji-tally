@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-26
+ *    Last Updated: 2013-09-29
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -26,6 +26,20 @@ var func_nextm = function(imonth) {
 var g_imonth = 0;
 
 jQuery(document).ready(function($) {
+	
+	var func_getdata = function(){
+		var dataobj = {"curstatus":"get", "year": $("#tally_year").val(), "month": g_imonth };
+		$.post("plugin.php?id=account:ajax&func=budget", $.param(dataobj),
+		function(data) {
+			if(data["支出"]){
+				var paydata = data["支出"];
+				for(x in paydata) {
+					;
+				}
+			}
+		}, "json");
+	};
+	
 	$("#prev_year").click(function(){
 		$("#tally_year").val(parseInt($("#tally_year").val())-1);
 	});
@@ -54,6 +68,7 @@ jQuery(document).ready(function($) {
 		});
 		g_imonth = func_nextm(g_imonth+1, true);
 		$("a.acb_msel").html(g_imonth+"月");
+		func_getdata();
 	});
 
 	$("li.acb_mli > a").each(function(){
@@ -87,7 +102,7 @@ jQuery(document).ready(function($) {
 		}
 	);
 	
-	$("[Steps]").hover(
+	$("[sname]").hover(
 		function() {
 			$(this).addClass("acb_table_tr_hover");
 		}, function() {

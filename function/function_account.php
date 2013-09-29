@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-23
+ *    Last Updated: 2013-09-29
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -181,27 +181,32 @@ function title_arrtojs($array) {
 /**
  * 变成预算需要的数组
  * @param type_array $array
+ * @param type_bool $bTwo
  */
-function title_tobudget($array) {
+function title_tobudget($array, $bnum=true) {
 	$result = array();
 	foreach ($array as $category) { //print_r($category);
 		foreach ($category as $key => $label) {
 			if($label == '.') {
-				$result[$key]['state']     = $category[2];
-				$result[$key]['budget']    = 0;
-				$result[$key]['realcash']  = 0;
-				$result[$key]['_budget']   = 0;
-				$result[$key]['_realcash'] = 0;
+				$result[$key]['state'] = $category[2];
+				if($bTwo) {
+					$result[$key]['budget']    = 0;
+					$result[$key]['realcash']  = 0;
+					$result[$key]['_budget']   = 0;
+					$result[$key]['_realcash'] = 0;
+				}
 			} else if (is_array($label)) {
 				$result[$key]['state'] = $category[2];
 				foreach ($label as $data) {
 					foreach ($data as $name => $detail) {
 						if($detail == '.') {
-							$result[$key]['children'][$name]['state']     = $data[2];
-							$result[$key]['children'][$name]['budget']    = 0;
-							$result[$key]['children'][$name]['realcash']  = 0;
-							$result[$key]['children'][$name]['_budget']   = 0;
-							$result[$key]['children'][$name]['_realcash'] = 0;
+							$result[$key]['children'][$name]['state'] = $data[2];
+							if($bTwo) {
+								$result[$key]['children'][$name]['budget']    = 0;
+								$result[$key]['children'][$name]['realcash']  = 0;
+								$result[$key]['children'][$name]['_budget']   = 0;
+								$result[$key]['children'][$name]['_realcash'] = 0;
+							}
 						}
 					}
 				}

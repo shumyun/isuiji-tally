@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-26
+ *    Last Updated: 2013-09-29
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -27,22 +27,22 @@ $aearn = title_tobudget($account->account_config['earntype']);
 /* 获取当月预算数据 */
 $query = DB::query("SELECT * FROM ".DB::table('account_budget').
 		" WHERE uidtime='$uidtime'");
-while($paydata = DB::fetch($query)) {
-	if($paydata['category'] == '支出') {
-		if($paydata['seclv'] == '') {
-			$apay[$paydata['onelv']]['_budget']   = floatval($paydata['budget']);
-			$apay[$paydata['onelv']]['_realcash'] = floatval($paydata['realcash']);
+while($bdata = DB::fetch($query)) {
+	if($bdata['category'] == '支出') {
+		if($bdata['seclv'] == '') {
+			$apay[$bdata['onelv']]['_budget']   = floatval($bdata['budget']);
+			$apay[$bdata['onelv']]['_realcash'] = floatval($bdata['realcash']);
 		} else {
-			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['_budget']   = floatval($paydata['budget']);
-			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['_realcash'] = floatval($paydata['realcash']);
+			$apay[$bdata['onelv']]['children'][$bdata['seclv']]['_budget']   = floatval($bdata['budget']);
+			$apay[$bdata['onelv']]['children'][$bdata['seclv']]['_realcash'] = floatval($bdata['realcash']);
 		}
-	} else if($paydata['category'] == '收入') {
-		if($paydata['seclv'] == '') {
-			$aearn[$paydata['onelv']]['_budget']   = floatval($paydata['budget']);
-			$aearn[$paydata['onelv']]['_realcash'] = floatval($paydata['realcash']);
+	} else if($bdata['category'] == '收入') {
+		if($bdata['seclv'] == '') {
+			$aearn[$bdata['onelv']]['_budget']   = floatval($bdata['budget']);
+			$aearn[$bdata['onelv']]['_realcash'] = floatval($bdata['realcash']);
 		} else {
-			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['_budget']   = floatval($paydata['budget']);
-			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['_realcash'] = floatval($paydata['realcash']);
+			$aearn[$bdata['onelv']]['children'][$bdata['seclv']]['_budget']   = floatval($bdata['budget']);
+			$aearn[$bdata['onelv']]['children'][$bdata['seclv']]['_realcash'] = floatval($bdata['realcash']);
 		}
 	}
 }
@@ -51,22 +51,22 @@ while($paydata = DB::fetch($query)) {
 $uidtime = $_G['uid'].date("Ym", strtotime("-1 month"));
 $query = DB::query("SELECT * FROM ".DB::table('account_budget').
 		" WHERE uidtime='$uidtime'");
-while($paydata = DB::fetch($query)) {
-	if($paydata['category'] == '支出') {
-		if($paydata['seclv'] == '') {
-			$apay[$paydata['onelv']]['budget']   = floatval($paydata['budget']);
-			$apay[$paydata['onelv']]['realcash'] = floatval($paydata['realcash']);
+while($bdata = DB::fetch($query)) {
+	if($bdata['category'] == '支出') {
+		if($bdata['seclv'] == '') {
+			$apay[$bdata['onelv']]['budget']   = floatval($bdata['budget']);
+			$apay[$bdata['onelv']]['realcash'] = floatval($bdata['realcash']);
 		} else {
-			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['budget']   = floatval($paydata['budget']);
-			$apay[$paydata['onelv']]['children'][$paydata['seclv']]['realcash'] = floatval($paydata['realcash']);
+			$apay[$bdata['onelv']]['children'][$bdata['seclv']]['budget']   = floatval($bdata['budget']);
+			$apay[$bdata['onelv']]['children'][$bdata['seclv']]['realcash'] = floatval($bdata['realcash']);
 		}
-	} else if($paydata['category'] == '收入') {
-		if($paydata['seclv'] == '') {
-			$aearn[$paydata['onelv']]['budget']   = $paydata['budget'];
-			$aearn[$paydata['onelv']]['realcash'] = $paydata['realcash'];
+	} else if($bdata['category'] == '收入') {
+		if($bdata['seclv'] == '') {
+			$aearn[$bdata['onelv']]['budget']   = $bdata['budget'];
+			$aearn[$bdata['onelv']]['realcash'] = $bdata['realcash'];
 		} else {
-			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['budget']   = floatval($paydata['budget']);
-			$aearn[$paydata['onelv']]['children'][$paydata['seclv']]['realcash'] = floatval($paydata['realcash']);
+			$aearn[$bdata['onelv']]['children'][$bdata['seclv']]['budget']   = floatval($bdata['budget']);
+			$aearn[$bdata['onelv']]['children'][$bdata['seclv']]['realcash'] = floatval($bdata['realcash']);
 		}
 	}
 }
@@ -78,7 +78,7 @@ foreach ($apay as $key => $label) {
 	$realcash = 0;
 	$_budget = 0;
 	$_realcash = 0;
-	$phtml .= '<tr type="pay" Steps="1" class="acbt_tr"><td class="acbt_td_1"><span>';
+	$phtml .= '<tr type="pay" sname="'.$key.'" class="acbt_tr"><td class="acbt_td_1"><span>';
 	if(array_key_exists('children', $label)){
 		$inum++;
 		$phtml .= '<a title="收起/展开" href="javascript:;" children_id="p_'
@@ -87,7 +87,7 @@ foreach ($apay as $key => $label) {
 		
 		$childrenhtml = '<tr type="pay" class="acbt_tr"><td colspan="7" style="padding: 0;"><div id="p_'.$inum.'" class="acb_div_sec"><table><tbody>';
 		foreach ($label['children'] as $name => $val) {
-			$childrenhtml .= '<tr Steps="2"><td class="acbt_td_21">'.$name.'</td>
+			$childrenhtml .= '<tr sname="'.$name.'"><td class="acbt_td_21">'.$name.'</td>
 				<td class="acbt_td_22"><strong style="float: right;">'.round($val['budget'], 2).'</strong></td>
 				<td class="acbt_td_23"><span style="float: right;">'.round($val['realcash'], 2).'</span></td>';
 			$res = budget_color($val['realcash'], $val['budget']);
@@ -150,7 +150,7 @@ foreach ($aearn as $key => $label) {
 	$realcash = 0;
 	$_budget = 0;
 	$_realcash = 0;
-	$ehtml .= '<tr type="earn" Steps="1" class="acbt_tr"><td class="acbt_td_1"><span>';
+	$ehtml .= '<tr type="earn" sname="'.$key.'" class="acbt_tr"><td class="acbt_td_1"><span>';
 	if(array_key_exists('children', $label)){
 		$inum++;
 		$ehtml .= '<a title="收起/展开" href="javascript:;" children_id="e_'
@@ -159,7 +159,7 @@ foreach ($aearn as $key => $label) {
 		
 		$childrenhtml = '<tr type="earn" class="acbt_tr"><td colspan="7" style="padding: 0;"><div id="e_'.$inum.'" class="acb_div_sec"><table><tbody>';
 		foreach ($label['children'] as $name => $val) {
-			$childrenhtml .= '<tr Steps="2"><td class="acbt_td_21">'.$name.'</td>
+			$childrenhtml .= '<tr sname="'.$name.'"><td class="acbt_td_21">'.$name.'</td>
 				<td class="acbt_td_22"><strong style="float: right;">'.round($val['budget'], 2).'</strong></td>
 				<td class="acbt_td_23"><span style="float: right;">'.round($val['realcash'], 2).'</span></td>';
 			$res = budget_color($val['realcash'], $val['budget']);
