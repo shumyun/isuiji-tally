@@ -1,7 +1,7 @@
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-17
+ *    Last Updated: 2013-10-17
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  *    未知错误使用已经到 3
@@ -370,7 +370,7 @@ jQuery(document).ready(function($) {
 			errTip("#richtype", "无数据请刷新页面", 1, 2500);
 			return ;
 		}
-		dataobj.richtype = $("#richtype").attr("selecti");
+		dataobj.richtype = $("#richtype").html();
 		
 		var catcompletedata = "";
 		switch( $("ul.tb.cl").attr("curstatus") ) {
@@ -410,7 +410,7 @@ jQuery(document).ready(function($) {
 					return ;
 				}
 				dataobj.curstatus = "transfer";
-				dataobj.richtype_out = $("#richtype_out").attr("selecti");
+				dataobj.richtype_out = $("#richtype_out").html();
 				break;
 				
 			case "li.loandebt":
@@ -431,7 +431,7 @@ jQuery(document).ready(function($) {
 						alert("未知错误3");
 						return;
 				}
-				dataobj.loandebt = $("#richtype_out").attr("selecti");
+				dataobj.loandebt = $("#richtype_out").html();
 				break;
 				
 			default:
@@ -450,7 +450,7 @@ jQuery(document).ready(function($) {
 			<tr><td class="b_l"></td><td class="b_c"></td><td class="b_r"></td></tr></table>')
 		.show();
 
-		$.post("plugin.php?id=account:ajax&func=adddata", $.param(dataobj),
+		$.post("plugin.php?id=tally:ajax&func=adddata", $.param(dataobj),
 				function(data) {
 					if(data == null) {
 			  			ac_ajax.hide();
@@ -518,7 +518,7 @@ jQuery(document).ready(function($) {
 
 	$.ajax({
 		  type: 'POST',
-		  url: 'plugin.php?id=account:ajax&func=chart',
+		  url: 'plugin.php?id=tally:ajax&func=chart',
 		  data: 'chart=SimpleCurY',
 		  dataType: 'json',
 		  context: '#container',

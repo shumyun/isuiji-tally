@@ -1,9 +1,9 @@
 <?php
 
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-07
+ *    Last Updated: 2013-10-16
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -16,23 +16,23 @@ define('NOROBOT', TRUE);
 /**
  * 数据所在的表的宏
  */
-define('AC_PAY',  1);
-define('AC_EARN', 2);
-define('AC_TRANSFER', 3);
-define('AC_LOANDEBT', 4);
+define('ISUIJI_PAY',  1);
+define('ISUIJI_EARN', 2);
+define('ISUIJI_TRANSFER', 3);
+define('ISUIJI_LOANDEBT', 4);
 
-$basedir = 'source/plugin/account/';
+$basedir = 'source/plugin/tally/';
 
 if(empty($_G['uid'])) {
 	echo '{"state":"err", "curerr":"no_login"}'; //出错端要提示“刷新页面，重新登录”
 	return ;
 }
 
-require_once 'class/class_account.php';
-global $account;
+require_once 'class/class_tally.php';
+global $tally;
 
 
-if(in_array($_GET['func'], array('adddata', 'chart', 'getparam', 'aj_richlist', 'deldata', 'modifydata', 'budget'))) {
+if(in_array($_GET['func'], array('adddata', 'chart', 'getparam', 'datalist', 'deldata', 'modifydata', 'budget'))) {
 	require_once DISCUZ_ROOT.$basedir.'ajax/'.trim($_GET['func']).'.php';
 }
 

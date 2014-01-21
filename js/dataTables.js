@@ -1,7 +1,7 @@
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-26
+ *    Last Updated: 2013-10-20
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -36,7 +36,7 @@ function isEmpty(obj) {
 			
 			_fnInitControls();
 			
-			$.post("plugin.php?id=account:ajax&func=aj_richlist", DataTable.ext.optdata["ajParam"],
+			$.post("plugin.php?id=tally:ajax&func=datalist", DataTable.ext.optdata["ajParam"],
 				function(data) {
 					if( _fnAjaxSaveData(data) ){
 						_fnIntegrateConditions();
@@ -145,7 +145,7 @@ function isEmpty(obj) {
 			}
 			DataTable.ext.optdata["ajParam"] = sParam;
 
-			$.post("plugin.php?id=account:ajax&func=aj_richlist", DataTable.ext.optdata["ajParam"],
+			$.post("plugin.php?id=tally:ajax&func=datalist", DataTable.ext.optdata["ajParam"],
 				function(data) {
 					if( _fnAjaxSaveData(data)) {
 						if(bClrCond)
@@ -806,12 +806,12 @@ function isEmpty(obj) {
 		function _fnInitControls() {
 
 			var tNoneCtl = $('<tr id="nullData" class="tr_null"><td colspan="7">\
-				<div style=""><img style="padding:10px 200px;" src="source/plugin/account/js/images/aclist_null.png">\
+				<div style=""><img style="padding:10px 200px;" src="source/plugin/tally/js/images/aclist_null.png">\
 				</div></td></tr>').appendTo($("tbody", DataTable.ext.oTable)).hide();
 			
 			var tLoadingCtl = $('<tr id="loading" class="tr_null"><td colspan="7">\
 				<div id="container" style="width: 100%; height: 100%; margin: 0 auto">\
-					<img style="padding:65px 0 70px 130px;vertical-align:middle" src="source/plugin/account/js/images/LoadingBlue.gif">\
+					<img style="padding:65px 0 70px 130px;vertical-align:middle" src="source/plugin/tally/js/images/LoadingBlue.gif">\
 					<font style="font-size: 1.2em;">&nbsp;正在为您加载相关信息...</font>\
 				</div></td></tr>').appendTo($("tbody", DataTable.ext.oTable));
 			
@@ -1256,7 +1256,7 @@ function isEmpty(obj) {
 				var string = '<img src="' + IMGDIR + '/loading.gif"> 正在修改...';
 				_fnSetPrompt(string);
 				_fnShowPrompt();
-				$.post("plugin.php?id=account:ajax&func=modifydata", $.param(oparam), function(data) {
+				$.post("plugin.php?id=tally:ajax&func=modifydata", $.param(oparam), function(data) {
 					if(data == null) {
 						_fnHidePrompt(0);
 						alert("未知错误4");
@@ -1268,7 +1268,7 @@ function isEmpty(obj) {
 					} else {
 						switch( data.curerr ) {
 						case "no_login":
-							showWindow('login', 'plugin.php?id=account:index');
+							showWindow('login', 'plugin.php?id=tally:index');
 							return;
 						case "richnum":
 							string = '<img src="' + IMGDIR + '/check_error.gif"> 失败:金额错误.';
@@ -1439,7 +1439,7 @@ function isEmpty(obj) {
 			var string = '<img src="' + IMGDIR + '/loading.gif"> 正在删除...';
 			_fnSetPrompt(string);
 			_fnShowPrompt();
-			$.post("plugin.php?id=account:ajax&func=deldata", $.param(dataobj), function(data) {
+			$.post("plugin.php?id=tally:ajax&func=deldata", $.param(dataobj), function(data) {
 				if(data == null) {
 					_fnHidePrompt(0);
 					alert("未知错误1");
@@ -1453,7 +1453,7 @@ function isEmpty(obj) {
 				} else {
 					switch( adata.curerr ) {
 					case "no_login":
-						showWindow('login', 'plugin.php?id=account:index');
+						showWindow('login', 'plugin.php?id=tally:index');
 						break;
 					default:
 						var string = '<img src="' + IMGDIR + '/check_error.gif"> 删除失败.';

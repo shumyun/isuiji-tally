@@ -28,7 +28,7 @@ var g_imonth = 0;
 jQuery(document).ready(function($) {
 	
 	var func_getdata = function(){
-		var dataobj = {"curstatus":"get", "year": $("#tally_year").val(), "month": g_imonth };
+		var dataobj = {"curstatus":"sget", "year": $("#tally_year").val(), "month": g_imonth };
 		$.post("plugin.php?id=account:ajax&func=budget", $.param(dataobj),
 		function(data) {
 			if(data["支出"]){

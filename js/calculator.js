@@ -1303,7 +1303,7 @@ jQuery(document).ready(function($) {
 
 	var btn = {
 		showOn: 'button',
-		buttonImage: 'source/plugin/account/js/images/calculator.gif',
+		buttonImage: 'source/plugin/tally/js/images/calculator.gif',
 		buttonImageOnly: true
 		};
 	$.calculator.setDefaults(btn);

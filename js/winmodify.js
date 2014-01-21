@@ -1,7 +1,7 @@
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-26
+ *    Last Updated: 2013-10-21
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -224,23 +224,20 @@ jQuery(document).ready(function($) {
 					errTip("#richtype_out", "转出和转入的归属不能相同", 1, 2500);
 					return ;
 				}
-				odata.richtype_out = $("#richtype_out").attr("selecti");
-				oparam.three = $("#richtype_out").html();
+				oparam.three = odata.richtype_out = $("#richtype_out").html();
 				break;
 				
 			case '借入':
 			case '借出':
 			case '收债':
 			case '还债':
-				oparam.three = odata.loandebt = $("#richtype_out").attr("selecti");
-				oparam.three = $("#richtype_out").html();
+				oparam.three = odata.loandebt = $("#richtype_out").html();
 				break;
 		}
 	
 		odata.richdate = $("#richdate").val();
 		oparam.one     = odata.richdate.replace(/-/g, "/");
-		odata.richtype = $("#richtype").attr("selecti");
-		oparam.five    = $("#richtype").html();
+		oparam.five    = odata.richtype = $("#richtype").html();
 		oparam.seven   = odata.message  = $("#message").val();
 		oparam.six     = dataobj["type"];
 		

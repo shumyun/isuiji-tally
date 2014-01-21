@@ -1,9 +1,9 @@
 <?php
 
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-08-29
+ *    Last Updated: 2013-10-19
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -16,19 +16,10 @@ define('NOROBOT', TRUE);
 $ac_response = array(
 		'state' => 'ok',
 		'curerr' => '');
-
 		
-require_once DISCUZ_ROOT."/source/plugin/account/function/function_account.php";
-if(!isset($_POST['curstatus']) || !$arrtype = UserParam_strtoarr($_POST['curstatus'])) {
-	$ac_response['state'] = 'err';
-	$ac_response['curerr'] = 'no_type';
-	//echo "未知类型增加";
-	echo json_encode($ac_response);
-	return;
-}
-$account->GetParam($_G['uid'], $arrtype);
+require_once DISCUZ_ROOT.$basedir."function/func_common.php";
 
-if(!isset($_POST['richnum']) || !preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $_POST['richnum']) || $_POST['richnum'] <= 0 ) {
+if(!isset($_POST['richnum']) || !func_test_cash($_POST['richnum'])) {
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'richnum';
 	//echo "请填写大于零且最多两位小数的金额";
@@ -44,7 +35,8 @@ if(!isset($_POST['richdate']) || !($timestamp = strtotime($_POST['richdate'])) )
 	return;
 }
 
-if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_config['catetype']) ){
+$account_id = $tally->GetTypeID('account', $_POST['richtype']);
+if(!$account_id){
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'richtype';
 	//echo "请选择正确的归属";
@@ -54,207 +46,95 @@ if( !isset($_POST['richtype']) || $_POST['richtype'] >= count($account->account_
 
 switch ( $_POST['curstatus'] ) {
 	case 'pay':
-		if ( !ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['paytype'])) {
+		$sid = $tally->GetTypeID($_POST['curstatus'], $_POST['richcategory'], $_POST['richname']);
+		if (!$sid) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richname';
 			//echo "请选择已存在的账单名称";
 			break;
 		}
-		
-		$insarr = array(
+		$aInsert = array(
 			'uid' => $_G['uid'],
 			'amount' => $_POST['richnum'],
-			'onelv' => $_POST['richcategory'],
-			'seclv' => $_POST['richname'],
-			'category' => $account->account_config['catetype'][$_POST['richtype']],
+			'typeid' => $sid,
+			'accountid' => $account_id,
 			'info' => $_POST['message'],
 			'datatime' => $timestamp,
 			'recordtime' => $_G['timestamp']
 			);
-		DB::insert('account_paydata', $insarr);
-		
-		DB::query("UPDATE ".DB::table('account_daytotal')." SET paymoney = paymoney + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$timestamp'");
-		if (!DB::affected_rows()) {
-			unset($insarr);
-			$insarr = array(
-					'uid' => $_G['uid'],
-					'paymoney' => $_POST['richnum'],
-					'earnmoney' => 0,
-					'datadate' => $timestamp
-			);
-			DB::insert('account_daytotal', $insarr);
-		}
-		
-		$uidtime  = $_G['uid']*1000000+intval(date('Ym', $timestamp));
-		DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash + '$_POST[richnum]', recordtime = '$_G[timestamp]' 
-					WHERE uidtime = '$uidtime' AND onelv = '$_POST[richcategory]' AND seclv = '$_POST[richname]' AND category = '支出'");
-		if(!DB::affected_rows()) {
-			unset($insarr);
-			$insarr = array(
-				'uidtime'    => $uidtime,
-				'onelv'      => $_POST['richcategory'],
-				'seclv'      => $_POST['richname'],
-				'category'   => '支出',
-				'budget'     => 0,
-				'realcash'   => $_POST['richnum'],
-				'recordtime' => $_G['timestamp']
-			);
-			DB::insert('account_budget', $insarr);
-		}
-		
-		DB::query("UPDATE ".DB::table('account_profile')." SET totalpay = totalpay + '$_POST[richnum]' WHERE uid = '$_G[uid]'");
+		$tally->InsertData($_POST['curstatus'], $aInsert);
 		break;
 		
 	case 'earn':
-		if ( !ac_array_str_exists($_POST['richcategory'], $_POST['richname'], $account->account_config['earntype'])) {
+		$sid = $tally->GetTypeID($_POST['curstatus'], $_POST['richcategory'], $_POST['richname']);
+		if (!$sid) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richname';
 			//echo "请选择已存在的账单名称";
 			break;
 		}
 		
-		$insarr = array(
+		$aInsert = array(
 			'uid' => $_G['uid'],
 			'amount' => $_POST['richnum'],
-			'onelv' => $_POST['richcategory'],
-			'seclv' => $_POST['richname'],
-			'category' => $account->account_config['catetype'][$_POST['richtype']],
+			'typeid' => $sid,
+			'accountid' => $account_id,
 			'info' => $_POST['message'],
 			'datatime' => $timestamp,
 			'recordtime' => $_G['timestamp']
 			);
-		DB::insert('account_earndata', $insarr);
-		
-		DB::query("UPDATE ".DB::table('account_daytotal')." SET earnmoney = earnmoney + '$_POST[richnum]' WHERE uid = '$_G[uid]' AND datadate = '$timestamp'");
-		if (!DB::affected_rows()) {
-			unset($insarr);
-			$insarr = array(
-					'uid' => $_G['uid'],
-					'paymoney' => 0,
-					'earnmoney' => $_POST['richnum'],
-					'datadate' => $timestamp
-			);
-			DB::insert('account_daytotal', $insarr);
-		}
-		
-		$uidtime  = $_G['uid']*1000000+intval(date('Ym', $timestamp));
-		DB::query("UPDATE ".DB::table('account_budget')." SET realcash = realcash + '$_POST[richnum]', recordtime = '$_G[timestamp]' 
-					WHERE uidtime = '$uidtime' AND onelv = '$_POST[richcategory]' AND seclv = '$_POST[richname]' AND category = '收入'");
-		if(!DB::affected_rows()) {
-			unset($insarr);
-			$insarr = array(
-				'uidtime'    => $uidtime,
-				'onelv'      => $_POST['richcategory'],
-				'seclv'      => $_POST['richname'],
-				'category'   => '收入',
-				'budget'     => 0,
-				'realcash'   => $_POST['richnum'],
-				'recordtime' => $_G['timestamp']
-			);
-			DB::insert('account_budget', $insarr);
-		}
-		
-		DB::query("UPDATE ".DB::table('account_profile')." SET totalearn = totalearn + '$_POST[richnum]' WHERE uid = '$_G[uid]'");
+		$tally->InsertData($_POST['curstatus'], $aInsert);
 		break;
 		
 	case 'transfer':
-		if(!isset($_POST['richtype_out']) || $_POST['richtype_out'] >= count($account->account_config['catetype'])) {
+		$account_outid = $tally->GetTypeID('account', $_POST['richtype_out']);
+		if(!$account_outid) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype_out';
 		} else if($_POST['richtype'] == $_POST['richtype_out']){
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype_same';
 		} else {
-			$insarr = array(
+			$aInsert = array(
 				'uid' => $_G['uid'],
 				'amount' => $_POST['richnum'],
-				'icategory' => $account->account_config['catetype'][$_POST['richtype']],
-				'ocategory' => $account->account_config['catetype'][$_POST['richtype_out']],
+				'iaccount' => $account_id,
+				'oaccount' => $account_outid,
 				'info' => $_POST['message'],
 				'datatime' => $timestamp,
 				'recordtime' => $_G['timestamp']
 			);
-			DB::insert('account_transfer', $insarr);
+			$tally->InsertData($_POST['curstatus'], $aInsert);
 		}
 		break;
 
 	case "borrow":
-		if(!isset($_POST['loandebt']) || $_POST['loandebt'] >= count($account->account_config['loandebt'])) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'borrow';
-		} else {
-			$insarr = array(
-				'uid' => $_G['uid'],
-				'type' => 1,
-				'amount' => $_POST['richnum'],
-				'category' => $account->account_config['catetype'][$_POST['richtype']],
-				'loandebt' => $account->account_config['loandebt'][$_POST['loandebt']],
-				'info' => $_POST['message'],
-				'datatime' => $timestamp,
-				'recordtime' => $_G['timestamp']
-			);
-			DB::insert('account_loandebt', $insarr);
-		}
-		break;
-		
 	case "loan":
-		if(!isset($_POST['loandebt']) || $_POST['loandebt'] >= count($account->account_config['loandebt'])) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'loan';
-		} else {
-			$insarr = array(
-				'uid' => $_G['uid'],
-				'type' => 2,
-				'amount' => $_POST['richnum'],
-				'category' => $account->account_config['catetype'][$_POST['richtype']],
-				'loandebt' => $account->account_config['loandebt'][$_POST['loandebt']],
-				'info' => $_POST['message'],
-				'datatime' => $timestamp,
-				'recordtime' => $_G['timestamp']
-			);
-			DB::insert('account_loandebt', $insarr);
-		}
-		break;
-		
 	case "repay":
-		if(!isset($_POST['loandebt']) || $_POST['loandebt'] >= count($account->account_config['loandebt'])) {
-			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'repay';
-		} else {
-			$insarr = array(
-				'uid' => $_G['uid'],
-				'type' => 3,
-				'amount' => $_POST['richnum'],
-				'category' => $account->account_config['catetype'][$_POST['richtype']],
-				'loandebt' => $account->account_config['loandebt'][$_POST['loandebt']],
-				'info' => $_POST['message'],
-				'datatime' => $timestamp,
-				'recordtime' => $_G['timestamp']
-			);
-			DB::insert('account_loandebt', $insarr);
-		}
-		break;
-		
 	case "debt":
-		if(!isset($_POST['loandebt']) || $_POST['loandebt'] >= count($account->account_config['loandebt'])) {
+		$loandebt_id = $tally->GetTypeID('loandebt', $_POST['loandebt']);
+		if(!$loandebt_id) {
 			$ac_response['state'] = 'err';
-			$ac_response['curerr'] = 'repay';
+			$ac_response['curerr'] = $_POST['curstatus'];
 		} else {
-			$insarr = array(
+			$aInsert = array(
 				'uid' => $_G['uid'],
-				'type' => 4,
+				'type' => $_POST['curstatus'][0],
 				'amount' => $_POST['richnum'],
-				'category' => $account->account_config['catetype'][$_POST['richtype']],
-				'loandebt' => $account->account_config['loandebt'][$_POST['loandebt']],
+				'aid' => $account_id,
+				'lid' => $loandebt_id,
 				'info' => $_POST['message'],
 				'datatime' => $timestamp,
 				'recordtime' => $_G['timestamp']
 			);
-			DB::insert('account_loandebt', $insarr);
+			$tally->InsertData($_POST['curstatus'], $aInsert);
 		}
 		break;
 		
 	default:
+		$ac_response['state'] = 'err';
+		$ac_response['curerr'] = 'no_type';
+		//echo "未知类型增加";
 		break;
 }
 

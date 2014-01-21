@@ -1,5 +1,5 @@
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
  *    Last Updated: 2013-08-08
  *    Author: shumyun
@@ -221,7 +221,7 @@ var ajax_getdataparam = function(aData, force) {
 	if( !bajax )
 		return ;
 	
-	jQuery.post("plugin.php?id=account:ajax&func=getparam", jQuery.param(tmparr), function(data) {
+	jQuery.post("plugin.php?id=tally:ajax&func=getparam", jQuery.param(tmparr), function(data) {
 		var aParams = (new Function("return " + data))(); //var ar_data = eval('('+data+')');
 		for(var x in aParams) {
 			for (var y in aParams[x]) {

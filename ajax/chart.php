@@ -1,11 +1,11 @@
 <?php
 
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2012-02-05
+ *    Last Updated: 2013-10-20
  *    Author: shumyun
- *    Copyright (C) 2011 - forever jiashe.net Inc
+ *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -32,9 +32,11 @@ switch($_POST['chart']) {
 			case 31: $datastr .= ',"29","30","31"]'; break;
 			default:break;
 		}
-		set_defaultdata($data, $daycount);
 		
-		$query = DB::query("SELECT * FROM ".DB::table('account_daytotal').
+		require_once DISCUZ_ROOT.$basedir."function/func_common.php";
+		func_setdefaultdaydata($data, $daycount);
+		
+		$query = DB::query("SELECT * FROM ".DB::table('tally_daytotal').
 							" WHERE uid='$_G[uid]' AND datadate >= ".mktime(0,0,0,date('n', $curtime),1,date('Y', $curtime)).
 							" AND datadate <= ".mktime(0,0,0,date('n', $curtime),date('t', $curtime),date('Y', $curtime)));
 		
@@ -48,16 +50,6 @@ switch($_POST['chart']) {
 		
 	default:
 		break;
-}
-
-function set_defaultdata(&$data, $daycount) {
-	foreach ($data as $k => $v) {
-		$i = 0;
-		while($i < $daycount) {
-			$data[$k][$i] = 0;
-			$i++;
-		}
-	}
 }
 
 ?>

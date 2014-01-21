@@ -1,15 +1,40 @@
 <?php
 
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-29
+ *    Last Updated: 2013-10-20
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
 if(!defined('IN_DISCUZ')) {
 	exit('Access Denied');
+}
+
+/**
+ * 测试金额
+ * @param float_type $cash
+ */
+function func_test_cash($cash) {
+	if(!preg_match("/^\+?[0-9]+(.[0-9]{0,2})?$/", $cash) || $cash<=0)
+		return false;
+	return true;
+}
+
+/**
+ * 初始化月中每天的数据
+ * @param array_type $adata
+ * @param int_type $daycount
+ */
+function func_setdefaultdaydata(&$adata, $daycount) {
+	foreach ($adata as $k => $v) {
+		$i = 0;
+		while($i < $daycount) {
+			$adata[$k][$i] = 0;
+			$i++;
+		}
+	}
 }
 
 /**
@@ -216,7 +241,7 @@ function title_tobudget($array, $bnum=true) {
 	return $result;
 }
 
-/*
+/**
  * 百分数所对应的颜色
  */
 function budget_color($numerator, $denominator) {
@@ -286,220 +311,6 @@ function ac_array_str_exists($richcategory, $richname, $typearr) {
 		}
 	}
 	return false;
-}
-
-class class_parsertitle {
-	public  $array;
-	public  $str;
-	
-	public function strtoarr()
-	{
-		if(!isset($this->str)) return false;
-			
-		$strlength = strlen($this->str);
-		if($this->str[0] !== '[' || $this->str[$strlength-1] !== ']') return false;
-		
-		$tmp = 0;
-		$tmpstr = substr($this->str, 1, $strlength-2);
-		
-		unset($this->array);
-		$pointer =& $this->array;
-		if(!isset($pointer)) {
-	    	$pointer = Array();
-		}
-	    	
-	    for ($i=0; $i<$strlength; $i++) {
-	    	switch ($tmpstr[$i]) {
-	    		case '[':
-	    			if($i <= $tmp) return false;
-	    			
-	    			$curstr = substr($tmpstr, $tmp, $i-$tmp);
-	    			$pointer[$curstr] = Array('@parent' => &$pointer);
-	    			$pointer =& $pointer[$curstr];
-	    			$tmp = $i+1;//echo $curstr.'[';
-	    			break;
-	    		case '{':
-	    			$ids = count($pointer);
-	    			$pointer[$ids] = Array('@parent' => &$pointer);
-	    			$pointer =& $pointer[$ids];
-	    			$tmp = $i+1;//echo '{';
-	    			break;
-	    		case ',':
-	    			$ids = count($pointer);
-	    			if($tmp !== $i) {
-	    				$curstr = substr($tmpstr, $tmp, $i-$tmp);//echo $curstr;
-	    				if($ids == 1) //处理名称没有下级的情况
-	    					$pointer[$curstr] = '.';
-	    				else 
-	    					$pointer[$ids-1] = $curstr;
-	    			}
-	    			$tmp = $i+1;//echo ',';
-	    			break;
-	    		case '}':
-	    			$ids = count($pointer);
-	    			if($tmp !== $i) {
-	    				$curstr = substr($tmpstr, $tmp, $i-$tmp);//echo $curstr;
-	    				$pointer[$ids-1] = $curstr;
-	    			}
-	    			$pcur =& $pointer;
-	    			$pointer =& $pointer['@parent'];
-	    			unset($pcur['@parent']);
-	    			$tmp = $i+1;//echo '}';
-	    			break;
-	    		case ']':
-	    			$pcur =& $pointer;
-	    			$pointer =& $pointer['@parent'];
-	    			unset($pcur['@parent']);
-	    			$tmp = $i+1;//echo ']';
-	    			break;
-	    		default:
-	    			break;
-	    	}
-	    }
-	}
-	
-	public function arrtostr() {
-		if(!is_array($this->array)) return false;
-		$this->str = '[';
-		$this->str .= $this->_leveltostr($this->array, TITLE_ARR);
-		$this->str .= ']';
-	}
-	
-	private function _leveltostr($curlev, $objorarr) {
-		$str = '';
-		if(!is_array($curlev)) return $str;
-		
-		if($objorarr == TITLE_OBJ) {
-			$str .= '{';
-			foreach($curlev as $key => $data) {
-				if($data === '.') {
-					$str .= $key;
-				} else if(is_array($data)) {
-					//print_r($data);echo ';';
-					$str .= $key.'[';
-					$str .= $this->_leveltostr($data, TITLE_ARR);
-					$str .= ']';
-				} else {
-				  	$str .= $data;
-				}
-				$str .= ',';
-			}
-			$str = substr_replace($str, '}', -1, 1);	//',' => '}'
-		} else if ($objorarr == TITLE_ARR) {
-			foreach($curlev as $key => $data) {
-				if(!is_array($data))
-					return '';
-				$str .= $this->_leveltostr($data, TITLE_OBJ);
-			}
-		}
-		return $str;
-	}
-}
-
-class xmlToArrayParser {
-  /**
-   * The array created by the parser which can be assigned to a variable with: $varArr = $domObj->array.
-   *
-   * @var Array
-   */
-  public  $array;
-  private $parser;
-  private $pointer;
-  public  $json_array;
-  private $p_jsarr;
-
-  /**
-   * $domObj = new xmlToArrayParser($xml);
-   *$tag
-   * @param Str $xml file/string
-   */
-  public function __construct($xml) {
-    $this->pointer =& $this->array;
-    $this->p_jsarr =& $this->json_array;
-    $this->parser = xml_parser_create("UTF-8");
-    xml_set_object($this->parser, $this);
-    xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, false);
-    xml_set_element_handler($this->parser, "tag_open", "tag_close");
-    xml_set_character_data_handler($this->parser, "cdata");
-    xml_parse($this->parser, ltrim($xml));
-  }
-
-  private function tag_open($parser, $tag, $attributes) {
-  	
-  	$this->convert_to_array($tag, '_');
-    $idx=$this->convert_to_array($tag, 'cdata');
-    
-    if(isset($idx)) {
-      $this->pointer[$tag][$idx] = Array('@idx' => $idx,'@parent' => &$this->pointer);
-      $this->pointer =& $this->pointer[$tag][$idx];
-    }else {
-      $this->pointer[$tag] = Array('@parent' => &$this->pointer);
-      $this->pointer =& $this->pointer[$tag];
-    }
-    if (!empty($attributes)) { $this->pointer['_'] = $attributes; }
-    
-    foreach ($attributes as $key => $data) {
-    	if($key == 'name') {
-	    	if(isset($this->p_jsarr) && is_array($this->p_jsarr)) {
-	    		$idjs = $this->p_jsarr['@idjs'];
-	    		$this->p_jsarr['@idjs']++;
-	    		$this->p_jsarr[$idjs] = Array( $data => Array('@parent' => &$this->p_jsarr, '@idjs' => 0), 'show', 0);
-	    		$this->p_jsarr =& $this->p_jsarr[$idjs][$data];
-	    	}
-	    	// else if () {
-	    		//$this->p_jsarr = Array((0) => Array($data => Array('@parent' => &$this->pointer), 'show', '0'));
-	    		//$this->p_jsarr =& $this->p_jsarr[0][$data];
-	    	//}
-	    	else {
-	    		$this->p_jsarr = Array( $data => Array('@parent' => &$this->p_jsarr, '@idjs' => 0) );
-	    		$this->p_jsarr =& $this->p_jsarr[$data];
-	    	}
-	    	//echo $idjs.'=>'.$data.'&nbsp;&nbsp;';
-    	}
-    }
-  }
- 
-  /**
-   * Adds the current elements content to the current pointer[cdata] array.
-   */
-  private function cdata($parser, $cdata) {
-    if(isset($this->pointer['cdata'])) { $this->pointer['cdata'] .= $cdata;}
-    else { $this->pointer['cdata'] = $cdata;}
-  }
-
-  private function tag_close($parser, $tag) {
-    $current = & $this->pointer;
-    if(isset($this->pointer['@idx'])) {unset($current['@idx']);}
-    $this->pointer = & $this->pointer['@parent'];
-    unset($current['@parent']);
-    
-    $cur = & $this->p_jsarr;
-    if(isset($this->p_jsarr['@idjs'])) {unset($cur['@idjs']);}
-    $this->p_jsarr =& $this->p_jsarr['@parent'];
-    unset($cur['@parent']);
-    if(empty($cur)) $cur = '.';
-    //echo $cur['@idjs'].'&nbsp;';
-    
-    if(isset($current['cdata']) && count($current) == 1) { $current = $current['cdata'];}
-    else if(empty($current['cdata'])) { unset($current['cdata']); }
-  }
-
-  /**
-   * Converts a single element item into array(element[0]) if a second element of the same name is encountered.
-   */
-  private function convert_to_array($tag, $item) {
-    if(isset($this->pointer[$tag][$item])) {
-      $content = $this->pointer[$tag];
-      $this->pointer[$tag] = array((0) => $content);
-    }else if (isset($this->pointer[$tag])) {
-      $idx = count($this->pointer[$tag]);
-      if(!isset($this->pointer[$tag][0])) {
-        foreach ($this->pointer[$tag] as $key => $value) {
-            unset($this->pointer[$tag][$key]);
-            $this->pointer[$tag][0][$key] = $value;
-    }}}else $idx = null;
-    return $idx;
-  }
 }
 
 

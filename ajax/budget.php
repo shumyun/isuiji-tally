@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-29
+ *    Last Updated: 2013-10-07
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -106,7 +106,13 @@ if($curstatus == "get") {
 	echo $str;
 	
 } else if($curstatus) {
-	;
+	$str = '{"衣服饰品":{}, "食品酒水":{"0":"spjs", "1":["早午晚餐", "烟酒茶", "水果零食"]}}';
+	$arr = json_decode($str);
+	var_dump($arr);
+	foreach($arr as $k => $data) {
+		if(!is_array($data))
+			;//echo $k;
+	}
 }
 
 ?>

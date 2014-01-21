@@ -1,9 +1,9 @@
 <?php
 
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-01-23
+ *    Last Updated: 2014-01-15
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -41,6 +41,10 @@ if ($_POST['bTime']=='-' && $_POST['eTime']=='-') {
 $outjson = '{"state":"ok"';
 $oTable = "";
 
+$apayID = $tally->GetTypeKeyID('pay');
+$aearnID = $tally->GetTypeKeyID('earn');
+$aaccountID = $tally->GetTypeKeyID('account');
+$aloandebtID = $tally->GetTypeKeyID('loandebt');
 /**
  * 添加唯一标志
  * uid*(存储的行数*10+该数据所在的表的号码)
@@ -48,21 +52,27 @@ $oTable = "";
 $tmpsign = 0;
 
 /**
- * 获取支出类型的数据 表号: AC_PAY
+ * 获取支出类型的数据 表号: ISUIJI_PAY
  */
-$query = DB::query("SELECT * FROM ".DB::table('account_paydata').
+$query = DB::query("SELECT * FROM ".DB::table('tally_paydata').
 		" WHERE uid='$_G[uid]'".$sTime);
-
 $datatmp = '';
 $data['pay'] = '';
 while($daydata = DB::fetch($query)) {
 	
-	$tmpsign = $_G[uid]*($daydata['cid']*10+AC_PAY);
+	$tmpsign = $_G[uid]*($daydata['cid']*10+ISUIJI_PAY);
+	
+	$tmplv = $apayID[$daydata['typeid']];
+	$lvstr = '';
+	if(is_array($tmplv))
+		$lvstr = addslashes($tmplv[1]).'", "'.addslashes($tmplv[0]);
+	else
+		$lvstr = addslashes($tmplv);
+	
 	$datatmp = '["'.$tmpsign.'", "'.$daydata['recordtime'].'", "'.
-			date('Y/m/d', $daydata['datatime']).'", "'.
-			addslashes($daydata['seclv']).'", "'.($daydata['onelv'] ? addslashes($daydata['onelv']) : '').
+			date('Y/m/d', $daydata['datatime']).'", "'.$lvstr.
 			'", "'.$daydata['amount'].'", "'.
-			addslashes($daydata['category']).
+			addslashes($aaccountID[$daydata['accountid']]).
 			($daydata['info'] ? '", "'.addslashes($daydata['info']) : '').'"]';
 	
 	$data['pay'] .= $datatmp.',';
@@ -72,21 +82,28 @@ if($data['pay'])
 
 
 /**
- * 获取收入类型的数据 表号: AC_EARN
+ * 获取收入类型的数据 表号: ISUIJI_EARN
  */
-$query = DB::query("SELECT * FROM ".DB::table('account_earndata').
+$query = DB::query("SELECT * FROM ".DB::table('tally_earndata').
      " WHERE uid='$_G[uid]'".$sTime);
 
 $datatmp = '';
 $data['earn'] = '';
 while($daydata = DB::fetch($query)) {
 	
-	$tmpsign = $_G[uid]*($daydata['cid']*10+AC_EARN);
+	$tmpsign = $_G[uid]*($daydata['cid']*10+ISUIJI_EARN);
+	
+	$tmplv = $aearnID[$daydata['typeid']];
+	$lvstr = '';
+	if(is_array($tmplv))
+		$lvstr = addslashes($tmplv[1]).'", "'.addslashes($tmplv[0]);
+	else
+		$lvstr = addslashes($tmplv);
+	
 	$datatmp = '["'.$tmpsign.'", "'.$daydata['recordtime'].'", "'.
-				date('Y/m/d', $daydata['datatime']).'", "'.
-				addslashes($daydata['seclv']).'", "'.($daydata['onelv'] ? addslashes($daydata['onelv']) : '').
+				date('Y/m/d', $daydata['datatime']).'", "'.$lvstr.
 				'", "'.$daydata['amount'].'", "'.
-				addslashes($daydata['category']).
+				addslashes($aaccountID[$daydata['accountid']]).
 				($daydata['info'] ? '", "'.addslashes($daydata['info']) : '').'"]';
 	
 	$data['earn'] .= $datatmp.',';
@@ -96,21 +113,21 @@ if($data['earn'])
 
 
 /**
- * 获取转账类型的数据 表号: AC_TRANSFER
+ * 获取转账类型的数据 表号: ISUIJI_TRANSFER
  */
-$query = DB::query("SELECT * FROM ".DB::table('account_transfer').
+$query = DB::query("SELECT * FROM ".DB::table('tally_transfer').
 		" WHERE uid='$_G[uid]'".$sTime);
 
 $datatmp = '';
 $data['transfer'] = '';
 while($daydata = DB::fetch($query)) {
 	
-	$tmpsign = $_G[uid]*($daydata['cid']*10+AC_TRANSFER);
+	$tmpsign = $_G[uid]*($daydata['cid']*10+ISUIJI_TRANSFER);	
 	$datatmp = '["'.$tmpsign.'", "'.$daydata['recordtime'].'", "'.
 			date('Y/m/d', $daydata['datatime']).
-			'", "", "'.addslashes($daydata['ocategory']).
+			'", "", "'.addslashes($aaccountID[$daydata['oaccount']]).
 			'", "'.$daydata['amount'].'", "'.
-			addslashes($daydata['icategory']).
+			addslashes($aaccountID[$daydata['iaccount']]).
 			($daydata['info'] ? '", "'.addslashes($daydata['info']) : '').'"]';
 	
 	$data['transfer'] .= $datatmp.',';
@@ -120,33 +137,33 @@ if($data['transfer'])
 
 
 /**
- * 获取借贷类型的数据 表号: AC_LOANDEBT
+ * 获取借贷类型的数据 表号: ISUIJI_LOANDEBT
  */
-$query = DB::query("SELECT * FROM ".DB::table('account_loandebt').
+$query = DB::query("SELECT * FROM ".DB::table('tally_loandebt').
 		" WHERE uid='$_G[uid]'".$sTime);
 
-$datastr = array('', '', '', '', '');
+$datastr = array('b'=>'', 'l'=>'', 'r'=>'', 'd'=>'');
 $datatmp = '';
 while($daydata = DB::fetch($query)) {
 	
-	$tmpsign = $_G[uid]*($daydata['cid']*10+AC_LOANDEBT);
+	$tmpsign = $_G[uid]*($daydata['cid']*10+ISUIJI_LOANDEBT);
 	$datatmp = '["'.$tmpsign.'", "'.$daydata['recordtime'].'", "'.
 			date('Y/m/d', $daydata['datatime']).
-			'", "", "'.addslashes($daydata['loandebt']).
+			'", "", "'.addslashes($aloandebtID[$daydata['lid']]).
 			'", "'.$daydata['amount'].'", "'.
-			addslashes($daydata['category']).
+			addslashes($aaccountID[$daydata['aid']]).
 			($daydata['info'] ? '", "'.addslashes($daydata['info']) : '').'"]';
 	
 	$datastr[$daydata['type']] .= $datatmp.',';
 }
-if($datastr[1])
-	$oTable .= ( $oTable ? ', ':'').'"借入":['.substr($datastr[1], 0, strlen($datastr[1])-1).']';
-if($datastr[2])
-	$oTable .= ( $oTable ? ', ':'').'"借出":['.substr($datastr[2], 0, strlen($datastr[2])-1).']';
-if($datastr[3])
-	$oTable .= ( $oTable ? ', ':'').'"还债":['.substr($datastr[3], 0, strlen($datastr[3])-1).']';
-if($datastr[4])
-	$oTable .= ( $oTable ? ', ':'').'"收债":['.substr($datastr[4], 0, strlen($datastr[4])-1).']';
+if($datastr['b'])
+	$oTable .= ( $oTable ? ', ':'').'"借入":['.substr($datastr['b'], 0, strlen($datastr['b'])-1).']';
+if($datastr['l'])
+	$oTable .= ( $oTable ? ', ':'').'"借出":['.substr($datastr['l'], 0, strlen($datastr['l'])-1).']';
+if($datastr['r'])
+	$oTable .= ( $oTable ? ', ':'').'"还债":['.substr($datastr['r'], 0, strlen($datastr['r'])-1).']';
+if($datastr['d'])
+	$oTable .= ( $oTable ? ', ':'').'"收债":['.substr($datastr['d'], 0, strlen($datastr['d'])-1).']';
 
 
 $outjson .= ( $oTable ? ', "oTable": {'.$oTable.'}':'').'}';

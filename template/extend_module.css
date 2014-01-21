@@ -1,16 +1,16 @@
 /**
- *    account v0.1.0
+ *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-27
+ *    Last Updated: 2013-10-20
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
 
-/** plugin::account **/
+/** plugin::tally **/
 
 /* 账单增加页面 */
 /* 图片 */
-.ac-icon { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 2px; }
+.ac-icon { background: url(../../source/plugin/tally/js/images/icon_type_13x43.gif) no-repeat 0 2px; }
 .ac-icon-pay { background-position: 0 -28px; }
 
 /* 提交账单 */
@@ -82,7 +82,7 @@
 
 	/* 下拉菜单界面 */
 	/* 选择框图片 */
-	.selimg_empty { height: 15px; padding-left: 20px; background: url(../../source/plugin/account/js/images/checkbox_14x90.gif) no-repeat; }
+	.selimg_empty { height: 15px; padding-left: 20px; background: url(../../source/plugin/tally/js/images/checkbox_14x90.gif) no-repeat; }
 		.selimg_0 { background-position: 0 0; }
 		.selimg_1 { background-position: 0 -15px; }
 		.selimg_2 { background-position: 0 -30px; }
@@ -91,7 +91,7 @@
 		.selimg_5 { background-position: 0 -75px; }
 
 	/* 顶级菜单图片 */
-	.selimg_arrow { padding-right: 20px; background: url(../../source/plugin/account/js/images/arrows_15x40.gif) no-repeat 100% 0; }
+	.selimg_arrow { padding-right: 20px; background: url(../../source/plugin/tally/js/images/arrows_15x40.gif) no-repeat 100% 0; }
 	.selimg_harrow { background-position: 100% -20px; }
 	
 	/* 参考 .p_pop 写法 */
@@ -189,11 +189,11 @@
 /* 预算页面 */
 	.acb_h { width: 800px; }
 	.acb_a { background: url({IMGDIR}/icon_search.png) no-repeat 0 center; padding-left: 18px; float: left; }
-	.acb_year { background: url(../../source/plugin/account/images/time_y.png) no-repeat 0 0; width: 70px; height: 26px; float: left; margin: 3px 0 0 100px; position: absolute; display: inline; }
+	.acb_year { background: url(../../source/plugin/tally/images/time_y.png) no-repeat 0 0; width: 70px; height: 26px; float: left; margin: 3px 0 0 100px; position: absolute; display: inline; }
 		.acb_ytext { border: medium none; color: #000000; height: 18px; margin: 3px 0 0 10px; width: 40px; position: absolute; }
-		.acb_yup { background: url(../../source/plugin/account/images/time_y.png) no-repeat 0px -27px; cursor: pointer; width: 15px; height: 8px; position: absolute; right: 3px; top: 4px; }
+		.acb_yup { background: url(../../source/plugin/tally/images/time_y.png) no-repeat 0px -27px; cursor: pointer; width: 15px; height: 8px; position: absolute; right: 3px; top: 4px; }
 			a.acb_yup:hover { background-position: -15px -27px; }
-		.acb_ydown { background: url(../../source/plugin/account/images/time_y.png) no-repeat 0px -36px; cursor: pointer; width: 15px; height: 8px; position: absolute; right: 3px; top: 14px; }
+		.acb_ydown { background: url(../../source/plugin/tally/images/time_y.png) no-repeat 0px -36px; cursor: pointer; width: 15px; height: 8px; position: absolute; right: 3px; top: 14px; }
 			a.acb_ydown:hover { background-position: -15px -36px; }
 	.acb_dload { display: none; margin-left: 180px; position: absolute; }
 		.ie6 .acb_dload { margin-top: 8px; }
@@ -202,18 +202,18 @@
 		.acb_mul { background: #fff; position: absolute; width: 220px; height: 25px; margin-left: 15px; padding-right: 6px; }
 			.acb_mli { float: left; width: 38px; height: 25px; line-height: 25px; text-align: center; padding-left: 6px; }
                 .acb_mli a { cursor: pointer; display: block; width: 38px; height: 24px; text-decoration: none; }
-			        .acb_mli a:hover { background: url(../../source/plugin/account/images/time_t.png) no-repeat 0 0; }
-					.acb_msel { background: url(../../source/plugin/account/images/time_t.png) no-repeat 0 0; }
-		.acb_mprev { background: url(../../source/plugin/account/images/time_t.png) no-repeat -2px -27px; cursor: pointer; position: absolute; width: 15px; height: 25px; }
+			        .acb_mli a:hover { background: url(../../source/plugin/tally/images/time_t.png) no-repeat 0 0; }
+					.acb_msel { background: url(../../source/plugin/tally/images/time_t.png) no-repeat 0 0; }
+		.acb_mprev { background: url(../../source/plugin/tally/images/time_t.png) no-repeat -2px -27px; cursor: pointer; position: absolute; width: 15px; height: 25px; }
 			a.acb_mprev:hover { background-position: -2px -53px; }
-        .acb_mnext { background: url(../../source/plugin/account/images/time_t.png) no-repeat -19px -27px; cursor: pointer; position: absolute; width: 15px; height: 25px; margin-left: 241px; }
+        .acb_mnext { background: url(../../source/plugin/tally/images/time_t.png) no-repeat -19px -27px; cursor: pointer; position: absolute; width: 15px; height: 25px; margin-left: 241px; }
 			a.acb_mnext:hover { background-position: -19px -53px; }
 	.acb_fl { border: medium none; margin-top: 10px; }
 	.acb_tul { margin-left: 100px; }
 	.acb_tli { float: left; width: 130px; }
 	.acb_icopy { cursor: pointer; vertical-align: middle; margin-left: 3px; }
 	.acb_t { width: 800px; }
-		.acb_pdiv { background: url(../../source/plugin/account/js/images/icon_type_13x43.gif) no-repeat 0 -28px; height: 18px; float: left; padding-left: 15px; margin-top: 2px; }
+		.acb_pdiv { background: url(../../source/plugin/tally/js/images/icon_type_13x43.gif) no-repeat 0 -28px; height: 18px; float: left; padding-left: 15px; margin-top: 2px; }
 		.acb_ediv { background-position: 0 2px; }
 		.acb_collapsed { float: right; }
 			.acb_collapsed img { cursor: pointer; margin: 5px 5px 0 0; }
