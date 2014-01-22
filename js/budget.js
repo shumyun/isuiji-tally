@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-09-29
+ *    Last Updated: 2014-01-22
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -119,6 +119,15 @@ jQuery(document).ready(function($) {
 			$("img", this).attr("src", "static/image/common/tree_minus.gif");
 		}
 	);
+	
+	$("#copy_all").click(function(){
+		$("#copy_pay").click();
+		$("#copy_earn").click();
+	});
+	
+	$("#copy_pay").click(function(){
+	
+	});
 });
 /*
 (function($, window, document, undefined) {
