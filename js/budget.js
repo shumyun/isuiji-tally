@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-22
+ *    Last Updated: 2014-01-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -126,7 +126,32 @@ jQuery(document).ready(function($) {
 	});
 	
 	$("#copy_pay").click(function(){
+		var parentdom = $(this).parents("tr");
+		parentdom.nextAll("[type='pay'][sname]").each(function(){
+			$("img[title='复制']", this).click();
+		});
+	});
 	
+	$("#copy_earn").click(function(){
+		var parentdom = $(this).parents("tr");
+		parentdom.nextAll("[type='earn'][sname]").each(function(){
+			$("img[title='复制']", this).click();
+		});
+	});
+	
+	$("img[title='复制']").click(function(){
+		var parentdom = $(this).parent();
+		var dom = parentdom.prevAll(".acbt_td_2");
+		if(dom.length) {
+			var inum = dom.children("strong").html();
+			parentdom.children("input").val(inum);
+			
+			var str = dom.prev().find("a").attr("children_id");
+			$("img[title='复制']", $("#"+str)).click();
+		} else {
+			var inum = parentdom.prevAll(".acbt_td_22").children("strong").html();
+			parentdom.children("input").val(inum);
+		}
 	});
 });
 /*

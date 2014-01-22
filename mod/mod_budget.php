@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-21
+ *    Last Updated: 2014-01-23
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -86,8 +86,7 @@ foreach ($apay as $key => $label) {
 		}
 		$phtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.round($realcash, 2)
 			.'</span></td><td class="acbt_td_6"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
-			<input style="float: right; width: 70px; text-align:right;" value="'.round($budget, 2)
-			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
+			<input style="float: right; width: 70px; text-align:right;" value="'.round($budget, 2).'" readonly="readonly"/>
 			</td><td></td></tr>'.$childrenhtml;
 	} else {
 		$b_last = $alastpay[$key]['budget'];
@@ -162,8 +161,7 @@ foreach ($aearn as $key => $label) {
 		}
 		$ehtml .= '</strong></td><td class="acbt_td_5"><span style="float: right;">'.round($realcash, 2)
 			.'</span></td><td class="acbt_td_6"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
-			<input style="float: right; width: 70px; text-align:right;" value="'.round($budget, 2)
-			.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
+			<input style="float: right; width: 70px; text-align:right;" value="'.round($budget, 2).'" readonly="readonly"/>
 			</td><td></td></tr>'.$childrenhtml;
 	} else {
 		$b_last = $alastpay[$key]['budget'];
