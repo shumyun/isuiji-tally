@@ -7,25 +7,45 @@
  */
 jQuery.noConflict(); //discuz 使用了'$'符号
 
-var func_prevm = function(imonth) {
-	var sel = arguments[1] ? arguments[1] : false;
+var func_prevm = function(imonth, sdom) {
+	var sel = arguments[2] ? arguments[2] : false;
+	var iyear = parseInt(jQuery(sdom).attr("year"));
 	if(imonth <= 0) {
-		if(sel) jQuery("#tally_year").val(parseInt(jQuery("#tally_year").val())-1);
-		return imonth+12;
-	} else return imonth;
+		if(sel)	jQuery("#tally_year").val(parseInt(jQuery("#tally_year").val())-1);
+		iyear -= 1;
+		jQuery(sdom).attr("year", iyear);
+		imonth += 12;
+	}
+	itime = iyear*100+imonth;
+	if(itime > g_itime)
+		jQuery(sdom).attr("style", "color:#b5b5b5");
+	else 
+		jQuery(sdom).attr("style", "");
+	return imonth;
 };
 
-var func_nextm = function(imonth) {
-	var sel = arguments[1] ? arguments[1] : false;
+var func_nextm = function(imonth, sdom) {
+	var sel = arguments[2] ? arguments[2] : false;
+	var iyear = parseInt(jQuery(sdom).attr("year"));
 	if(imonth > 12) {
 		if(sel) jQuery("#tally_year").val(parseInt(jQuery("#tally_year").val())+1);
-		return imonth-12;
-	} else return imonth;
+		iyear += 1;
+		jQuery(sdom).attr("year", iyear);
+		imonth -= 12;
+	}
+	itime = iyear*100+imonth;
+	if(itime > g_itime)
+		jQuery(sdom).attr("style", "color:#b5b5b5");
+	else 
+		jQuery(sdom).attr("style", "");
+	return imonth;
 };
 
 var g_imonth = 0;
-
+var g_itime = 0;	// 当月的时间
 jQuery(document).ready(function($) {
+	
+	g_itime = $("#tally_year").val()*100+parseInt($("#a_m3").html());
 	
 	var func_getdata = function(){
 		var dataobj = {"curstatus":"sget", "year": $("#tally_year").val(), "month": g_imonth };
@@ -42,31 +62,49 @@ jQuery(document).ready(function($) {
 	
 	$("#prev_year").click(function(){
 		$("#tally_year").val(parseInt($("#tally_year").val())-1);
+		$("li.acb_mli > a").each(function(){
+			var iyear = parseInt($(this).attr("year"))-1;
+			$(this).attr("year", iyear);
+			var itime = iyear*100+parseInt($(this).html());
+			if(itime > g_itime)
+				$(this).attr("style", "color:#b5b5b5");
+			else 
+				$(this).attr("style", "");
+		});
 	});
 	
 	$("#next_year").click(function(){
 		$("#tally_year").val(parseInt($("#tally_year").val())+1);
+		$("li.acb_mli > a").each(function(){
+			var iyear = parseInt($(this).attr("year"))+1;
+			$(this).attr("year", iyear);
+			var itime = iyear*100+parseInt($(this).html());
+			if(itime > g_itime)
+				$(this).attr("style", "color:#b5b5b5");
+			else 
+				$(this).attr("style", "");
+		});
 	});
 	
 	g_imonth = parseInt($("#a_m3").html());
-	$("#a_m1").html(func_prevm(g_imonth-2)+"月");
-	$("#a_m2").html(func_prevm(g_imonth-1)+"月");
-	$("#a_m4").html(func_nextm(g_imonth+1)+"月");
-	$("#a_m5").html(func_nextm(g_imonth+2)+"月");
+	$("#a_m1").html(func_prevm(g_imonth-2, "#a_m1")+"月");
+	$("#a_m2").html(func_prevm(g_imonth-1, "#a_m2")+"月");
+	$("#a_m4").html(func_nextm(g_imonth+1, "#a_m4")+"月");
+	$("#a_m5").html(func_nextm(g_imonth+2, "#a_m5")+"月");
 	
 	$("#prev_month").click(function(){
 		$("li.acb_mli > a[class!='acb_msel']").each(function(){
-			$(this).html(func_prevm(parseInt($(this).html())-1)+"月");
+			$(this).html(func_prevm(parseInt($(this).html())-1, this)+"月");
 		});
-		g_imonth = func_prevm(g_imonth-1, true);
+		g_imonth = func_prevm(g_imonth-1, "a.acb_msel", true);
 		$("a.acb_msel").html(g_imonth+"月");
 	});
 	
 	$("#next_month").click(function(){
 		$("li.acb_mli > a[class!='acb_msel']").each(function(){
-			$(this).html(func_nextm(parseInt($(this).html())+1)+"月");
+			$(this).html(func_nextm(parseInt($(this).html())+1, this)+"月");
 		});
-		g_imonth = func_nextm(g_imonth+1, true);
+		g_imonth = func_nextm(g_imonth+1, "a.acb_msel", true);
 		$("a.acb_msel").html(g_imonth+"月");
 		func_getdata();
 	});
@@ -77,8 +115,8 @@ jQuery(document).ready(function($) {
 				$("a.acb_msel").removeClass("acb_msel");
 				$(this).addClass("acb_msel");
 				var tmp = parseInt($(this).html()) - g_imonth;
-				if(tmp < -5) $("#next_year").click();
-				else if(tmp > 5) $("#prev_year").click();
+				if(tmp < -5) $("#tally_year").val(parseInt($("#tally_year").val())+1);
+				else if(tmp > 5) $("#tally_year").val(parseInt($("#tally_year").val())-1);
 				g_imonth += tmp;
 			}
 		});
@@ -96,7 +134,7 @@ jQuery(document).ready(function($) {
 		function() {
 			$("[type='earn']").hide("slow");
 			$("img", this).attr("src", "static/image/common/collapsed_yes.gif");
-		}, function(){
+		}, function() {
 			$("[type='earn']").show("slow");
 			$("img", this).attr("src", "static/image/common/collapsed_no.gif");
 		}
