@@ -18,7 +18,7 @@ if(!defined('IN_DISCUZ')) {
 $ac_pdiv = '<div id="ac_popp" ac_pop="pay" class="ac_pop">';
 $div_i = 0;
 $div_arr = array();
-$type = $tally->GetTypeKeyString('pay');
+$type = $tally->getTypeForStringkeys('pay');
 $ac_pdiv .= '<ul id="ul_pay" ul_aid="a_pay" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $key => $val) {
 	if(is_array($val)) {
@@ -51,7 +51,7 @@ $div_i = 0;
 unset($div_arr);
 unset($type);
 $div_arr = array();
-$type = $tally->GetTypeKeyString('earn');
+$type = $tally->getTypeForStringkeys('earn');
 $ac_ediv .= '<ul id="ul_earn" ul_aid="a_earn" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $key => $val) {
 	if(is_array($val)) {
@@ -83,7 +83,7 @@ $ac_bdiv = '<div id="ac_popb" ac_pop="belong" class="ac_pop">';
 $div_i = 0;
 unset($div_arr);
 unset($type);
-$type = $tally->GetTypeKeyString('account');
+$type = $tally->getTypeForStringkeys('account');
 $ac_bdiv .= '<ul id="ul_belong" ul_aid="a_belong" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data => $val) {
 	$ac_bdiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$data.'</a></li>';
@@ -99,7 +99,7 @@ $ac_ldiv = '<div id="ac_popl" ac_pop="loandebt" class="ac_pop">';
 $div_i = 0;
 unset($div_arr);
 unset($type);
-$type = $tally->GetTypeKeyString('loandebt');
+$type = $tally->getTypeForStringkeys('loandebt');
 $ac_ldiv .= '<ul id="ul_loandebt" ul_aid="a_loandebt" class="ac_ul" sum="0" count="'.count($type).'">';
 foreach($type as $data => $val) {
 	$ac_ldiv .= '<li sum="0" count="0" a_clsid="0"><a class="selimg_empty selimg_0">'.$data.'</a></li>';

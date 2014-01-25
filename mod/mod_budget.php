@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-23
+ *    Last Updated: 2014-01-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -21,7 +21,7 @@ $uidtime = $_G['uid'].date('Ym', $_G['timestamp']);
 $apay = Array();
 $aearn = Array();
 
-if(!$tally->GetBudget($uidtime, $apay, $aearn))
+if(!$tally->getBudget($uidtime, $apay, $aearn))
 	return false;
 
 /* 获取上月预算数据 */
@@ -29,7 +29,7 @@ $uidtime = $_G['uid'].date("Ym", strtotime("-1 month"));
 $alastpay = Array();
 $alastearn = Array();
 
-if(!$tally->GetBudget($uidtime, $alastpay, $alastearn))
+if(!$tally->getBudget($uidtime, $alastpay, $alastearn))
 	return false;
 
 require_once DISCUZ_ROOT.$basedir."function/func_common.php";

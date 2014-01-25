@@ -1,7 +1,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-23
+ *    Last Updated: 2014-01-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -46,18 +46,22 @@ var g_itime = 0;	// 当月的时间
 jQuery(document).ready(function($) {
 	
 	g_itime = $("#tally_year").val()*100+parseInt($("#a_m3").html());
-	
-	var func_getdata = function(){
-		var dataobj = {"curstatus":"sget", "year": $("#tally_year").val(), "month": g_imonth };
-		$.post("plugin.php?id=account:ajax&func=budget", $.param(dataobj),
-		function(data) {
-			if(data["支出"]){
-				var paydata = data["支出"];
-				for(x in paydata) {
-					;
+	var func_getdata = function() {
+		var iyear = parseInt($("#tally_year").val());
+		if(iyear*100+g_imonth < g_itime) {
+			var dataobj = {"curstatus":"get", "year": iyear, "month": g_imonth};
+			$.post("plugin.php?id=account:ajax&func=budget", $.param(dataobj),
+			function(data) {
+				if(data["支出"]){
+					var paydata = data["支出"];
+					for(x in paydata) {
+						;
+					}
 				}
-			}
-		}, "json");
+			}, "json");
+		} else {
+			;
+		}
 	};
 	
 	$("#prev_year").click(function(){

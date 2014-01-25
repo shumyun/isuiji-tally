@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<root id="编程规范" Author="shumyun">
+	<chapter id="函数命名">
+		<section id="1"><![CDATA[
+			动词+名词：动词首字母小写，名词首字母大写(eg:getData，名词多个在一起只有第一个是大写)
+		]]></section>
+		<section id="2"><![CDATA[
+			动词或名词：动词或名词的首字母大写(eg:Init)
+		]]></section>
+		<section id="3"><![CDATA[
+			动词+名词+介词：动词首字母小写，名词首字母大写，介词首字母大写(eg:getDataToJs，名词多个在一起只有第一个是大写)
+		]]></section>
+	</chapter>
+</root>

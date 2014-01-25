@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-02-15
+ *    Last Updated: 2014-01-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */

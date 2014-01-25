@@ -3,7 +3,7 @@
 /**
  *    account v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-10-07
+ *    Last Updated: 2014-01-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -14,7 +14,7 @@ if(!defined('IN_DISCUZ')) {
 
 define('NOROBOT', TRUE);
 
-if(!isset($_POST['curstatus'])){
+if(!isset($_POST['curstatus'])) {
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'no_type';
 	//echo "未知类型增加";
@@ -24,6 +24,13 @@ if(!isset($_POST['curstatus'])){
 $curstatus = strtolower($_POST['curstatus']);
 if($curstatus == "get") {
 	$uidtime = $_G['uid'].$_POST['year'].str_pad($_POST['month'], 2, '0', STR_PAD_LEFT);
+	
+	if(!$tally->GetBudget($uidtime, $alastpay, $alastearn)) {
+		$ac_response['state'] = 'err';
+		$ac_response['curerr'] = 'err_getsql';
+		//echo "未知类型增加";
+		echo json_encode($ac_response);
+	}
 	
 	$arr = Array("earntype", "paytype");
 	$account->GetParam($_G['uid'], $arr);

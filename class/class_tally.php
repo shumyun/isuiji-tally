@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-21
+ *    Last Updated: 2014-01-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -115,7 +115,7 @@ class class_tally {
 	/**
 	 * 获取总金额
 	 */
-	public function GetTotalmoney() {
+	public function getTotalmoney() {
 		$profile = DB::fetch_first("SELECT totalearn, totalpay FROM "
 				.DB::table('tally_profile')." WHERE uid ='$this->uid'");
 		return $profile['totalearn'] - $profile['totalpay'];
@@ -124,7 +124,7 @@ class class_tally {
 	/**
 	 * 获取当天金额
 	 */
-	public function GetDaymoney($curtime) {
+	public function getDaymoney($curtime) {
 		$datadate = dmktime(dgmdate($curtime, 'd'));
 		$tmp = DB::fetch_first("SELECT paymoney as dpm, earnmoney as dem FROM "
 				.DB::table('tally_daytotal')." WHERE uid = '$this->uid' AND datadate = '$datadate'");
@@ -135,7 +135,7 @@ class class_tally {
 	/**
 	 * 获取当周金额
 	 */
-	public function GetWeekmoney($curtime) {
+	public function getWeekmoney($curtime) {
 		$isoWeekStartDate = strtotime(date('o-\\WW', $curtime)); //{isoYear}-W{isoWeekNumber}
 		$isoWeekEndDate = strtotime( "+6 days", $isoWeekStartDate);
 		$tmp = DB::fetch_first("SELECT SUM(paymoney) as wpm, SUM(earnmoney) as wem FROM ".DB::table('tally_daytotal')
@@ -147,7 +147,7 @@ class class_tally {
 	/**
 	 * 获取当月金额
 	 */
-	public function GetMonthmoney($curtime) {
+	public function getMonthmoney($curtime) {
 		$MonthStartDate = strtotime(date('Y-m-1', $curtime));
 		$MonthEndDate = strtotime(date('Y-m-t', strtotime(date('Y-m', $curtime))));
 		$tmp = DB::fetch_first("SELECT SUM(paymoney) as mpm, SUM(earnmoney) as mem FROM ".DB::table('tally_daytotal')
@@ -159,7 +159,7 @@ class class_tally {
 	/**
 	 * 获取当月预算
 	 */
-	public function GetMonthbudget($curtime) {
+	public function getMonthbudget($curtime) {
 		$uidtime = $this->uid.date('Ym', $curtime);
 		$ptmp = DB::fetch_first("SELECT SUM(budget) as mpd FROM ".DB::table('tally_budget')
 				." WHERE uidtime = '$uidtime' AND category='pay'");
@@ -172,7 +172,7 @@ class class_tally {
 	/**
 	 *  获取支出菜单项目
 	 */
-	public function GetpaytypeToJs() {
+	public function getPaytypeToJs() {
 		$query = DB::query("SELECT * FROM ".DB::table('tally_paytype')." WHERE uid='$this->uid'");
 		$str = '';
 		while($paydata = DB::fetch($query)) {
@@ -186,7 +186,7 @@ class class_tally {
 	/**
 	 *  获取收入菜单项目
 	 */
-	public function GetearntypeToJs() {
+	public function getEarntypeToJs() {
 		$query = DB::query("SELECT * FROM ".DB::table('tally_earntype')." WHERE uid='$this->uid'");
 		$str = '';
 		while($earndata = DB::fetch($query)) {
@@ -200,7 +200,7 @@ class class_tally {
 	/**
 	 *  获取账户信息
 	 */
-	public function Getaccount() {
+	public function getAccount() {
 		$query = DB::query("SELECT account FROM ".DB::table('tally_account')
 				." WHERE uid='$this->uid' AND type='a'");
 		$result = array();
@@ -213,7 +213,7 @@ class class_tally {
 	/**
 	 *  获取借贷项目
 	 */
-	public function Getloandebt() {
+	public function getLoandebt() {
 		$query = DB::query("SELECT account FROM ".DB::table('tally_account')
 				." WHERE uid='$this->uid' AND type='l'");
 		$result = array();
@@ -228,7 +228,7 @@ class class_tally {
 	 * @param string_type $type
 	 * @return boolean
 	 */
-	public function GetTypeKeyString($type) {
+	public function getTypeForStringkeys($type) {
 		switch($type) {
 			case 'pay':
 				$apaytype = array();
@@ -294,15 +294,18 @@ class class_tally {
 	/**
 	 * 获取帐目类型的数据{ id(key):string(val) }
 	 * @param string_type $type
+	 * @param string_type $status{"a":all}
 	 * @return boolean
 	 */
-	public function GetTypeKeyID($type) {
+	public function getTypeForIdkeys($type, $status="a") {
 		switch($type) {
 			case 'pay':
 				$apaytype = array();
 				$query = DB::query("SELECT cid, onelv, seclv FROM ".DB::table('tally_paytype')
 						." WHERE uid='$this->uid'");
 				while($qtype = DB::fetch($query)) {
+					if($status!="a" && $qtype['status']!="y")
+						break;
 					$inum = $qtype['cid'] + 0;
 					if(!$qtype['seclv'])
 						$apaytype[$inum] = $qtype['onelv'];
@@ -316,6 +319,8 @@ class class_tally {
 				$query = DB::query("SELECT cid, onelv, seclv FROM ".DB::table('tally_earntype')
 						." WHERE uid='$this->uid'");
 				while($qtype = DB::fetch($query)) {
+					if($status!="a" && $qtype['status']!="y")
+						break;
 					$inum = $qtype['cid'] + 0;
 					if(!$qtype['seclv'])
 						$aearntype[$inum] = $qtype['onelv'];
@@ -329,6 +334,8 @@ class class_tally {
 				$query = DB::query("SELECT cid, account FROM ".DB::table('tally_account')
 						." WHERE uid='$this->uid' AND type='a'");
 				while($atmp = DB::fetch($query)) {
+					if($status!="a" && $atmp['status']!="y")
+						break;
 					$inum = $atmp['cid'] + 0;
 					$aaccount[$inum] = $atmp['account'];
 				}
@@ -339,6 +346,8 @@ class class_tally {
 				$query = DB::query("SELECT cid, account FROM ".DB::table('tally_account')
 						." WHERE uid='$this->uid' AND type='l'");
 				while($atmp = DB::fetch($query)) {
+					if($status!="a" && $atmp['status']!="y")
+						break;
 					$inum = $atmp['cid'] + 0;
 					$aloandebt[$inum] = $atmp['account'];
 				}
@@ -355,7 +364,7 @@ class class_tally {
 	 * @param string_type $onelv
 	 * @param string_type $seclv
 	 */
-	public function GetTypeID($type, $onelv, $seclv = null) {
+	public function getTypeid($type, $onelv, $seclv = null) {
 		switch($type) {
 			case 'pay':
 				$data = DB::fetch_first("SELECT cid FROM ".DB::table('tally_paytype')
@@ -394,7 +403,7 @@ class class_tally {
 	 * @param string_type $type
 	 * @param array_type $aInsert
 	 */
-	public function InsertData($type, $aInsert) {
+	public function insertData($type, $aInsert) {
 		switch($type) {
 			case 'pay':
 				DB::insert('tally_paydata', $aInsert);
@@ -491,7 +500,7 @@ class class_tally {
 	 * @param int_type $rtime
 	 * @return boolean
 	 */
-	public function ModifyPayData($aUpdata, $cid, $rtime) {
+	public function modifyPaydata($aUpdata, $cid, $rtime) {
 		$sqlstr = "SELECT datatime, amount, typeid FROM "
 				.DB::table('tally_paydata')
 				." WHERE uid='$this->uid' AND cid='$cid' AND recordtime='$rtime'";
@@ -574,7 +583,7 @@ class class_tally {
 	 * @param int_type $rtime
 	 * @return boolean
 	 */
-	public function ModifyEarnData($aUpdata, $cid, $rtime) {
+	public function modifyEarndata($aUpdata, $cid, $rtime) {
 		$sqlstr = "SELECT datatime, amount, typeid FROM "
 				.DB::table('tally_earndata')
 				." WHERE uid='$this->uid' AND cid='$cid' AND recordtime='$rtime'";
@@ -655,7 +664,7 @@ class class_tally {
 	 * @param int_type $rtime
 	 * @return boolean
 	 */
-	public function ModifyTransData($aUpdata, $cid, $rtime) {
+	public function modifyTransdata($aUpdata, $cid, $rtime) {
 		$aCond = array(
 				'cid' => $cid,
 				'uid' => $this->uid,
@@ -673,7 +682,7 @@ class class_tally {
 	 * @param int_type $rtime
 	 * @return boolean
 	 */
-	public function ModifyLoandebtData($aUpdata, $cid, $rtime) {
+	public function modifyLoandebtdata($aUpdata, $cid, $rtime) {
 		$aCond = array(
 				'cid' => $cid,
 				'uid' => $this->uid,
@@ -689,11 +698,13 @@ class class_tally {
 	 * @param int_type $uidtime
 	 * @param &array_type $apay
 	 * @param &array_type $aearn
+	 * @param string_type $typestatus("a":all)
+	 * @param string_type $retstatus("a":all)
 	 * @return boolean
 	 */
-	public function GetBudget($uidtime, &$apay, &$aearn) {
-		$apaytype = $this->GetTypeKeyID('pay');
-		$aearntype = $this->GetTypeKeyID('earn');
+	public function getBudget($uidtime, &$apay, &$aearn, $typestatus="a", $retstatus="a") {
+		$apaytype = $this->getTypeForIdkeys('pay', $typestatus);
+		$aearntype = $this->getTypeForIdkeys('earn', $typestatus);
 		$query = DB::query("SELECT * FROM ".DB::table('tally_budget').
 				" WHERE uidtime='$uidtime'");
 		while($bdata = DB::fetch($query)) {
@@ -722,24 +733,25 @@ class class_tally {
 				unset($aearntype[$typeid]);
 			}
 		}
-		
-		foreach ($apaytype as $val) {
-			if( is_array($val)) {
-				$apay[$val[0]]['children'][$val[1]]['budget']   = 0;
-				$apay[$val[0]]['children'][$val[1]]['realcash'] = 0;
-			} else {
-				$apay[$val]['budget']   = 0;
-				$apay[$val]['realcash'] = 0;
+		if($retstatus=="a") {
+			foreach ($apaytype as $val) {
+				if( is_array($val)) {
+					$apay[$val[0]]['children'][$val[1]]['budget']   = 0;
+					$apay[$val[0]]['children'][$val[1]]['realcash'] = 0;
+				} else {
+					$apay[$val]['budget']   = 0;
+					$apay[$val]['realcash'] = 0;
+				}
 			}
-		}
-		
-		foreach ($aearntype as $val) {
-			if( is_array($val)) {
-				$aearn[$val[0]]['children'][$val[1]]['budget']   = 0;
-				$aearn[$val[0]]['children'][$val[1]]['realcash'] = 0;
-			} else {
-				$aearn[$val]['budget']   = 0;
-				$aearn[$val]['realcash'] = 0;
+			
+			foreach ($aearntype as $val) {
+				if( is_array($val)) {
+					$aearn[$val[0]]['children'][$val[1]]['budget']   = 0;
+					$aearn[$val[0]]['children'][$val[1]]['realcash'] = 0;
+				} else {
+					$aearn[$val]['budget']   = 0;
+					$aearn[$val]['realcash'] = 0;
+				}
 			}
 		}
 		return true;

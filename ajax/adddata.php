@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2013-10-19
+ *    Last Updated: 2014-01-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -46,7 +46,7 @@ if(!$account_id){
 
 switch ( $_POST['curstatus'] ) {
 	case 'pay':
-		$sid = $tally->GetTypeID($_POST['curstatus'], $_POST['richcategory'], $_POST['richname']);
+		$sid = $tally->getTypeid($_POST['curstatus'], $_POST['richcategory'], $_POST['richname']);
 		if (!$sid) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richname';
@@ -62,11 +62,11 @@ switch ( $_POST['curstatus'] ) {
 			'datatime' => $timestamp,
 			'recordtime' => $_G['timestamp']
 			);
-		$tally->InsertData($_POST['curstatus'], $aInsert);
+		$tally->insertData($_POST['curstatus'], $aInsert);
 		break;
 		
 	case 'earn':
-		$sid = $tally->GetTypeID($_POST['curstatus'], $_POST['richcategory'], $_POST['richname']);
+		$sid = $tally->getTypeid($_POST['curstatus'], $_POST['richcategory'], $_POST['richname']);
 		if (!$sid) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richname';
@@ -83,11 +83,11 @@ switch ( $_POST['curstatus'] ) {
 			'datatime' => $timestamp,
 			'recordtime' => $_G['timestamp']
 			);
-		$tally->InsertData($_POST['curstatus'], $aInsert);
+		$tally->insertData($_POST['curstatus'], $aInsert);
 		break;
 		
 	case 'transfer':
-		$account_outid = $tally->GetTypeID('account', $_POST['richtype_out']);
+		$account_outid = $tally->getTypeid('account', $_POST['richtype_out']);
 		if(!$account_outid) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype_out';
@@ -104,7 +104,7 @@ switch ( $_POST['curstatus'] ) {
 				'datatime' => $timestamp,
 				'recordtime' => $_G['timestamp']
 			);
-			$tally->InsertData($_POST['curstatus'], $aInsert);
+			$tally->insertData($_POST['curstatus'], $aInsert);
 		}
 		break;
 
@@ -112,7 +112,7 @@ switch ( $_POST['curstatus'] ) {
 	case "loan":
 	case "repay":
 	case "debt":
-		$loandebt_id = $tally->GetTypeID('loandebt', $_POST['loandebt']);
+		$loandebt_id = $tally->getTypeid('loandebt', $_POST['loandebt']);
 		if(!$loandebt_id) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = $_POST['curstatus'];
@@ -127,7 +127,7 @@ switch ( $_POST['curstatus'] ) {
 				'datatime' => $timestamp,
 				'recordtime' => $_G['timestamp']
 			);
-			$tally->InsertData($_POST['curstatus'], $aInsert);
+			$tally->insertData($_POST['curstatus'], $aInsert);
 		}
 		break;
 		

@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-15
+ *    Last Updated: 2014-01-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -41,10 +41,10 @@ if ($_POST['bTime']=='-' && $_POST['eTime']=='-') {
 $outjson = '{"state":"ok"';
 $oTable = "";
 
-$apayID = $tally->GetTypeKeyID('pay');
-$aearnID = $tally->GetTypeKeyID('earn');
-$aaccountID = $tally->GetTypeKeyID('account');
-$aloandebtID = $tally->GetTypeKeyID('loandebt');
+$apayID = $tally->getTypeForIdkeys('pay');
+$aearnID = $tally->getTypeForIdkeys('earn');
+$aaccountID = $tally->getTypeForIdkeys('account');
+$aloandebtID = $tally->getTypeForIdkeys('loandebt');
 /**
  * 添加唯一标志
  * uid*(存储的行数*10+该数据所在的表的号码)

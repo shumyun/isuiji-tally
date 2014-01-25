@@ -12,7 +12,7 @@ if(!defined('IN_DISCUZ')) {
 	exit('Access Denied');
 }
 
-$totalamount = $tally->GetTotalmoney();
+$totalamount = $tally->getTotalmoney();
 
 $acc_datetime = dmktime($acc_date);
 
@@ -28,23 +28,23 @@ $acc_amount = array(
 		'totalamount' => $totalamount
 );
 $curtime = $_G['timestamp'];
-$acc_tmp = $tally->GetDaymoney($curtime);
+$acc_tmp = $tally->getDaymoney($curtime);
 if(!empty($acc_tmp)) {
 	$acc_amount['dpm'] = $acc_tmp['dpm'];
 	$acc_amount['dem'] = $acc_tmp['dem'];
 }
-$acc_tmp = $tally->GetWeekmoney($curtime);
+$acc_tmp = $tally->getWeekmoney($curtime);
 if( !(empty($acc_tmp['wpm'])||empty($acc_tmp['wem']))) {
 	$acc_amount['wpm'] = $acc_tmp['wpm'];
 	$acc_amount['wem'] = $acc_tmp['wem'];
 }
-$acc_tmp = $tally->GetMonthmoney($curtime);
+$acc_tmp = $tally->getMonthmoney($curtime);
 if( !(empty($acc_tmp['mpm'])||empty($acc_tmp['mem']))) {
 	$acc_amount['mpm'] = $acc_tmp['mpm'];
 	$acc_amount['mem'] = $acc_tmp['mem'];
 }
 
-$acc_tmp = $tally->GetMonthbudget($curtime);
+$acc_tmp = $tally->getMonthbudget($curtime);
 if( !empty($acc_tmp['mpd'])) {
 	$acc_amount['mpd'] = $acc_tmp['mpd']; $acc_amount['rempd'] = $acc_amount['mpd'] - $acc_amount['mpm'];
 }

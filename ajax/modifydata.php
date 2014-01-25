@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-15
+ *    Last Updated: 2014-01-25
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -44,7 +44,7 @@ if(!isset($_POST['richdate']) || !($timestamp = strtotime($_POST['richdate'])) )
 	return;
 }
 
-$account_id = $tally->GetTypeID('account', $_POST['richtype']);
+$account_id = $tally->getTypeid('account', $_POST['richtype']);
 if(!$account_id){
 	$ac_response['state'] = 'err';
 	$ac_response['curerr'] = 'richtype';
@@ -62,7 +62,7 @@ $tableID = $tmp%10;
 $cid = ($tmp-$tableID)/10;
 switch ($tableID) {
 	case ISUIJI_PAY:
-		$ptypeid = $tally->GetTypeID('pay', $_POST['richcategory'], $_POST['richname']);
+		$ptypeid = $tally->getTypeid('pay', $_POST['richcategory'], $_POST['richname']);
 		if(!$ptypeid) {
 			$ac_aresponse['state'] = 'err';
 			$ac_aresponse['curerr'] = 'richname';
@@ -78,7 +78,7 @@ switch ($tableID) {
 			'recordtime' => $ac_aresponse['curerr']
 			);
 		
-		if(!$tally->ModifyPayData($aUpdata, $cid, $_POST['isort'])) {
+		if(!$tally->modifyPaydata($aUpdata, $cid, $_POST['isort'])) {
 			$ac_aresponse['state'] = 'err';
 			$ac_aresponse['curerr'] = 'Dont';
 			//echo "操作失败";
@@ -86,7 +86,7 @@ switch ($tableID) {
 		break;
 
 	case ISUIJI_EARN:
-		$etypeid = $tally->GetTypeID('earn', $_POST['richcategory'], $_POST['richname']);
+		$etypeid = $tally->getTypeid('earn', $_POST['richcategory'], $_POST['richname']);
 		if(!$etypeid) {
 			$ac_aresponse['state'] = 'err';
 			$ac_aresponse['curerr'] = 'richname';
@@ -103,7 +103,7 @@ switch ($tableID) {
 			'recordtime' => $ac_aresponse['curerr']
 			);
 		
-		if(!$tally->ModifyEarnData($aUpdata, $cid, $_POST['isort'])) {
+		if(!$tally->modifyEarndata($aUpdata, $cid, $_POST['isort'])) {
 			$ac_aresponse['state'] = 'err';
 			$ac_aresponse['curerr'] = 'Dont';
 			//echo "操作失败";
@@ -111,7 +111,7 @@ switch ($tableID) {
 		break;
 		
 	case ISUIJI_TRANSFER:
-		$account_outid = $tally->GetTypeID('account', $_POST['richtype_out']);
+		$account_outid = $tally->getTypeid('account', $_POST['richtype_out']);
 		if(!$account_outid) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype_out';
@@ -132,7 +132,7 @@ switch ($tableID) {
 			'recordtime' => $ac_aresponse['curerr']
 		);
 		
-		if(!$tally->ModifyTransData($aUpdata, $cid, $_POST['isort'])) {
+		if(!$tally->modifyTransdata($aUpdata, $cid, $_POST['isort'])) {
 			$ac_aresponse['state'] = 'err';
 			$ac_aresponse['curerr'] = 'Dont';
 			//echo "操作失败";
@@ -140,7 +140,7 @@ switch ($tableID) {
 		break;
 
 	case ISUIJI_LOANDEBT:
-		$loandebtid = $tally->GetTypeID('loandebt', $_POST['richtype_out']);
+		$loandebtid = $tally->getTypeid('loandebt', $_POST['richtype_out']);
 		if(!$loandebtid) {
 			$ac_response['state'] = 'err';
 			$ac_response['curerr'] = 'richtype_out';
@@ -157,7 +157,7 @@ switch ($tableID) {
 			'recordtime' => $ac_aresponse['curerr']
 		);
 		
-		if(!$tally->ModifyLoandebtData($aUpdata, $cid, $_POST['isort'])) {
+		if(!$tally->modifyLoandebtdata($aUpdata, $cid, $_POST['isort'])) {
 			$ac_aresponse['state'] = 'err';
 			$ac_aresponse['curerr'] = 'Dont';
 			//echo "操作失败";
