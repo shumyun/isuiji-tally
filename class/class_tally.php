@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-25
+ *    Last Updated: 2014-01-26
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -365,37 +365,69 @@ class class_tally {
 	 * @param string_type $seclv
 	 */
 	public function getTypeid($type, $onelv, $seclv = null) {
+		$data = null;
 		switch($type) {
 			case 'pay':
 				$data = DB::fetch_first("SELECT cid FROM ".DB::table('tally_paytype')
 						." WHERE uid='$this->uid' AND onelv='$onelv' AND seclv='$seclv'");
-				if($data)
-					return $data['cid'];
-				return false;
+				break;
 				
 			case 'earn':
 				$data = DB::fetch_first("SELECT cid FROM ".DB::table('tally_earntype')
 						." WHERE uid='$this->uid' AND onelv='$onelv' AND seclv='$seclv'");
-				if($data)
-					return $data['cid'];
-				return false;
+				break;
 				
 			case 'account':
 				$data = DB::fetch_first("SELECT cid FROM ".DB::table('tally_account')
 						." WHERE uid='$this->uid' AND type='a' AND account='$onelv'");
-				if($data)
-					return $data['cid'];
-				return false;
+				break;
 				
 			case 'loandebt':
 				$data = DB::fetch_first("SELECT cid FROM ".DB::table('tally_account')
 						." WHERE uid='$this->uid' AND type='l' AND account='$onelv'");
-				if($data)
-					return $data['cid'];
-				return false;
+				break;
 				
-			default: return false;
+			default:
+				break;
 		}
+		if($data)
+			return $data['cid'];
+		return false;
+	}
+	
+	/**
+	 * 获取帐目类型在数据库中的对应数据
+	 * @param string_type $type
+	 * @param int_type $id
+	 * @return Ambigous <NULL, array, string>
+	 */
+	public function getTypestring($type, $id){
+		$data = null;
+		switch ($type) {
+			case 'pay':
+				$data = DB::fetch_first("SELECT onelv, seclv FROM ".DB::table('tally_paytype')
+						." WHERE uid='$this->uid' AND cid='$id'");
+				break;
+				
+			case 'earn':
+				$data = DB::fetch_first("SELECT onelv, seclv FROM ".DB::table('tally_earntype')
+						." WHERE uid='$this->uid' AND cid='$id'");
+				break;
+				
+			case 'account':
+				$data = DB::fetch_first("SELECT account FROM ".DB::table('tally_account')
+						." WHERE uid='$this->uid' AND type='a' AND cid='$id'");
+				break;
+				
+			case 'loandebt':
+				$data = DB::fetch_first("SELECT account FROM ".DB::table('tally_account')
+						." WHERE uid='$this->uid' AND type='l' AND cid='$id'");
+				break;
+				
+			default:
+				break;
+		}
+		return $data;
 	}
 	
 	/**
@@ -698,8 +730,8 @@ class class_tally {
 	 * @param int_type $uidtime
 	 * @param &array_type $apay
 	 * @param &array_type $aearn
-	 * @param string_type $typestatus("a":all)
-	 * @param string_type $retstatus("a":all)
+	 * @param string_type $typestatus("a":all,"n":not-all)
+	 * @param string_type $retstatus("a":all,"n":not-all)
 	 * @return boolean
 	 */
 	public function getBudget($uidtime, &$apay, &$aearn, $typestatus="a", $retstatus="a") {
@@ -710,16 +742,20 @@ class class_tally {
 		while($bdata = DB::fetch($query)) {
 			$typeid = $bdata['typeid'] + 0;
 			if($bdata['category'] == '支出') {
-				if( is_array($apaytype[$typeid])) {
-					$onelv = $apaytype[$typeid][0];
-					$seclv = $apaytype[$typeid][1];
-					$apay[$onelv]['children'][$seclv]['budget']   = floatval($bdata['budget']);
-					$apay[$onelv]['children'][$seclv]['realcash'] = floatval($bdata['realcash']);
-				} else {
-					$apay[$apaytype[$typeid]]['budget']   = floatval($bdata['budget']);
-					$apay[$apaytype[$typeid]]['realcash'] = floatval($bdata['realcash']);
-				}
-				unset($apaytype[$typeid]);
+				if(array_key_exists($typeid, $apaytype)) {
+					if( is_array($apaytype[$typeid])) {
+						$onelv = $apaytype[$typeid][0];
+						$seclv = $apaytype[$typeid][1];
+						$apay[$onelv]['children'][$seclv]['budget']   = floatval($bdata['budget']);
+						$apay[$onelv]['children'][$seclv]['realcash'] = floatval($bdata['realcash']);
+					} else {
+						$apay[$apaytype[$typeid]]['budget']   = floatval($bdata['budget']);
+						$apay[$apaytype[$typeid]]['realcash'] = floatval($bdata['realcash']);
+					}
+					unset($apaytype[$typeid]);
+				} else if($typestatus != "a") {
+					
+				} else return false;
 			} else if($bdata['category'] == '收入') {
 				if( is_array($aearntype[$typeid])) {
 					$onelv = $aearntype[$typeid][0];
