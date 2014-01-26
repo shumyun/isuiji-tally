@@ -301,7 +301,7 @@ class class_tally {
 		switch($type) {
 			case 'pay':
 				$apaytype = array();
-				$query = DB::query("SELECT cid, onelv, seclv FROM ".DB::table('tally_paytype')
+				$query = DB::query("SELECT cid, onelv, seclv, status FROM ".DB::table('tally_paytype')
 						." WHERE uid='$this->uid'");
 				while($qtype = DB::fetch($query)) {
 					if($status!="a" && $qtype['status']!="y")
@@ -316,7 +316,7 @@ class class_tally {
 		
 			case 'earn':
 				$aearntype = array();
-				$query = DB::query("SELECT cid, onelv, seclv FROM ".DB::table('tally_earntype')
+				$query = DB::query("SELECT cid, onelv, seclv, status FROM ".DB::table('tally_earntype')
 						." WHERE uid='$this->uid'");
 				while($qtype = DB::fetch($query)) {
 					if($status!="a" && $qtype['status']!="y")
@@ -331,7 +331,7 @@ class class_tally {
 			
 			case 'account':
 				$aaccount = array();
-				$query = DB::query("SELECT cid, account FROM ".DB::table('tally_account')
+				$query = DB::query("SELECT cid, account, status FROM ".DB::table('tally_account')
 						." WHERE uid='$this->uid' AND type='a'");
 				while($atmp = DB::fetch($query)) {
 					if($status!="a" && $atmp['status']!="y")
@@ -343,7 +343,7 @@ class class_tally {
 							
 			case 'loandebt':
 				$aloandebt = array();
-				$query = DB::query("SELECT cid, account FROM ".DB::table('tally_account')
+				$query = DB::query("SELECT cid, account, status FROM ".DB::table('tally_account')
 						." WHERE uid='$this->uid' AND type='l'");
 				while($atmp = DB::fetch($query)) {
 					if($status!="a" && $atmp['status']!="y")
