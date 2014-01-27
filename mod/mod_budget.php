@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-26
+ *    Last Updated: 2014-01-27
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -21,7 +21,7 @@ $uidtime = $_G['uid'].date('Ym', $_G['timestamp']);
 $apay = Array();
 $aearn = Array();
 
-if(!$tally->getBudget($uidtime, $apay, $aearn))
+if(!$tally->getBudget($uidtime, $apay, $aearn, "n", "a"))
 	return false;
 
 /* 获取上月预算数据 */
@@ -29,7 +29,7 @@ $uidtime = $_G['uid'].date("Ym", strtotime("-1 month"));
 $alastpay = Array();
 $alastearn = Array();
 
-if(!$tally->getBudget($uidtime, $alastpay, $alastearn, "n", "a"))
+if(!$tally->getBudget($uidtime, $alastpay, $alastearn, "a", "n"))
 	return false;
 
 require_once DISCUZ_ROOT.$basedir."function/func_common.php";
@@ -50,8 +50,11 @@ foreach ($apay as $key => $label) {
 		
 		$childrenhtml = '<tr type="pay" class="acbt_tr"><td colspan="7" style="padding: 0;"><div id="p_'.$inum.'" class="acb_div_sec"><table><tbody>';
 		foreach ($label['children'] as $name => $val) {
-			$b_last = $alastpay[$key]['children'][$name]['budget'];
-			$r_last = $alastpay[$key]['children'][$name]['realcash'];
+			$b_last = $r_last = 0;
+			if(array_key_exists($key, $alastpay)) {
+				$b_last = $alastpay[$key]['children'][$name]['budget'];
+				$r_last = $alastpay[$key]['children'][$name]['realcash'];
+			}
 			$childrenhtml .= '<tr sname="'.$name.'"><td class="acbt_td_21">'.$name.'</td>
 				<td class="acbt_td_22"><strong style="float: right;">'.$b_last.'</strong></td>
 				<td class="acbt_td_23"><span style="float: right;">'.$r_last.'</span></td>';

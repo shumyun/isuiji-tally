@@ -754,19 +754,47 @@ class class_tally {
 					}
 					unset($apaytype[$typeid]);
 				} else if($typestatus != "a") {
-					
+					if(!($apaystring = $this->getTypestring('pay', $typeid))) {
+						if( is_array($apaystring)) {
+							$onelv = $apaystring[0];
+							$seclv = $apaystring[1];
+							$apay[$onelv]['children'][$seclv]['budget']   = floatval($bdata['budget']);
+							$apay[$onelv]['children'][$seclv]['realcash'] = floatval($bdata['realcash']);
+							$apay[$onelv]['children'][$seclv]['status'] = 'disable';
+						} else {
+							$apay[$apaytype[$typeid]]['budget']   = floatval($bdata['budget']);
+							$apay[$apaytype[$typeid]]['realcash'] = floatval($bdata['realcash']);
+							$apay[$apaytype[$typeid]]['status'] = 'disable';
+						}
+					} else return false;
 				} else return false;
 			} else if($bdata['category'] == '收入') {
-				if( is_array($aearntype[$typeid])) {
-					$onelv = $aearntype[$typeid][0];
-					$seclv = $aearntype[$typeid][1];
-					$aearn[$onelv]['children'][$seclv]['budget']   = floatval($bdata['budget']);
-					$aearn[$onelv]['children'][$seclv]['realcash'] = floatval($bdata['realcash']);
-				} else {
-					$aearn[$aearntype[$typeid]]['budget']   = floatval($bdata['budget']);
-					$aearn[$aearntype[$typeid]]['realcash'] = floatval($bdata['realcash']);
-				}
-				unset($aearntype[$typeid]);
+				if(array_key_exists($typeid, $apaytype)) {
+					if( is_array($aearntype[$typeid])) {
+						$onelv = $aearntype[$typeid][0];
+						$seclv = $aearntype[$typeid][1];
+						$aearn[$onelv]['children'][$seclv]['budget']   = floatval($bdata['budget']);
+						$aearn[$onelv]['children'][$seclv]['realcash'] = floatval($bdata['realcash']);
+					} else {
+						$aearn[$aearntype[$typeid]]['budget']   = floatval($bdata['budget']);
+						$aearn[$aearntype[$typeid]]['realcash'] = floatval($bdata['realcash']);
+					}
+					unset($aearntype[$typeid]);
+				} else if($typestatus != "a") {
+					if(!($aearnstring = $this->getTypestring('earn', $typeid))) {
+						if( is_array($aearnstring)) {
+							$onelv = $aearnstring[0];
+							$seclv = $aearnstring[1];
+							$aearn[$onelv]['children'][$seclv]['budget']   = floatval($bdata['budget']);
+							$aearn[$onelv]['children'][$seclv]['realcash'] = floatval($bdata['realcash']);
+							$aearn[$onelv]['children'][$seclv]['status'] = 'disable';
+						} else {
+							$aearn[$aearntype[$typeid]]['budget']   = floatval($bdata['budget']);
+							$aearn[$aearntype[$typeid]]['realcash'] = floatval($bdata['realcash']);
+							$aearn[$aearntype[$typeid]]['status'] = 'disable';
+						}
+					} else return false;
+				} else return false;
 			}
 		}
 		if($retstatus=="a") {
