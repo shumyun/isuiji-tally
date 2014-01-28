@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-26
+ *    Last Updated: 2014-01-28
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
