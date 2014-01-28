@@ -3,7 +3,7 @@
 /**
  *    isuiji_tally v0.1.0
  *    Plug-in for Discuz!
- *    Last Updated: 2014-01-27
+ *    Last Updated: 2014-01-28
  *    Author: shumyun
  *    Copyright (C) 2011 - forever isuiji.com Inc
  */
@@ -65,11 +65,16 @@ foreach ($apay as $key => $label) {
 				$childrenhtml .= '<td class="acbt_td_24"><strong style="float: right; color: #'.$res.';">'
 					.round($r_last*100/$b_last, 1).'%';
 			}
-			$childrenhtml .= '</strong></td><td class="acbt_td_25"><span style="float: right;">'.round($val['realcash'], 2).'</span></td>
-				<td class="acbt_td_26"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
-				<input class="acbt_input" value="'.round($val['budget'], 2)
-				.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
-				</td></tr>';
+			$childrenhtml .= '</strong></td><td class="acbt_td_25"><span style="float: right;">'.round($val['realcash'], 2)
+						.'</span></td><td class="acbt_td_26">';
+			if(array_key_exists('status', $val) && $val['status'] == 'disable')
+				$childrenhtml .= '<input class="acbt_input" value="'.round($val['budget'], 2)
+							.'" disabled="disabled"/></td></tr>';
+			else
+				$childrenhtml .= '<img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
+							<input class="acbt_input" value="'.round($val['budget'], 2)
+							.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')"
+							onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/></td></tr>';
 			
 			$budget    += $val['budget'];
 			$realcash  += $val['realcash'];
@@ -92,8 +97,11 @@ foreach ($apay as $key => $label) {
 			<input style="float: right; width: 70px; text-align:right;" value="'.round($budget, 2).'" readonly="readonly"/>
 			</td><td></td></tr>'.$childrenhtml;
 	} else {
-		$b_last = $alastpay[$key]['budget'];
-		$r_last = $alastpay[$key]['realcash'];
+		$b_last = $r_last = 0;
+		if(array_key_exists($key, $alastpay)) {
+			$b_last = $alastpay[$key]['budget'];
+			$r_last = $alastpay[$key]['realcash'];
+		}
 		$phtml .= $key.'</span></td>';
 		$phtml .= '<td class="acbt_td_2"><strong style="float: right;">'.$b_last
 			.'</strong></td><td class="acbt_td_3"><span style="float: right;">'.$r_last
@@ -128,8 +136,11 @@ foreach ($aearn as $key => $label) {
 		
 		$childrenhtml = '<tr type="earn" class="acbt_tr"><td colspan="7" style="padding: 0;"><div id="e_'.$inum.'" class="acb_div_sec"><table><tbody>';
 		foreach ($label['children'] as $name => $val) {
-			$b_last = $alastearn[$key]['children'][$name]['budget'];
-			$r_last = $alastearn[$key]['children'][$name]['realcash'];
+			$b_last = $r_last = 0;
+			if(array_key_exists($key, $alastearn)) {
+				$b_last = $alastearn[$key]['children'][$name]['budget'];
+				$r_last = $alastearn[$key]['children'][$name]['realcash'];
+			}
 			$childrenhtml .= '<tr sname="'.$name.'"><td class="acbt_td_21">'.$name.'</td>
 				<td class="acbt_td_22"><strong style="float: right;">'.$b_last.'</strong></td>
 				<td class="acbt_td_23"><span style="float: right;">'.$r_last.'</span></td>';
@@ -140,11 +151,16 @@ foreach ($aearn as $key => $label) {
 				$childrenhtml .= '<td class="acbt_td_24"><strong style="float: right; color: #'.$res.';">'
 					.round($r_last*100/$b_last, 1).'%';
 			}
-			$childrenhtml .= '</strong></td><td class="acbt_td_25"><span style="float: right;">'.round($val['realcash'], 2).'</span></td>
-				<td class="acbt_td_26"><img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
-				<input class="acbt_input" value="'.round($val['budget'], 2)
-				.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')" onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/>
-				</td></tr>';
+			$childrenhtml .= '</strong></td><td class="acbt_td_25"><span style="float: right;">'.round($val['realcash'], 2)
+					.'</span></td><td class="acbt_td_26">';
+			if(array_key_exists('status', $val) && $val['status'] == 'disable')
+				$childrenhtml .= '<input class="acbt_input" value="'.round($val['budget'], 2)
+							.'" disabled="disabled"/></td></tr>';
+			else
+				$childrenhtml .= '<img class="acbt_img" title="复制" alt="复制" src="static/image/common/copy.png" />
+							<input class="acbt_input" value="'.round($val['budget'], 2)
+							.'" onkeyup="value=value.replace(/[^\d\.]/g,\'\')"
+							onafterpaste="this.value=this.value.replace(/[^\d\.]/g,\'\')"/></td></tr>';
 			
 			$budget    += $val['budget'];
 			$realcash  += $val['realcash'];
@@ -167,8 +183,11 @@ foreach ($aearn as $key => $label) {
 			<input style="float: right; width: 70px; text-align:right;" value="'.round($budget, 2).'" readonly="readonly"/>
 			</td><td></td></tr>'.$childrenhtml;
 	} else {
-		$b_last = $alastpay[$key]['budget'];
-		$r_last = $alastpay[$key]['realcash'];
+		$b_last = $r_last = 0;
+		if(array_key_exists($key, $alastearn)) {
+			$b_last = $alastearn[$key]['budget'];
+			$r_last = $alastearn[$key]['realcash'];
+		}
 		$ehtml .= $key.'</span></td>';
 		$ehtml .= '<td class="acbt_td_2"><strong style="float: right;">'.$b_last
 			.'</strong></td><td class="acbt_td_3"><span style="float: right;">'.$r_last

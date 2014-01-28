@@ -769,7 +769,7 @@ class class_tally {
 					} else return false;
 				} else return false;
 			} else if($bdata['category'] == '收入') {
-				if(array_key_exists($typeid, $apaytype)) {
+				if(array_key_exists($typeid, $aearntype)) {
 					if( is_array($aearntype[$typeid])) {
 						$onelv = $aearntype[$typeid][0];
 						$seclv = $aearntype[$typeid][1];
